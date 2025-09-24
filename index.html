@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Document</title>
+		<style>
+			* {
+				font-family: monospace;
+				font-size: 50px;
+				color: white;
+			}
+			h1 {
+				font-size: 100px;
+				margin: 0;
+				color: orange;
+			}
+			main {
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+				align-items: center;
+			}
+			.container {
+				padding: 50px 25px;
+				text-align: center;
+				margin: 0 auto;
+				border: 1px solid orange;
+				width: 1200px;
+				border-radius: 20px;
+				background-color: rgb(83, 83, 140);
+			}
+			.log-container {
+			}
+			.log-container p span {
+				color: black;
+			}
+			#stopwatch-area {
+				margin: 20px 0;
+				/* height: 20px; */
+			}
+
+			.element {
+				display: inline-block;
+				margin: 5px;
+			}
+			.date-element {
+				font-size: 15px;
+				color: gray;
+			}
+			button {
+				background-color: orange;
+				color: white;
+				border-radius: 25px;
+				padding: 10px 25px;
+				border: none;
+				cursor: pointer;
+				transition: all 0.3s;
+			}
+			button:hover {
+				box-shadow: 0 0 10px 0 #333;
+			}
+		</style>
+	</head>
+	<body>
+		<main>
+			<div class="container">
+				<h1>Stopwatch</h1>
+				<div id="stopwatch-area">0</div>
+				<div>
+					<button id="start">Start</button>
+					<button id="stop1">Stop</button>
+					<button id="reset">Reset</button>
+					<button id="save">Save</button>
+					<button id="track">Track</button>
+				</div>
+			</div>
+			<div class="log-container">
+				<p id="log"></p>
+			</div>
+		</main>
+		<script src="script.js"></script>
+	</body>
+</html>
