@@ -1,84 +1,126 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Document</title>
-		<style>
-			* {
-				font-family: monospace;
-				font-size: 50px;
-				color: white;
-			}
-			h1 {
-				font-size: 100px;
-				margin: 0;
-				color: orange;
-			}
-			main {
-				display: flex;
-				flex-direction: column;
-				justify-content: center;
-				align-items: center;
-			}
-			.container {
-				padding: 50px 25px;
-				text-align: center;
-				margin: 0 auto;
-				border: 1px solid orange;
-				width: 1200px;
-				border-radius: 20px;
-				background-color: rgb(83, 83, 140);
-			}
-			.log-container {
-			}
-			.log-container p span {
-				color: black;
-			}
-			#stopwatch-area {
-				margin: 20px 0;
-				/* height: 20px; */
-			}
 
-			.element {
-				display: inline-block;
-				margin: 5px;
-			}
-			.date-element {
-				font-size: 15px;
-				color: gray;
-			}
-			button {
-				background-color: orange;
-				color: white;
-				border-radius: 25px;
-				padding: 10px 25px;
-				border: none;
-				cursor: pointer;
-				transition: all 0.3s;
-			}
-			button:hover {
-				box-shadow: 0 0 10px 0 #333;
-			}
-		</style>
-	</head>
-	<body>
-		<main>
-			<div class="container">
-				<h1>Stopwatch</h1>
-				<div id="stopwatch-area">0</div>
-				<div>
-					<button id="start">Start</button>
-					<button id="stop1">Stop</button>
-					<button id="reset">Reset</button>
-					<button id="save">Save</button>
-					<button id="track">Track</button>
-				</div>
-			</div>
-			<div class="log-container">
-				<p id="log"></p>
-			</div>
-		</main>
-		<script src="script.js"></script>
-	</body>
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: monospace;
+            font-size: 50px;
+            color: white;
+        }
+
+        h1 {
+            font-size: 100px;
+            margin: 0;
+            color: orange;
+        }
+
+        main {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            padding: 50px 25px;
+            text-align: center;
+            margin: 0 auto;
+            border: 1px solid orange;
+            max-width: 1200px;
+            width: 100%;
+            border-radius: 20px;
+            background-color: rgb(83, 83, 140);
+        }
+
+        .log-container {
+            max-width: 1200px;
+            width: 100%;
+        }
+
+        .log-container p span {
+            color: black;
+        }
+
+        #stopwatch-area {
+            margin: 20px 0;
+            display: flex;
+            justify-content: center;
+            align-items: end;
+        }
+
+        #log {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .element {
+            display: inline-block;
+            margin: 5px;
+        }
+
+        .date-element {
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: black;
+        }
+
+        button {
+            background-color: orange;
+            color: white;
+            border-radius: 25px;
+            padding: 10px 25px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        button:hover {
+            box-shadow: 0 0 10px 0 #333;
+        }
+
+        .log_data {
+            border-radius: 12px;
+            border: 1px solid black;
+            padding: 10px;
+            background-color: #d9d9ff;
+            color: black;
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+        }
+    </style>
+</head>
+
+<body>
+    <main>
+        <div class="container">
+            <h1>Stopwatch</h1>
+            <div id="stopwatch-area">
+                <div class="seconds">0</div>
+                <span class="milliseconds">.</span>
+                <div class="milliseconds">00</div>
+            </div>
+            <div>
+                <button id="start">Start</button>
+                <button id="stop1">Stop</button>
+                <button id="reset">Reset</button>
+                <button id="save">Save</button>
+                <button id="track">Track</button>
+            </div>
+        </div>
+        <div class="log-container">
+            <p id="log"></p>
+        </div>
+    </main>
+    <script src="script.js"></script>
+</body>
+
 </html>
