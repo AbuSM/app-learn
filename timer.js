@@ -1,0 +1,39 @@
+const timerStart = document.getElementById("timer-start");
+const timerStop = document.getElementById("timer-stop");
+const timerPlusFive = document.getElementById("timer-plus-five");
+const timerMinusFive = document.getElementById("timer-minus-five");
+const timerArea = document.getElementById("timer-area");
+const intialValue = 10000;
+const initialNumber = document.getElementById("initial-number");
+
+let millisecondsTimer = getMilliseconds(0);
+let timerClearIntervalId;
+
+function setTimerArea(val) {
+	timerArea.innerHTML = `
+        <div class="seconds">${Math.floor(val / 1000)}</div>
+        <span class="milliseconds">.</span>
+        <div class="milliseconds">${getMilliseconds(val)}</div>
+    `;
+}
+
+initialNumber.addEventListener("input", function (event) {
+	const val = event.target.value;
+	console.log("val: ", val);
+	const m = val * 1000;
+	setTimerArea(m);
+	millisecondsTimer = m;
+});
+
+timerStart.addEventListener("click", () => {
+	if (!timerClearIntervalId) {
+		timerClearIntervalId = setInterval(() => {
+			if (millisecondsTimer <= 0) {
+				clearInterval(timerClearIntervalId);
+			}
+			setTimerArea(millisecondsTimer);
+			millisecondsTimer -= TIMER_RANGE;
+		}, TIMER_RANGE);
+	}
+	setTimerArea(millisecondsTimer);
+});

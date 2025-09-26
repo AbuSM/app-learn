@@ -1,70 +1,72 @@
 const stopwatchArea = document.getElementById("stopwatch-area");
+const start = document.getElementById("start");
+const stop = document.getElementById("stop");
+const reset = document.getElementById("reset");
+const save = document.getElementById("save");
+const track = document.getElementById("track");
 const dialog = document.getElementById("dialog");
 
 let arr = [];
 let millisecond = +(localStorage.getItem("timer") || 0);
 let clearIntervalId;
-const timerRange = 45;
+const TIMER_RANGE = 50;
+
+const getMilliseconds = (millisecond) => {
+	let answer = millisecond - Math.floor(millisecond / 1000) * 1000;
+
+	if (answer >= 100) {
+		return Math.floor(answer / 10);
+	}
+	if (answer < 10) {
+		return "0" + String(answer);
+	}
+	return answer;
+};
 
 const setStopWatchArea = () => {
-	const getMilliseconds = () => {
-		let answer = millisecond - Math.floor(millisecond / 1000) * 1000;
-
-		if (answer >= 100) {
-			return Math.floor(answer / 10);
-		}
-		if (answer < 10) {
-			return "0" + String(answer);
-		}
-		return answer;
-	};
 	stopwatchArea.innerHTML = `
         <div class="seconds">${Math.floor(millisecond / 1000)}</div>
         <span class="milliseconds">.</span>
-        <div class="milliseconds">${getMilliseconds()}</div>
+        <div class="milliseconds">${getMilliseconds(millisecond)}</div>
     `;
 };
 
 // console.log("clear: ", clearIntervalId);
 setStopWatchArea(millisecond);
 
-start.addEventListener("click", () => {
+function onStart() {
 	if (!clearIntervalId) {
-		millisecond += timerRange;
+		millisecond += TIMER_RANGE;
 		clearIntervalId = setInterval(() => {
 			setStopWatchArea();
-			millisecond += timerRange;
-		}, timerRange);
+			millisecond += TIMER_RANGE;
+		}, TIMER_RANGE);
 		console.log("clear: ", clearIntervalId);
 	}
-});
+}
 
-stop1.addEventListener("click", () => {
+function onStop() {
 	clearInterval(clearIntervalId);
 	clearIntervalId = undefined;
-});
+}
 
-reset.addEventListener("click", () => {
+function onReset() {
 	millisecond = 0;
 	setStopWatchArea();
 	log.textContent = "";
 	arr.length = 0;
 	localStorage.removeItem("timer");
-});
+}
 
-save.addEventListener("click", () => {
-	localStorage.setItem("timer", millisecond);
+function onSave() {
+	localStorage.setItem("timer", millisecond - TIMER_RANGE);
 	dialog.setAttribute("open", true);
 	setTimeout(() => {
 		dialog.removeAttribute("open");
 	}, 3000);
-});
+}
 
-track.addEventListener("click", () => {
-	logBtn();
-});
-
-function logBtn() {
+function onTrack() {
 	// console.log("Save btn");
 	const seconds = stopwatchArea.textContent.split("\n")[1].trim();
 	const milliseconds = stopwatchArea.textContent.split("\n")[3].trim();
@@ -92,3 +94,23 @@ function logBtn() {
 	log.innerHTML = str;
 	// console.log("arr: ", arr);
 }
+
+start.addEventListener("click", () => {
+	onStart();
+});
+
+stop.addEventListener("click", () => {
+	onStop();
+});
+
+reset.addEventListener("click", () => {
+	onReset();
+});
+
+save.addEventListener("click", () => {
+	onSave();
+});
+
+track.addEventListener("click", () => {
+	onTrack();
+});

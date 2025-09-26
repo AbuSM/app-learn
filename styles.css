@@ -1,5 +1,8 @@
 :root {
+	--black: #333;
 	--green: rgb(42, 208, 27);
+	--border-radius-md: 25px;
+	--border-radius-sm: 15px;
 }
 
 * {
@@ -29,49 +32,14 @@ main {
 	border: 1px solid orange;
 	max-width: 1200px;
 	width: 100%;
-	border-radius: 20px;
+	border-radius: var(--border-radius-sm);
 	background-color: rgb(83, 83, 140);
-}
-
-.log-container {
-	max-width: 1200px;
-	width: 100%;
-}
-
-.log-container p span {
-	color: black;
-}
-
-#stopwatch-area {
-	margin: 20px 0;
-	display: flex;
-	justify-content: center;
-	align-items: end;
-}
-
-#log {
-	display: flex;
-	flex-direction: column;
-	gap: 10px;
-}
-
-.element {
-	display: inline-block;
-	margin: 5px;
-}
-
-.date-element {
-	font-size: 20px;
-	display: flex;
-	align-items: center;
-	gap: 5px;
-	color: black;
 }
 
 .btn {
 	background-color: orange;
 	color: white;
-	border-radius: 25px;
+	border-radius: var(--border-radius-md);
 	padding: 10px 25px;
 	border: none;
 	cursor: pointer;
@@ -82,15 +50,11 @@ main {
 	box-shadow: 0 0 10px 0 #333;
 }
 
-.log_data {
-	border-radius: 12px;
-	border: 1px solid black;
-	padding: 10px;
-	background-color: #d9d9ff;
-	color: black;
+.area {
+	margin: 20px 0;
 	display: flex;
-	align-items: center;
-	flex-direction: column;
+	justify-content: center;
+	align-items: end;
 }
 
 dialog {
