@@ -1,0 +1,112 @@
+:root {
+	--green: rgb(42, 208, 27);
+}
+
+* {
+	box-sizing: border-box;
+	font-family: monospace;
+	font-size: 50px;
+	color: white;
+}
+
+h1 {
+	font-size: 100px;
+	margin: 0;
+	color: orange;
+}
+
+main {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}
+
+.container {
+	padding: 50px 25px;
+	text-align: center;
+	margin: 0 auto;
+	border: 1px solid orange;
+	max-width: 1200px;
+	width: 100%;
+	border-radius: 20px;
+	background-color: rgb(83, 83, 140);
+}
+
+.log-container {
+	max-width: 1200px;
+	width: 100%;
+}
+
+.log-container p span {
+	color: black;
+}
+
+#stopwatch-area {
+	margin: 20px 0;
+	display: flex;
+	justify-content: center;
+	align-items: end;
+}
+
+#log {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+}
+
+.element {
+	display: inline-block;
+	margin: 5px;
+}
+
+.date-element {
+	font-size: 20px;
+	display: flex;
+	align-items: center;
+	gap: 5px;
+	color: black;
+}
+
+.btn {
+	background-color: orange;
+	color: white;
+	border-radius: 25px;
+	padding: 10px 25px;
+	border: none;
+	cursor: pointer;
+	transition: all 0.3s;
+}
+
+.btn:hover {
+	box-shadow: 0 0 10px 0 #333;
+}
+
+.log_data {
+	border-radius: 12px;
+	border: 1px solid black;
+	padding: 10px;
+	background-color: #d9d9ff;
+	color: black;
+	display: flex;
+	align-items: center;
+	flex-direction: column;
+}
+
+dialog {
+	bottom: 0;
+	right: 0;
+	padding: 25px;
+	margin-left: auto;
+	margin-right: 0;
+	border: 2px solid var(--green);
+}
+.dialog p {
+	color: var(--green);
+	margin: 0 0 10px 0;
+}
+.dialog button {
+	color: var(--green);
+	background-color: transparent;
+	border: 1px solid var(--green);
+}
