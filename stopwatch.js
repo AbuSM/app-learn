@@ -36,6 +36,7 @@ setStopWatchArea(millisecond);
 
 function onStart() {
 	if (!clearIntervalId) {
+		stop.textContent = "Pause";
 		millisecond += TIMER_RANGE;
 		clearIntervalId = setInterval(() => {
 			setStopWatchArea();
@@ -48,6 +49,13 @@ function onStart() {
 function onStop() {
 	clearInterval(clearIntervalId);
 	clearIntervalId = undefined;
+	if (stop.textContent === "Stop") {
+		millisecond = 0;
+		setStopWatchArea();
+		stop.textContent = "Pause";
+	} else {
+		stop.textContent = "Stop";
+	}
 }
 
 function onReset() {

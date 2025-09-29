@@ -5,6 +5,7 @@ const timerMinusFive = document.getElementById("timer-minus-five");
 const timerArea = document.getElementById("timer-area");
 const intialValue = 10000;
 const initialNumber = document.getElementById("initial-number");
+const audio = document.getElementsByTagName("audio")[0];
 
 let millisecondsTimer = getMilliseconds(0);
 let timerClearIntervalId;
@@ -29,6 +30,7 @@ timerStart.addEventListener("click", () => {
 	if (!timerClearIntervalId) {
 		timerClearIntervalId = setInterval(() => {
 			if (millisecondsTimer <= 0) {
+				audio.play();
 				clearInterval(timerClearIntervalId);
 			}
 			setTimerArea(millisecondsTimer);
