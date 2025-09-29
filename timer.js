@@ -39,3 +39,15 @@ timerStart.addEventListener("click", () => {
 	}
 	setTimerArea(millisecondsTimer);
 });
+
+timerPlusFive.addEventListener("click", () => {
+	millisecondsTimer = Number(millisecondsTimer) + 5000;
+	setTimerArea(millisecondsTimer);
+});
+
+timerMinusFive.addEventListener("click", () => {
+	if (millisecondsTimer > 0) {
+		millisecondsTimer = Number(millisecondsTimer) - 5000;
+		setTimerArea(millisecondsTimer);
+	}
+});
