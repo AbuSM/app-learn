@@ -1,4 +1,5 @@
 :root {
+	--primary: orange;
 	--black: #333;
 	--green: rgb(42, 208, 27);
 	--border-radius-md: 25px;
@@ -15,7 +16,38 @@
 h1 {
 	font-size: 100px;
 	margin: 0;
-	color: orange;
+	color: var(--primary);
+}
+
+header nav {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+header nav ul {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	gap: 40px;
+	list-style-type: none;
+}
+
+.nav-link {
+	color: var(--primary);
+	text-decoration: none;
+	transition: border 0.2s linear;
+	padding-bottom: 10px;
+	border: 5px solid transparent;
+}
+
+.nav-link:hover {
+	border-bottom: 5px solid var(--primary);
+}
+
+input,
+label {
+	color: var(--primary);
 }
 
 main {
@@ -26,12 +58,11 @@ main {
 }
 
 .container {
+	width: 1200px;
 	padding: 50px 25px;
 	text-align: center;
 	margin: 0 auto;
 	border: 1px solid orange;
-	max-width: 1200px;
-	width: 100%;
 	border-radius: var(--border-radius-sm);
 	background-color: rgb(83, 83, 140);
 }
@@ -44,10 +75,17 @@ main {
 	border: none;
 	cursor: pointer;
 	transition: all 0.3s;
+	min-width: 202px;
+}
+
+.btn-sm {
+	min-width: 175px;
+	font-size: 35px;
 }
 
 .btn:hover {
 	box-shadow: 0 0 10px 0 #333;
+	transform: scale(1.05);
 }
 
 .area {
