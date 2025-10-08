@@ -1,3 +1,5 @@
+import { getMilliseconds } from "./utils.mjs";
+
 const stopwatchArea = document.getElementById("stopwatch-area");
 const start = document.getElementById("start");
 const stop = document.getElementById("stop");
@@ -9,19 +11,6 @@ const dialog = document.getElementById("dialog");
 let arr = [];
 let millisecond = +(localStorage.getItem("timer") || 0);
 let clearIntervalId;
-const TIMER_RANGE = 50;
-
-const getMilliseconds = (millisecond) => {
-	let answer = millisecond - Math.floor(millisecond / 1000) * 1000;
-
-	if (answer >= 100) {
-		return Math.floor(answer / 10);
-	}
-	if (answer < 10) {
-		return "0" + String(answer);
-	}
-	return answer;
-};
 
 const setStopWatchArea = () => {
 	stopwatchArea.innerHTML = `

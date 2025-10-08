@@ -1,7 +1,10 @@
-const timerStart = document.getElementById("timer-start");
-const timerStop = document.getElementById("timer-stop");
-const timerPlusFive = document.getElementById("timer-plus-five");
-const timerMinusFive = document.getElementById("timer-minus-five");
+import { getMilliseconds } from "./utils.mjs";
+import { TIMER_RANGE } from "./constants.mjs";
+
+const start = document.getElementById("timer-start");
+const stop = document.getElementById("timer-stop");
+const plusFive = document.getElementById("timer-plus-five");
+const minusFive = document.getElementById("timer-minus-five");
 const timerArea = document.getElementById("timer-area");
 const intialValue = 10000;
 const initialNumber = document.getElementById("initial-number");
@@ -26,7 +29,7 @@ initialNumber.addEventListener("input", function (event) {
 	millisecondsTimer = m;
 });
 
-timerStart.addEventListener("click", () => {
+start.addEventListener("click", () => {
 	if (!timerClearIntervalId) {
 		timerClearIntervalId = setInterval(() => {
 			if (millisecondsTimer <= 0) {
@@ -40,12 +43,12 @@ timerStart.addEventListener("click", () => {
 	setTimerArea(millisecondsTimer);
 });
 
-timerPlusFive.addEventListener("click", () => {
+plusFive.addEventListener("click", () => {
 	millisecondsTimer = Number(millisecondsTimer) + 5000;
 	setTimerArea(millisecondsTimer);
 });
 
-timerMinusFive.addEventListener("click", () => {
+minusFive.addEventListener("click", () => {
 	if (millisecondsTimer > 0) {
 		millisecondsTimer = Number(millisecondsTimer) - 5000;
 		setTimerArea(millisecondsTimer);
