@@ -1,4 +1,5 @@
 import { getMilliseconds } from "./utils.mjs";
+import { TIMER_RANGE } from "./constants.mjs";
 
 const stopwatchArea = document.getElementById("stopwatch-area");
 const start = document.getElementById("start");
