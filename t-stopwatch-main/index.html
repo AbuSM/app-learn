@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Document</title>
+		<link rel="stylesheet" href="./stopwatch.css" />
+		<link rel="stylesheet" href="./timer.css" />
+		<link rel="stylesheet" href="./styles.css" />
+	</head>
+
+	<body>
+		<header>
+			<nav>
+				<ul>
+					<li>
+						<a class="nav-link" href=""> Home </a>
+					</li>
+					<li>
+						<a class="nav-link open" href="">Timer</a>
+						<ul>
+							<li><a class="nav-link" href="">Stopwatch</a></li>
+							<li><a class="nav-link" href="">Clock</a></li>
+						</ul>
+					</li>
+					<li>
+						<a class="nav-link" href="">Events</a>
+					</li>
+					<li>
+						<a class="nav-link" href="">Blog</a>
+					</li>
+				</ul>
+				<ul>
+					<li>
+						<a href="">
+							<button class="btn btn-sm">Sign Up</button>
+						</a>
+					</li>
+					<li>
+						<a href="./auth/login.html">
+							<button class="btn btn-sm">Login</button>
+						</a>
+					</li>
+				</ul>
+			</nav>
+			<div class="weather-area">
+				☀️<span id="weather-result">14</span>&#8451;
+			</div>
+		</header>
+		<main>
+			<div id="stopwatch">
+				<div class="container">
+					<h1>Stopwatch</h1>
+					<div class="area" id="stopwatch-area">
+						<div class="seconds">0</div>
+						<span class="milliseconds">.</span>
+						<div class="milliseconds">00</div>
+					</div>
+					<div>
+						<button class="btn" id="start">Start</button>
+						<button class="btn" id="stop">Pause</button>
+						<button class="btn" id="reset">Reset</button>
+						<button class="btn" id="save">Save</button>
+						<button class="btn" id="track">Track</button>
+					</div>
+					<dialog id="dialog">
+						<form class="dialog" method="dialog">
+							<p>Success!</p>
+							<button>Ok</button>
+						</form>
+					</dialog>
+				</div>
+				<div class="log-container">
+					<p id="log"></p>
+				</div>
+			</div>
+			<div id="timer">
+				<div class="container">
+					<h2>Timer</h2>
+					<div class="area" id="timer-area">
+						<div class="seconds">0</div>
+						<span class="milliseconds">.</span>
+						<div class="milliseconds">00</div>
+					</div>
+					<div>
+						<label for="">Enter initial timer seconds</label>
+						<input type="number" id="initial-number" />
+					</div>
+					<div>
+						<button class="btn" id="timer-start">Start</button>
+						<button class="btn" id="timer-stop">Pause</button>
+						<button class="btn" id="timer-plus-five">+5sec</button>
+						<button class="btn" id="timer-minus-five">-5sec</button>
+					</div>
+				</div>
+			</div>
+			<audio controls style="display: none">
+				<source src="./media/egg_timer_alrm.mp3" type="audio/mpeg" />
+			</audio>
+		</main>
+		<script type="module" src="./weather-api.js"></script>
+		<script type="module" src="./stopwatch.js"></script>
+		<script type="module" src="./timer.js"></script>
+	</body>
+</html>
