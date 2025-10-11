@@ -1,3 +1,5 @@
+import { API_URL } from "./../constants.js";
+
 const loader = document.querySelector(".loader_backdrop");
 const todoTasksElement = document.querySelector(".tasks");
 const finishedTasksElement = document.querySelector(".finished");
@@ -62,9 +64,23 @@ const renderTasks = (todoTasks, finishedTasks, isInitial = false) => {
     }
 
     startLoading();
-    setTimeout(() => {
-        render();
-    }, 300);
+
+    fetch(`${API_URL}/todo`, {
+        method: "PATCH",
+        headers: {
+            Accept: "application/json",
+            "X-GitHub-Api-Version": "2022-11-28",
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            data: { todoTasks, finishedTasks },
+        }),
+    })
+        .then((resp) => resp.json())
+        .then((data) => {
+            console.log(data);
+            render();
+        });
 };
 
 const addTask = () => {
@@ -105,42 +121,18 @@ const doIt = (event) => {
 };
 
 const loadInitialData = () => {
-    todoTasks = [
-        {
-            title: "Hello",
-            description: "Dont to this",
-            for: "muhammad",
-        },
-        {
-            title: "Hello",
-            description: "Dont to this",
-            for: "muhammad",
-        },
-        {
-            title: "Hello",
-            description: "Dont to this",
-            for: "muhammad",
-        },
-    ];
-    finishedTasks = [
-        {
-            title: "Hello",
-            description: "Dont to this",
-            complete_name: "muhammad",
-        },
-        {
-            title: "Hello",
-            description: "Dont to this",
-            complete_name: "muhammad",
-        },
-        {
-            title: "Hello",
-            description: "Dont to this",
-            complete_name: "muhammad",
-        },
-    ];
+    startLoading();
 
-    renderTasks(todoTasks, finishedTasks, true);
+    fetch(`${API_URL}/todo`)
+        .then((resp) => resp.json())
+        .then((data) => {
+            console.log(data);
+
+            todoTasks = data.todoTasks;
+            finishedTasks = data.finishedTasks;
+
+            renderTasks(todoTasks, finishedTasks, true);
+        });
 };
 
 loadInitialData();
