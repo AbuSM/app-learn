@@ -1,3 +1,212 @@
+/* @import 'tailwindcss'; */
+
+:root {
+    --primary: rgb(78, 130, 208);
+    --black: #333;
+    --green: rgb(42, 208, 27);
+    --border-radius-md: 25px;
+    --border-radius-sm: 15px;
+    --container-bg-color: rgb(83, 83, 140);
+}
+
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    font-family: monospace;
+    font-size: 30px;
+    color: white;
+}
+
+h2 {
+    font-size: 50px;
+    margin: 0;
+    color: var(--primary);
+}
+
+header {
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+    position: fixed;
+    width: 100%;
+    z-index: 100;
+    background-color: #1e2939;
+}
+header nav {
+    padding: 20px 30px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+header nav ul {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 40px;
+    list-style-type: none;
+}
+
+.nav-link {
+    color: var(--primary);
+    text-decoration: none;
+    transition: border 0.2s linear;
+    padding-bottom: 10px;
+    border: 5px solid transparent;
+}
+
+.nav-link:hover {
+    border-bottom: 5px solid var(--primary);
+}
+
+input,
+label {
+    color: var(--primary);
+}
+
+main {
+    padding: 0 60px;
+    padding-top: 150px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.container {
+    max-width: 1500px;
+    width: 100%;
+    padding: 50px 25px;
+    text-align: center;
+    margin: 0 auto;
+    border: 1px solid var(--primary);
+    border-radius: var(--border-radius-sm);
+    background-color: var(--container-bg-color);
+}
+
+.btn {
+    background-color: var(--primary);
+    color: white;
+    border-radius: var(--border-radius-md);
+    padding: 10px 25px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s;
+    min-width: 202px;
+}
+
+.btn-sm {
+    min-width: 175px;
+    font-size: 35px;
+}
+
+.btn:hover {
+    box-shadow: 0 0 10px 0 #333;
+    transform: scale(1.05);
+}
+
+.area {
+    margin: 20px 0;
+    display: flex;
+    justify-content: center;
+    align-items: end;
+}
+
+dialog {
+    bottom: 0;
+    right: 0;
+    padding: 25px;
+    margin-left: auto;
+    margin-right: 0;
+    border: 2px solid var(--green);
+}
+.dialog p {
+    color: var(--green);
+    margin: 0 0 10px 0;
+}
+.dialog button {
+    color: var(--green);
+    background-color: transparent;
+    border: 1px solid var(--green);
+}
+
+ul > li > ul {
+    display: none;
+    flex-direction: column;
+    padding: 0;
+    align-items: start;
+    top: 100%;
+    left: 0;
+    position: absolute;
+    /* transition: 0.3s; */
+    background-color: white;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    border: 1px solid rgba(0, 0, 0, 0.353);
+}
+
+ul li:hover ul {
+    display: flex;
+}
+ul > li {
+    position: relative;
+}
+
+.nav-link.open {
+    border-bottom: none;
+    position: relative;
+}
+.nav-link.open::after {
+    content: "▼";
+    position: absolute;
+    top: 50%;
+    right: -20px;
+    transform: translateY(-50%);
+    font-size: 30px;
+}
+#stopwatch,
+#timer {
+    width: 100%;
+}
+
+.weather-area {
+    display: flex;
+    gap: 10px;
+}
+
+.loader {
+    width: 48px;
+    height: 48px;
+    border: 5px solid white;
+    border-bottom-color: transparent;
+    border-radius: 50%;
+    display: inline-block;
+    box-sizing: border-box;
+    animation: rotation 1s linear infinite;
+}
+.loader_backdrop {
+    background-color: rgba(0, 0, 0, 0.5);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+@keyframes rotation {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
 .container {
     padding: 20px;
     display: flex;
