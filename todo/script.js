@@ -1,4 +1,5 @@
-import { API_URL } from "./../constants.js";
+import { API_URL, PASSWORD } from "./../constants.js";
+import { hashing } from "./hashing.js";
 
 const loader = document.querySelector(".loader_backdrop");
 const todoTasksElement = document.querySelector(".tasks");
@@ -19,7 +20,7 @@ let todoTasks = [],
 const checkIsAdmin = (func) => {
     const password = prompt(`Enter Admin Password:`);
 
-    if (password == "123") {
+    if (hashing(password) == PASSWORD) {
         func();
     } else {
         alert("Incorrect Password!!!");
