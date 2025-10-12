@@ -8,8 +8,23 @@ const inputTitleElement = document.querySelector("#input_title");
 const inputDescriptionElement = document.querySelector("#input_description");
 const inputForElement = document.querySelector("#input_for_whom");
 
+const toggleRedBorder = (element, toggleState) => {
+    element.classList.toggle("border-red-600", toggleState);
+    element.classList.toggle("focus:border-red-600", toggleState);
+};
+
 let todoTasks = [],
     finishedTasks = [];
+
+const checkIsAdmin = (func) => {
+    const password = prompt(`Enter Admin Password:`);
+
+    if (password == "123") {
+        func();
+    } else {
+        alert("Incorrect Password!!!");
+    }
+};
 
 function addListeners() {
     setTimeout(() => {
@@ -44,6 +59,13 @@ function addListeners() {
         deleteTodoElements.forEach((element) => {
             element.addEventListener("click", handleDeleteTodo);
         });
+
+        const inputElements = document.querySelectorAll("input");
+        inputElements.forEach((element) => {
+            element.addEventListener("input", (event) => {
+                toggleRedBorder(event.target, !event.target.value);
+            });
+        });
     }, 0);
 }
 
@@ -58,10 +80,14 @@ const renderTasks = (todoTasks, finishedTasks, isInitial = false) => {
     const htmlDataTasks = todoTasks
         .map(
             (item, index) =>
-                `<div title="For: ${item.for}, ${item.description}" class="container">
+                `<div class="container">
                     <div class="flex gap-3 items-center">
                         <img data-index="${index}" title="delete" class="delete-from-todo h-6 w-6 p-0.5 hover:bg-white/10 hover:cursor-pointer rounded active:bg-white/20" src='/assets/delete.svg'></img>
-                        <h3>${item.title}</h3>
+                        <div class="flex flex-col items-start">
+                            <h3>${item.title}</h3>
+                            <p class="text-sm">For: ${item.for}</p>
+                            <p class="text-xs font-[400] text-start">${item.description}</p>
+                        </div>
                     </div>
                     <div class="input_name_cont">
                         <input data-index="${index}" type="text" placeholder="Name" class="doItInput" />
@@ -122,12 +148,33 @@ const addTask = () => {
     const title = inputTitleElement.value;
     const description = inputDescriptionElement.value;
     const forWhom = inputForElement.value;
-    todoTasks = [{ title, description, for: forWhom }, ...todoTasks];
+    let isValid = true;
 
-    renderTasks(todoTasks, finishedTasks);
-    inputTitleElement.value = "";
-    inputDescriptionElement.value = "";
-    inputForElement.value = "";
+    if (!title) {
+        toggleRedBorder(inputTitleElement, true);
+        isValid = false;
+    }
+    if (!description) {
+        toggleRedBorder(inputDescriptionElement, true);
+        isValid = false;
+    }
+    if (!forWhom) {
+        toggleRedBorder(inputForElement, true);
+        isValid = false;
+    }
+
+    if (!isValid) {
+        return;
+    }
+
+    checkIsAdmin(() => {
+        todoTasks = [{ title, description, for: forWhom }, ...todoTasks];
+
+        renderTasks(todoTasks, finishedTasks);
+        inputTitleElement.value = "";
+        inputDescriptionElement.value = "";
+        inputForElement.value = "";
+    });
 };
 
 const addTaskListenerForInput = (event) => {
@@ -142,6 +189,12 @@ const handleDoIt = (event) => {
     const inputElement = document.querySelector(
         `.doItInput[data-index="${index}"]`
     );
+
+    if (!inputElement.value) {
+        toggleRedBorder(inputElement, true);
+        return;
+    }
+
     const completeElement = {
         title: todoTasks[index].title,
         description: todoTasks[index].description,
@@ -164,15 +217,19 @@ const handleRestore = (event) => {
 };
 
 const handleDeleteFinished = (event) => {
-    const index = event.target.dataset.index;
-    finishedTasks.splice(index, 1);
-    renderTasks(todoTasks, finishedTasks);
+    checkIsAdmin(() => {
+        const index = event.target.dataset.index;
+        finishedTasks.splice(index, 1);
+        renderTasks(todoTasks, finishedTasks);
+    });
 };
 
 const handleDeleteTodo = (event) => {
-    const index = event.target.dataset.index;
-    todoTasks.splice(index, 1);
-    renderTasks(todoTasks, finishedTasks);
+    checkIsAdmin(() => {
+        const index = event.target.dataset.index;
+        todoTasks.splice(index, 1);
+        renderTasks(todoTasks, finishedTasks);
+    });
 };
 
 const loadInitialData = () => {

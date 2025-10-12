@@ -1,4 +1,4 @@
-/* @import 'tailwindcss'; */
+@import 'tailwindcss';
 
 :root {
     --primary: rgb(78, 130, 208);
@@ -196,6 +196,7 @@ ul > li {
     display: flex;
     align-items: center;
     justify-content: center;
+    z-index: 1000000;
 }
 
 @keyframes rotation {
