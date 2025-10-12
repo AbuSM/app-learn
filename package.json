@@ -1,0 +1,22 @@
+{
+	"name": "t-stopwatch",
+	"version": "1.0.0",
+	"description": "Stopwatch website with complicated functionality in vanilla Js",
+	"main": "stopwatch.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"dev": "vite",
+		"build": "vite build",
+		"preview": "vite preview"
+	},
+	"keywords": [],
+	"author": "Technohub students",
+	"license": "ISC",
+	"devDependencies": {
+		"vite": "^6.3.6"
+	},
+	"dependencies": {
+		"@tailwindcss/vite": "^4.1.14",
+		"tailwindcss": "^4.1.14"
+	}
+}

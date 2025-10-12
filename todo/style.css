@@ -17,10 +17,11 @@
     display: flex;
 }
 input {
-    padding: 10px 0;
-    border: 1px solid gray;
-    border-radius: 3px 0 0 3px;
-    padding-left: 10px;
+    color: var(--primary) !important;
+    padding: 10px 0 !important;
+    border: 1px solid gray !important;
+    border-radius: 3px 0 0 3px !important;
+    padding-left: 10px !important;
 }
 input:focus,
 input:focus-visible,

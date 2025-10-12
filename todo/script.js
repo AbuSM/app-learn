@@ -15,7 +15,34 @@ function addListeners() {
     setTimeout(() => {
         const doitBtnElements = document.querySelectorAll(".doit");
         doitBtnElements.forEach((element) => {
-            element.addEventListener("click", doIt);
+            element.addEventListener("click", handleDoIt);
+        });
+
+        const doitInputElements = document.querySelectorAll(".doItInput");
+        doitInputElements.forEach((element) => {
+            element.addEventListener("keydown", (event) => {
+                if (event.key == "Enter") {
+                    handleDoIt(event);
+                }
+            });
+        });
+
+        const restoreButtonElements = document.querySelectorAll(".restore");
+        restoreButtonElements.forEach((element) => {
+            element.addEventListener("click", handleRestore);
+        });
+
+        const deleteFinishedElements = document.querySelectorAll(
+            ".delete-from-finished"
+        );
+        deleteFinishedElements.forEach((element) => {
+            element.addEventListener("click", handleDeleteFinished);
+        });
+
+        const deleteTodoElements =
+            document.querySelectorAll(".delete-from-todo");
+        deleteTodoElements.forEach((element) => {
+            element.addEventListener("click", handleDeleteTodo);
         });
     }, 0);
 }
@@ -32,22 +59,31 @@ const renderTasks = (todoTasks, finishedTasks, isInitial = false) => {
         .map(
             (item, index) =>
                 `<div title="For: ${item.for}, ${item.description}" class="container">
-            <h3>${item.title}</h3>
-            <div class="input_name_cont">
-            <input type="text" placeholder="Name" id="" />
-            <button data-index="${index}" class="btn doit">Do It</button>
-            </div>
-        </div>`
+                    <div class="flex gap-3 items-center">
+                        <img data-index="${index}" title="delete" class="delete-from-todo h-6 w-6 p-0.5 hover:bg-white/10 hover:cursor-pointer rounded active:bg-white/20" src='/assets/delete.svg'></img>
+                        <h3>${item.title}</h3>
+                    </div>
+                    <div class="input_name_cont">
+                        <input data-index="${index}" type="text" placeholder="Name" class="doItInput" />
+                        <button data-index="${index}" class="btn doit">Do It</button>
+                    </div>
+                </div>`
         )
         .join("");
 
     const htmlDataFinished = finishedTasks
         .map(
-            (item) =>
-                `<div title="${item.description}" class="container">
-            <h3 class="title">${item.title}</h3>
-            <h3>${item.complete_name}</h3>
-            </div>`
+            (item, index) =>
+                `<div title="For: ${item.for}, ${item.description}" class="container">
+                    <div class="flex gap-3 items-center">
+                        <div class="flex">
+                            <img data-index="${index}" title="restore" class="restore h-6 w-6 p-0.5 hover:bg-white/10 hover:cursor-pointer rounded active:bg-white/20" src='/assets/restore.svg'></img>
+                            <img data-index="${index}" title="delete" class="delete-from-finished h-6 w-6 p-0.5 hover:bg-white/10 hover:cursor-pointer rounded active:bg-white/20" src='/assets/delete.svg'></img>
+                        </div>
+                        <h3 class="title">${item.title}</h3>
+                    </div>
+                    <h3>${item.complete_name}</h3>
+                </div>`
         )
         .join("");
 
@@ -78,7 +114,6 @@ const renderTasks = (todoTasks, finishedTasks, isInitial = false) => {
     })
         .then((resp) => resp.json())
         .then((data) => {
-            console.log(data);
             render();
         });
 };
@@ -101,22 +136,42 @@ const addTaskListenerForInput = (event) => {
     }
 };
 
-addBtnElement.addEventListener("click", addTask);
-
-inputTitleElement.addEventListener("keydown", addTaskListenerForInput);
-inputDescriptionElement.addEventListener("keydown", addTaskListenerForInput);
-inputForElement.addEventListener("keydown", addTaskListenerForInput);
-
-const doIt = (event) => {
+const handleDoIt = (event) => {
     const index = +event.target.dataset.index;
+
+    const inputElement = document.querySelector(
+        `.doItInput[data-index="${index}"]`
+    );
     const completeElement = {
         title: todoTasks[index].title,
         description: todoTasks[index].description,
-        complete_name: event.target.previousElementSibling.value,
+        for: todoTasks[index].for,
+        complete_name: inputElement.value,
     };
     todoTasks.splice(index, 1);
     finishedTasks = [completeElement, ...finishedTasks];
 
+    renderTasks(todoTasks, finishedTasks);
+};
+
+const handleRestore = (event) => {
+    const index = event.target.dataset.index;
+    const task = finishedTasks.splice(index, 1)[0];
+
+    todoTasks = [task, ...todoTasks];
+
+    renderTasks(todoTasks, finishedTasks);
+};
+
+const handleDeleteFinished = (event) => {
+    const index = event.target.dataset.index;
+    finishedTasks.splice(index, 1);
+    renderTasks(todoTasks, finishedTasks);
+};
+
+const handleDeleteTodo = (event) => {
+    const index = event.target.dataset.index;
+    todoTasks.splice(index, 1);
     renderTasks(todoTasks, finishedTasks);
 };
 
@@ -126,13 +181,17 @@ const loadInitialData = () => {
     fetch(`${API_URL}/todo`)
         .then((resp) => resp.json())
         .then((data) => {
-            console.log(data);
-
             todoTasks = data.todoTasks;
             finishedTasks = data.finishedTasks;
 
             renderTasks(todoTasks, finishedTasks, true);
         });
 };
+
+addBtnElement.addEventListener("click", addTask);
+
+inputTitleElement.addEventListener("keydown", addTaskListenerForInput);
+inputDescriptionElement.addEventListener("keydown", addTaskListenerForInput);
+inputForElement.addEventListener("keydown", addTaskListenerForInput);
 
 loadInitialData();

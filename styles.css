@@ -1,3 +1,5 @@
+/* @import 'tailwindcss'; */
+
 :root {
     --primary: rgb(78, 130, 208);
     --black: #333;
@@ -23,13 +25,13 @@ h2 {
 }
 
 header {
-    display: flex;
-    align-items: center;
-    padding: 0 10px;
-    position: fixed;
-    width: 100%;
+	display: flex;
+	align-items: center;
+	padding: 0 10px;
+	position: fixed;
+	width: 100%;
     z-index: 100;
-    background-color: #1e2939;
+	background-color: #1e2939;
 }
 header nav {
     padding: 20px 30px;
