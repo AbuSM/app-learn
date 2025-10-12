@@ -1,5 +1,7 @@
 import { API_URL, PASSWORD } from "./../constants.js";
+import alert from "./alert_custom.js";
 import { hashing } from "./hashing.js";
+import promptPassword from "./prompt_password.js";
 
 const loader = document.querySelector(".loader_backdrop");
 const todoTasksElement = document.querySelector(".tasks");
@@ -17,13 +19,13 @@ const toggleRedBorder = (element, toggleState) => {
 let todoTasks = [],
     finishedTasks = [];
 
-const checkIsAdmin = (func) => {
-    const password = prompt(`Enter Admin Password:`);
+const checkIsAdmin = async (func) => {
+    const password = await promptPassword(`Enter Admin Password:`);
 
     if (hashing(password) == PASSWORD) {
         func();
     } else {
-        alert("Incorrect Password!!!");
+        alert("Incorrect password!");
     }
 };
 
@@ -61,7 +63,7 @@ function addListeners() {
             element.addEventListener("click", handleDeleteTodo);
         });
 
-        const inputElements = document.querySelectorAll("input");
+        const inputElements = document.querySelectorAll(`input[type="text"]`);
         inputElements.forEach((element) => {
             element.addEventListener("input", (event) => {
                 toggleRedBorder(event.target, !event.target.value);
