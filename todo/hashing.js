@@ -7,10 +7,8 @@ export const hashing = (text) => {
     for (let i = 0; i < text.length; i++) {
         const asciiCode = text[i].charCodeAt(0);
         ans = (ans + ((asciiCode * num) % MOD)) % MOD;
-        console.log(ans);
 
         num = (num * PRIME) % MOD;
     }
-
     return ans;
 };

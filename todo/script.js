@@ -22,9 +22,9 @@ let todoTasks = [],
 const checkIsAdmin = async (func) => {
     const password = await promptPassword(`Enter Admin Password:`);
 
-    if (hashing(password) == PASSWORD) {
+    if (!!password && hashing(password) == PASSWORD) {
         func();
-    } else {
+    } else if (password != null) {
         alert("Incorrect password!");
     }
 };

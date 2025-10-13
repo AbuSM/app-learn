@@ -1,7 +1,7 @@
 export default function promptPassword(title) {
     return new Promise((resolve) => {
         const backdrop = document.createElement("div");
-        backdrop.className = "loader_backdrop";
+        backdrop.className = "prompt loader_backdrop";
 
         backdrop.innerHTML = `
             <div class="stop_propagation">
@@ -9,8 +9,8 @@ export default function promptPassword(title) {
                     <h3 class="text-neutral-700">${title}</h3>
                     <input type="password" autofocus></input>
                     <div class="justify-end pr-3 pt-2 flex gap-2">
-                        <button class="ok_btn bg-[var(--primary)] rounded p-1 hover:brightness-95 active:brightness-90 hover:cursor-pointer">OK</button>
                         <button class="cancel_btn bg-[var(--primary)] rounded p-1 hover:brightness-95 active:brightness-90 hover:cursor-pointer">Cancel</button>
+                        <button class="ok_btn bg-[var(--primary)] rounded p-1 hover:brightness-95 active:brightness-90 hover:cursor-pointer">OK</button>
                     </div>
                 </div>
             </div>
@@ -28,7 +28,7 @@ export default function promptPassword(title) {
         };
         const onCancel = () => {
             backdrop.outerHTML = "";
-            resolve("");
+            resolve(null);
         };
 
         passwordInput.addEventListener("keydown", (event) => {
