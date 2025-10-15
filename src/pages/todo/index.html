@@ -5,7 +5,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
-    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="./../../styles.css" />
     <link rel="stylesheet" href="./style.css" />
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
@@ -53,10 +53,10 @@
     </header>
     <main>
         <h2>ToDo List</h2>
-        <div class="add_container container">
-            <input id="input_title" placeholder="Title" type="text">
-            <input id="input_description" placeholder="Description" type="text">
-            <input id="input_for_whom" placeholder="For" type="text">
+        <div class="add_container container flex flex-wrap gap-2">
+            <input class="border min-w-0 focus:outline-none focus:border-blue-500" id="input_title" placeholder="Title" type="text">
+            <input class="border min-w-0" id="input_description" placeholder="Description" type="text">
+            <input class="border min-w-0" id="input_for_whom" placeholder="For" type="text">
             <button class="btn">Add</button>
         </div>
         <div class="tasks"></div>
@@ -68,7 +68,7 @@
     </div>
 
     <script type="module" src="./script.js"></script>
-    <script type="module" src="/weather-api.js"></script>
+    <script type="module" src="./../../weather-api.js"></script>
 </body>
 
 </html>

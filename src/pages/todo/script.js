@@ -1,4 +1,5 @@
-import { API_URL, PASSWORD } from "./../constants.js";
+import getDOMElement from "../../api/getDOMElement.js";
+import { API_URL, PASSWORD } from "./../../constants.js";
 import alert from "./alert_custom.js";
 import { hashing } from "./hashing.js";
 import promptPassword from "./prompt_password.js";
@@ -69,6 +70,88 @@ function addListeners() {
                 toggleRedBorder(event.target, !event.target.value);
             });
         });
+
+        const tasksElement = document.querySelectorAll(".task");
+        tasksElement.forEach((element) => {
+            element.addEventListener("dragstart", (event) => {
+                event.target.classList.toggle("selected", true);
+                event.dataTransfer.setData("text", event.target.outerHTML);
+            });
+            element.addEventListener("dragend", (event) => {
+                event.target.classList.toggle("selected", false);
+            });
+            const dragHandleCondition = (event, dragElement, func) => {
+                event.preventDefault();
+                const draggable = getDOMElement(
+                    event.dataTransfer.getData("text")
+                );
+
+                const dropIndex = dragElement.dataset.index;
+                const draggableIndex = draggable.dataset.index;
+
+                if (
+                    dragElement.dataset.type == draggable.dataset.type &&
+                    draggableIndex != dropIndex
+                ) {
+                    func();
+                }
+            };
+            element.addEventListener("dragover", (event) => {
+                const dragElement = event.target.closest(".task");
+                dragHandleCondition(event, dragElement, () => {
+                    console.log("hello");
+
+                    dragElement.classList.toggle("hover-drag", true);
+                });
+            });
+            element.addEventListener("dragleave", (event) => {
+                const dragElement = event.target.closest(".task");
+                dragHandleCondition(event, dragElement, () => {
+                    dragElement.classList.toggle("hover-drag", false);
+                });
+            });
+
+            element.addEventListener("drop", (event) => {
+                event.stopPropagation();
+                event.preventDefault();
+
+                const draggable = getDOMElement(
+                    event.dataTransfer.getData("text")
+                );
+
+                const dragElement = event.target.closest(".task");
+
+                const dropIndex = dragElement.dataset.index;
+                const draggableIndex = draggable.dataset.index;
+
+                if (
+                    dragElement.dataset.type == draggable.dataset.type &&
+                    draggableIndex != dropIndex
+                ) {
+                    if (dragElement.dataset.type == "todo") {
+                        const temp = todoTasks[dropIndex];
+                        todoTasks[dropIndex] = todoTasks[draggableIndex];
+                        todoTasks[draggableIndex] = temp;
+                    } else {
+                        const temp = finishedTasks[dropIndex];
+                        finishedTasks[dropIndex] =
+                            finishedTasks[draggableIndex];
+                        finishedTasks[draggableIndex] = temp;
+                    }
+
+                    renderTasks(todoTasks, finishedTasks);
+                }
+            });
+        });
+
+        const noneToDrag = document.querySelectorAll(
+            `[draggable="true"]:not(.task)`
+        );
+        noneToDrag.forEach((element) => {
+            element.addEventListener("dragstart", (event) => {
+                event.preventDefault();
+            });
+        });
     }, 0);
 }
 
@@ -83,17 +166,17 @@ const renderTasks = (todoTasks, finishedTasks, isInitial = false) => {
     const htmlDataTasks = todoTasks
         .map(
             (item, index) =>
-                `<div class="container">
+                `<div class="task container [&.selected]:opacity-[90%] [&.hover-drag]:border-blue-500 border-2 box-content transition-all" data-index="${index}" data-type="todo" draggable="true">
                     <div class="flex gap-3 items-center">
-                        <img data-index="${index}" title="delete" class="delete-from-todo h-6 w-6 p-0.5 hover:bg-white/10 hover:cursor-pointer rounded active:bg-white/20" src='/assets/delete.svg'></img>
+                        <img drag="true" data-index="${index}" title="delete" class="delete-from-todo h-6 w-6 p-0.5 hover:bg-white/10 hover:cursor-pointer rounded active:bg-white/20" src='/assets/delete.svg'></img>
                         <div class="flex flex-col items-start">
                             <h3>${item.title}</h3>
                             <p class="text-sm">For: ${item.for}</p>
                             <p class="text-xs font-[400] text-start">${item.description}</p>
                         </div>
                     </div>
-                    <div class="input_name_cont">
-                        <input data-index="${index}" type="text" placeholder="Name" class="doItInput" />
+                    <div drag="true" class="input_name_cont">
+                        <input class="border" data-index="${index}" type="text" placeholder="Name" />
                         <button data-index="${index}" class="btn doit">Do It</button>
                     </div>
                 </div>`
@@ -103,9 +186,9 @@ const renderTasks = (todoTasks, finishedTasks, isInitial = false) => {
     const htmlDataFinished = finishedTasks
         .map(
             (item, index) =>
-                `<div title="For: ${item.for}, ${item.description}" class="container">
+                `<div class="task container border-2" data-index="${index}" data-type="finished" draggable="true" title="For: ${item.for}, ${item.description}" >
                     <div class="flex gap-3 items-center">
-                        <div class="flex">
+                        <div draggable="true" class="flex">
                             <img data-index="${index}" title="restore" class="restore h-6 w-6 p-0.5 hover:bg-white/10 hover:cursor-pointer rounded active:bg-white/20" src='/assets/restore.svg'></img>
                             <img data-index="${index}" title="delete" class="delete-from-finished h-6 w-6 p-0.5 hover:bg-white/10 hover:cursor-pointer rounded active:bg-white/20" src='/assets/delete.svg'></img>
                         </div>
@@ -128,7 +211,7 @@ const renderTasks = (todoTasks, finishedTasks, isInitial = false) => {
         return;
     }
 
-    startLoading();
+    render();
 
     fetch(`${API_URL}/todo`, {
         method: "PATCH",
@@ -140,11 +223,7 @@ const renderTasks = (todoTasks, finishedTasks, isInitial = false) => {
         body: JSON.stringify({
             data: { todoTasks, finishedTasks },
         }),
-    })
-        .then((resp) => resp.json())
-        .then((data) => {
-            render();
-        });
+    }).then((resp) => resp.json());
 };
 
 const addTask = () => {
@@ -170,14 +249,12 @@ const addTask = () => {
         return;
     }
 
-    checkIsAdmin(() => {
-        todoTasks = [{ title, description, for: forWhom }, ...todoTasks];
+    todoTasks = [{ title, description, for: forWhom }, ...todoTasks];
 
-        renderTasks(todoTasks, finishedTasks);
-        inputTitleElement.value = "";
-        inputDescriptionElement.value = "";
-        inputForElement.value = "";
-    });
+    renderTasks(todoTasks, finishedTasks);
+    inputTitleElement.value = "";
+    inputDescriptionElement.value = "";
+    inputForElement.value = "";
 };
 
 const addTaskListenerForInput = (event) => {
@@ -220,19 +297,15 @@ const handleRestore = (event) => {
 };
 
 const handleDeleteFinished = (event) => {
-    checkIsAdmin(() => {
-        const index = event.target.dataset.index;
-        finishedTasks.splice(index, 1);
-        renderTasks(todoTasks, finishedTasks);
-    });
+    const index = event.target.dataset.index;
+    finishedTasks.splice(index, 1);
+    renderTasks(todoTasks, finishedTasks);
 };
 
 const handleDeleteTodo = (event) => {
-    checkIsAdmin(() => {
-        const index = event.target.dataset.index;
-        todoTasks.splice(index, 1);
-        renderTasks(todoTasks, finishedTasks);
-    });
+    const index = event.target.dataset.index;
+    todoTasks.splice(index, 1);
+    renderTasks(todoTasks, finishedTasks);
 };
 
 const loadInitialData = () => {

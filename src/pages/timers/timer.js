@@ -1,5 +1,5 @@
-import { getMilliseconds } from "../utils.js";
-import { TIMER_RANGE } from "../constants.js";
+import { getMilliseconds } from "./../../utils.js";
+import { TIMER_RANGE } from "./../../constants.js";
 
 const start = document.getElementById("timer-start");
 const stop = document.getElementById("timer-stop");
@@ -13,7 +13,7 @@ let millisecondsTimer = getMilliseconds(0);
 let timerClearIntervalId;
 
 function setTimerArea(val) {
-	timerArea.innerHTML = `
+    timerArea.innerHTML = `
         <div class="seconds">${Math.floor(val / 1000)}</div>
         <span class="milliseconds">.</span>
         <div class="milliseconds">${getMilliseconds(val)}</div>
@@ -21,36 +21,36 @@ function setTimerArea(val) {
 }
 
 initialNumber.addEventListener("input", function (event) {
-	const val = event.target.value;
-	console.log("val: ", val);
-	const m = val * 1000;
-	setTimerArea(m);
-	millisecondsTimer = m;
+    const val = event.target.value;
+    console.log("val: ", val);
+    const m = val * 1000;
+    setTimerArea(m);
+    millisecondsTimer = m;
 });
 
 start.addEventListener("click", () => {
-	if (!timerClearIntervalId) {
-		timerClearIntervalId = setInterval(() => {
-			if (millisecondsTimer <= 0) {
-				audio.play();
-				clearInterval(timerClearIntervalId);
-				timerClearIntervalId = 0;
-			}
-			setTimerArea(millisecondsTimer);
-			millisecondsTimer -= TIMER_RANGE;
-		}, TIMER_RANGE);
-	}
-	setTimerArea(millisecondsTimer);
+    if (!timerClearIntervalId) {
+        timerClearIntervalId = setInterval(() => {
+            if (millisecondsTimer <= 0) {
+                audio.play();
+                clearInterval(timerClearIntervalId);
+                timerClearIntervalId = 0;
+            }
+            setTimerArea(millisecondsTimer);
+            millisecondsTimer -= TIMER_RANGE;
+        }, TIMER_RANGE);
+    }
+    setTimerArea(millisecondsTimer);
 });
 
 plusFive.addEventListener("click", () => {
-	millisecondsTimer = Number(millisecondsTimer) + 5000;
-	setTimerArea(millisecondsTimer);
+    millisecondsTimer = Number(millisecondsTimer) + 5000;
+    setTimerArea(millisecondsTimer);
 });
 
 minusFive.addEventListener("click", () => {
-	if (millisecondsTimer > 0) {
-		millisecondsTimer = Number(millisecondsTimer) - 5000;
-		setTimerArea(millisecondsTimer);
-	}
+    if (millisecondsTimer > 0) {
+        millisecondsTimer = Number(millisecondsTimer) - 5000;
+        setTimerArea(millisecondsTimer);
+    }
 });
