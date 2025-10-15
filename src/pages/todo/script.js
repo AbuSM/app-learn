@@ -5,8 +5,9 @@ import { hashing } from "./hashing.js";
 import promptPassword from "./prompt_password.js";
 
 const loader = document.querySelector(".loader_backdrop");
-const todoTasksElement = document.querySelector(".tasks");
-const finishedTasksElement = document.querySelector(".finished");
+// const todoTasksElement = document.querySelector(".tasks");
+// const finishedTasksElement = document.querySelector(".finished");
+const taskListsElement = document.querySelector(".task-lists");
 const addBtnElement = document.querySelector(".add_container .btn");
 const inputTitleElement = document.querySelector("#input_title");
 const inputDescriptionElement = document.querySelector("#input_description");
@@ -17,8 +18,7 @@ const toggleRedBorder = (element, toggleState) => {
     element.classList.toggle("focus:border-red-600", toggleState);
 };
 
-let todoTasks = [],
-    finishedTasks = [];
+let tasks = {};
 
 const checkIsAdmin = async (func) => {
     const password = await promptPassword(`Enter Admin Password:`);
@@ -74,6 +74,9 @@ function addListeners() {
         const tasksElement = document.querySelectorAll(".task");
         tasksElement.forEach((element) => {
             element.addEventListener("dragstart", (event) => {
+                // if (event.target.classList.)
+                console.log(event.target);
+
                 event.target.classList.toggle("selected", true);
                 event.dataTransfer.setData("text", event.target.outerHTML);
             });
@@ -144,10 +147,10 @@ function addListeners() {
             });
         });
 
-        const noneToDrag = document.querySelectorAll(
-            `[draggable="true"]:not(.task)`
-        );
+        const noneToDrag = document.querySelectorAll(`.notDrag:not(.task)`);
         noneToDrag.forEach((element) => {
+            console.log(element);
+
             element.addEventListener("dragstart", (event) => {
                 event.preventDefault();
             });
@@ -162,46 +165,82 @@ const endLoading = () => {
     loader.style.display = "none";
 };
 
-const renderTasks = (todoTasks, finishedTasks, isInitial = false) => {
-    const htmlDataTasks = todoTasks
-        .map(
-            (item, index) =>
-                `<div class="task container [&.selected]:opacity-[90%] [&.hover-drag]:border-blue-500 border-2 box-content transition-all" data-index="${index}" data-type="todo" draggable="true">
-                    <div class="flex gap-3 items-center">
-                        <img drag="true" data-index="${index}" title="delete" class="delete-from-todo h-6 w-6 p-0.5 hover:bg-white/10 hover:cursor-pointer rounded active:bg-white/20" src='/assets/delete.svg'></img>
-                        <div class="flex flex-col items-start">
-                            <h3>${item.title}</h3>
-                            <p class="text-sm">For: ${item.for}</p>
-                            <p class="text-xs font-[400] text-start">${item.description}</p>
-                        </div>
-                    </div>
-                    <div drag="true" class="input_name_cont">
-                        <input class="border" data-index="${index}" type="text" placeholder="Name" />
-                        <button data-index="${index}" class="btn doit">Do It</button>
-                    </div>
-                </div>`
-        )
-        .join("");
+const renderTasks = (tasks, isInitial = false) => {
+    // const htmlDataTasks = todoTasks
+    //     .map(
+    //         (item, index) =>
+    //             `<div class="task flex items-center p-3 justify-between rounded [&.selected]:opacity-[50%] [&.hover-drag]:border-[var(--primary)] border-2 transition-all" data-index="${index}" data-type="todo" draggable="true">
+    //                 <div class="flex gap-3 items-center">
+    //                     <img data-index="${index}" title="delete" class="notDrag delete-from-todo h-7 w-7 p-0.5 hover:bg-white/10 hover:cursor-pointer rounded active:bg-white/20" src='/assets/delete.svg'></img>
+    //                     <div class="flex flex-col items-start">
+    //                         <h3>${item.title}</h3>
+    //                         <p class="text-sm">For: ${item.for}</p>
+    //                         <p class="text-xs font-[400] text-start">${item.description}</p>
+    //                     </div>
+    //                 </div>
+    //                 <div draggable="true" class="flex gap-2 notDrag input_name_cont">
+    //                     <input class="focus:outline-none border-2 rounded focus:border-[var(--primary)] doItInput" data-index="${index}" type="text" placeholder="Name" />
+    //                     <button data-index="${index}" class="btn doit">Do It</button>
+    //                 </div>
+    //             </div>`
+    //     )
+    //     .join("");
 
-    const htmlDataFinished = finishedTasks
-        .map(
-            (item, index) =>
-                `<div class="task container border-2" data-index="${index}" data-type="finished" draggable="true" title="For: ${item.for}, ${item.description}" >
-                    <div class="flex gap-3 items-center">
-                        <div draggable="true" class="flex">
-                            <img data-index="${index}" title="restore" class="restore h-6 w-6 p-0.5 hover:bg-white/10 hover:cursor-pointer rounded active:bg-white/20" src='/assets/restore.svg'></img>
-                            <img data-index="${index}" title="delete" class="delete-from-finished h-6 w-6 p-0.5 hover:bg-white/10 hover:cursor-pointer rounded active:bg-white/20" src='/assets/delete.svg'></img>
-                        </div>
-                        <h3 class="title">${item.title}</h3>
-                    </div>
-                    <h3>${item.complete_name}</h3>
-                </div>`
-        )
-        .join("");
+    // const htmlDataFinished = finishedTasks
+    //     .map(
+    //         (item, index) =>
+    //             `<div class="flex items-center justify-between p-3 task rounded [&.selected]:opacity-[50%] [&.hover-drag]:border-[var(--primary)] border-2 transition-all" data-index="${index}" data-type="finished" draggable="true" title="For: ${item.for}, ${item.description}" >
+    //                 <div class="flex gap-3 items-center">
+    //                     <div class="notDrag flex">
+    //                         <img draggable="true" data-index="${index}" title="restore" class="restore h-7 w-7 p-0.5 hover:bg-white/10 hover:cursor-pointer rounded active:bg-white/20" src='/assets/restore.svg'></img>
+    //                         <img draggable="true" data-index="${index}" title="delete" class="delete-from-finished h-7 w-7 p-0.5 hover:bg-white/10 hover:cursor-pointer rounded active:bg-white/20" src='/assets/delete.svg'></img>
+    //                     </div>
+    //                     <h3 class="title">${item.title}</h3>
+    //                 </div>
+    //                 <h3>${item.complete_name}</h3>
+    //             </div>`
+    //     )
+    //     .join("");
+
+    // /*
+    tasks = [
+        {
+            title: "Табрик",
+            tasks: [
+                {
+                    title: "Hello",
+                    description: "Tabrik",
+                    isDone: true,
+                },
+                {
+                    title: "Hello2",
+                    description: "Tabrikiston",
+                    isDone: false,
+                },
+            ],
+        },
+    ];
+    // */
+
+    let htmlDataLists = "";
+
+    tasks.forEach((element) => {
+        let htmlDataTasks = "";
+        element.tasks.forEach((task) => {
+            htmlDataTasks += `
+                <div>${task.title}</div>
+            `;
+        });
+        htmlDataLists += `
+            <div class="flex">
+                ${htmlDataTasks}
+            </div>
+        `;
+    });
 
     const render = () => {
-        todoTasksElement.innerHTML = htmlDataTasks;
-        finishedTasksElement.innerHTML = htmlDataFinished;
+        taskListsElement.innerHTML = htmlDataLists;
+
         endLoading();
         addListeners();
     };
@@ -314,10 +353,9 @@ const loadInitialData = () => {
     fetch(`${API_URL}/todo`)
         .then((resp) => resp.json())
         .then((data) => {
-            todoTasks = data.todoTasks;
-            finishedTasks = data.finishedTasks;
+            tasks = data;
 
-            renderTasks(todoTasks, finishedTasks, true);
+            renderTasks(tasks, true);
         });
 };
 
@@ -327,4 +365,4 @@ inputTitleElement.addEventListener("keydown", addTaskListenerForInput);
 inputDescriptionElement.addEventListener("keydown", addTaskListenerForInput);
 inputForElement.addEventListener("keydown", addTaskListenerForInput);
 
-loadInitialData();
+// loadInitialData();
