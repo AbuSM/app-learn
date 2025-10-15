@@ -1,4 +1,7 @@
 @import "tailwindcss";
+@import "flowbite/src/themes/default";
+@plugin "flowbite/plugin";
+@source "../node_modules/flowbite";
 
 :root {
 	--primary: rgb(78, 130, 208);
@@ -6,20 +9,17 @@
 	--green: rgb(42, 208, 27);
 	--border-radius-md: 25px;
 	--border-radius-sm: 15px;
+	--container-bg-color: rgb(83, 83, 140);
 }
-
-body {
-	font-size: 16px;
-}
-
 * {
 	box-sizing: border-box;
 	font-family: monospace;
+	font-size: 30px;
 	color: white;
 }
 
-h1 {
-	font-size: 100px;
+h2 {
+	font-size: 50px;
 	margin: 0;
 	color: var(--primary);
 }
@@ -30,12 +30,12 @@ header {
 	padding: 0 10px;
 	position: fixed;
 	width: 100%;
+	z-index: 100;
 	background-color: #1e2939;
 }
 header nav {
 	padding: 20px 30px;
-	margin: auto;
-	max-width: 1500px;
+	width: 100%;
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
@@ -72,11 +72,13 @@ input {
 	border: 1px;
 }
 
+input,
 label {
-	@apply text-white;
+	color: var(--primary);
 }
 
 main {
+	padding: 0 60px;
 	padding-top: 150px;
 	display: flex;
 	flex-direction: column;
@@ -92,7 +94,7 @@ main {
 	margin: 0 auto;
 	border: 1px solid var(--primary);
 	border-radius: var(--border-radius-sm);
-	background-color: rgb(83, 83, 140);
+	background-color: var(--container-bg-color);
 }
 
 .btn {
@@ -103,7 +105,7 @@ main {
 	border: none;
 	cursor: pointer;
 	transition: all 0.3s;
-	min-width: 180px;
+	min-width: 202px;
 }
 
 .btn-sm {
@@ -178,4 +180,41 @@ ul > li {
 #stopwatch,
 #timer {
 	width: 100%;
+}
+
+.weather-area {
+	display: flex;
+	gap: 10px;
+}
+
+.loader {
+	width: 48px;
+	height: 48px;
+	border: 5px solid white;
+	border-bottom-color: transparent;
+	border-radius: 50%;
+	display: inline-block;
+	box-sizing: border-box;
+	animation: rotation 1s linear infinite;
+}
+.loader_backdrop {
+	background-color: rgba(0, 0, 0, 0.5);
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 1000000;
+}
+
+@keyframes rotation {
+	0% {
+		transform: rotate(0deg);
+	}
+	100% {
+		transform: rotate(360deg);
+	}
 }
