@@ -61,6 +61,10 @@ header nav ul {
 	border-bottom: 5px solid var(--primary);
 }
 
+.weather-area {
+	font-size: 30px;
+}
+
 input {
 	@apply !text-white border-white border placeholder:text-white;
 	color: white !important;
