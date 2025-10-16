@@ -1,3 +1,8 @@
+@import "tailwindcss";
+@import "flowbite/src/themes/default";
+@plugin "flowbite/plugin";
+@source "../node_modules/flowbite";
+
 /* .container {
     padding: 20px;
     display: flex;
@@ -110,4 +115,6 @@ h2 {
 }
 :root {
     --primary: #3c50e0;
+    --gray: #667085;
+    --card-width: 300px;
 }

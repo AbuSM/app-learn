@@ -1,6 +1,6 @@
-import getDOMElement from "../../api/getDOMElement.js";
 import { API_URL, PASSWORD } from "./../../constants.js";
 import alert from "./alert_custom.js";
+import dateIcon from "./dateIcon.js";
 import { hashing } from "./hashing.js";
 import promptPassword from "./prompt_password.js";
 
@@ -13,147 +13,103 @@ const inputTitleElement = document.querySelector("#input_title");
 const inputDescriptionElement = document.querySelector("#input_description");
 const inputForElement = document.querySelector("#input_for_whom");
 
-const toggleRedBorder = (element, toggleState) => {
-    element.classList.toggle("border-red-600", toggleState);
-    element.classList.toggle("focus:border-red-600", toggleState);
+const toggleRedBorder = (element, state) => {
+    element.classList.toggle("border-red-600", state);
+    element.classList.toggle("focus:border-red-600", state);
 };
 
-let tasks = {};
+let tasks = [];
 
-const checkIsAdmin = async (func) => {
-    const password = await promptPassword(`Enter Admin Password:`);
+const handleAddTask = (event) => {
+    const parent = event.target.parentElement;
 
-    if (!!password && hashing(password) == PASSWORD) {
-        func();
-    } else if (password != null) {
-        alert("Incorrect password!");
-    }
+    closeAllInputs();
+
+    parent.innerHTML += `
+                    <div class="titleInputBox w-fill flex flex-col gap-2 border-[#e4e7ec] border-2 rounded-xl p-3 shadow bg-neutral-100 hover:cursor-auto transition-all">
+                        <input class="titleInput w-full px-3 border-[#e4e7ec] py-1 rounded border-2 focus:ring-0 focus:border-[var(--primary)]" type="text">
+                        <button class="addButton bg-[#465fff] hover:brightness-95 hover:cursor-pointer active:brightness-90 px-3 py-1 text-white rounded">Add</button>
+                    </div>
+                `;
+
+    parent.firstElementChild.style.display = "none";
+
+    const inputTitle = parent.querySelector(".titleInput");
+    const addButton = parent.querySelector(".addButton");
+
+    inputTitle.focus();
+
+    const listIndex = parent.firstElementChild.dataset.listIndex;
+
+    const addTask = () => {
+        tasks[listIndex].tasks.push({
+            title: inputTitle.value,
+            description: "",
+            date: "12 Jun, 2025",
+            completed: false,
+        });
+        renderTasks(tasks);
+    };
+
+    addButton.addEventListener("click", addTask);
+    inputTitle.addEventListener("keydown", (event) => {
+        if (event.key === "Enter") {
+            addTask();
+        }
+    });
 };
+
+function closeAllInputs() {
+    const inputs = document.querySelectorAll(".titleInputBox");
+    inputs.forEach((element) => {
+        element.remove();
+    });
+
+    const addTasks = document.querySelectorAll(`.addTask`);
+    addTasks.forEach((element) => {
+        element.style.display = "initial";
+        element.addEventListener("click", handleAddTask);
+    });
+}
 
 function addListeners() {
     setTimeout(() => {
-        const doitBtnElements = document.querySelectorAll(".doit");
-        doitBtnElements.forEach((element) => {
-            element.addEventListener("click", handleDoIt);
-        });
+        const addListBtn = document.querySelector(".add-list-button");
+        addListBtn.addEventListener("click", (event) => {
+            const parent = event.target.parentElement;
 
-        const doitInputElements = document.querySelectorAll(".doItInput");
-        doitInputElements.forEach((element) => {
-            element.addEventListener("keydown", (event) => {
-                if (event.key == "Enter") {
-                    handleDoIt(event);
+            parent.innerHTML += `
+                <div class="flex flex-col gap-2 w-[var(--card-width)] border-[#e4e7ec] border-2 rounded-xl p-3 shadow bg-neutral-100 hover:cursor-auto transition-all">
+                    <input class="titleInput w-full px-3 border-[#e4e7ec] py-1 rounded border-2 focus:ring-0 focus:border-[var(--primary)]" type="text">
+                    <button class="addButton bg-[#465fff] hover:brightness-95 hover:cursor-pointer active:brightness-90 px-3 py-1 text-white rounded">Add</button>
+                </div>
+            `;
+            const addButton = parent.querySelector(".addButton");
+            const titleInput = parent.querySelector(".titleInput");
+
+            titleInput.focus();
+
+            parent.firstElementChild.hidden = true;
+
+            addButton.addEventListener("click", () => {
+                handleAddList(titleInput.value);
+            });
+            titleInput.addEventListener("keydown", (event) => {
+                if (event.key === "Enter") {
+                    handleAddList(titleInput.value);
                 }
             });
         });
 
-        const restoreButtonElements = document.querySelectorAll(".restore");
-        restoreButtonElements.forEach((element) => {
-            element.addEventListener("click", handleRestore);
+        const addTasks = document.querySelectorAll(".addTask");
+        addTasks.forEach((element) => {
+            element.addEventListener("click", handleAddTask);
         });
 
-        const deleteFinishedElements = document.querySelectorAll(
-            ".delete-from-finished"
-        );
-        deleteFinishedElements.forEach((element) => {
-            element.addEventListener("click", handleDeleteFinished);
-        });
-
-        const deleteTodoElements =
-            document.querySelectorAll(".delete-from-todo");
-        deleteTodoElements.forEach((element) => {
-            element.addEventListener("click", handleDeleteTodo);
-        });
-
-        const inputElements = document.querySelectorAll(`input[type="text"]`);
-        inputElements.forEach((element) => {
-            element.addEventListener("input", (event) => {
-                toggleRedBorder(event.target, !event.target.value);
-            });
-        });
-
-        const tasksElement = document.querySelectorAll(".task");
-        tasksElement.forEach((element) => {
-            element.addEventListener("dragstart", (event) => {
-                // if (event.target.classList.)
-                console.log(event.target);
-
-                event.target.classList.toggle("selected", true);
-                event.dataTransfer.setData("text", event.target.outerHTML);
-            });
-            element.addEventListener("dragend", (event) => {
-                event.target.classList.toggle("selected", false);
-            });
-            const dragHandleCondition = (event, dragElement, func) => {
-                event.preventDefault();
-                const draggable = getDOMElement(
-                    event.dataTransfer.getData("text")
-                );
-
-                const dropIndex = dragElement.dataset.index;
-                const draggableIndex = draggable.dataset.index;
-
-                if (
-                    dragElement.dataset.type == draggable.dataset.type &&
-                    draggableIndex != dropIndex
-                ) {
-                    func();
-                }
-            };
-            element.addEventListener("dragover", (event) => {
-                const dragElement = event.target.closest(".task");
-                dragHandleCondition(event, dragElement, () => {
-                    console.log("hello");
-
-                    dragElement.classList.toggle("hover-drag", true);
-                });
-            });
-            element.addEventListener("dragleave", (event) => {
-                const dragElement = event.target.closest(".task");
-                dragHandleCondition(event, dragElement, () => {
-                    dragElement.classList.toggle("hover-drag", false);
-                });
-            });
-
-            element.addEventListener("drop", (event) => {
-                event.stopPropagation();
-                event.preventDefault();
-
-                const draggable = getDOMElement(
-                    event.dataTransfer.getData("text")
-                );
-
-                const dragElement = event.target.closest(".task");
-
-                const dropIndex = dragElement.dataset.index;
-                const draggableIndex = draggable.dataset.index;
-
-                if (
-                    dragElement.dataset.type == draggable.dataset.type &&
-                    draggableIndex != dropIndex
-                ) {
-                    if (dragElement.dataset.type == "todo") {
-                        const temp = todoTasks[dropIndex];
-                        todoTasks[dropIndex] = todoTasks[draggableIndex];
-                        todoTasks[draggableIndex] = temp;
-                    } else {
-                        const temp = finishedTasks[dropIndex];
-                        finishedTasks[dropIndex] =
-                            finishedTasks[draggableIndex];
-                        finishedTasks[draggableIndex] = temp;
-                    }
-
-                    renderTasks(todoTasks, finishedTasks);
-                }
-            });
-        });
-
-        const noneToDrag = document.querySelectorAll(`.notDrag:not(.task)`);
-        noneToDrag.forEach((element) => {
-            console.log(element);
-
-            element.addEventListener("dragstart", (event) => {
-                event.preventDefault();
-            });
+        document.body.addEventListener("click", (event) => {
+            if (!event.target.closest(".titleInputBox,.addTask")) {
+                closeAllInputs();
+            }
         });
     }, 0);
 }
@@ -166,77 +122,42 @@ const endLoading = () => {
 };
 
 const renderTasks = (tasks, isInitial = false) => {
-    // const htmlDataTasks = todoTasks
-    //     .map(
-    //         (item, index) =>
-    //             `<div class="task flex items-center p-3 justify-between rounded [&.selected]:opacity-[50%] [&.hover-drag]:border-[var(--primary)] border-2 transition-all" data-index="${index}" data-type="todo" draggable="true">
-    //                 <div class="flex gap-3 items-center">
-    //                     <img data-index="${index}" title="delete" class="notDrag delete-from-todo h-7 w-7 p-0.5 hover:bg-white/10 hover:cursor-pointer rounded active:bg-white/20" src='/assets/delete.svg'></img>
-    //                     <div class="flex flex-col items-start">
-    //                         <h3>${item.title}</h3>
-    //                         <p class="text-sm">For: ${item.for}</p>
-    //                         <p class="text-xs font-[400] text-start">${item.description}</p>
-    //                     </div>
-    //                 </div>
-    //                 <div draggable="true" class="flex gap-2 notDrag input_name_cont">
-    //                     <input class="focus:outline-none border-2 rounded focus:border-[var(--primary)] doItInput" data-index="${index}" type="text" placeholder="Name" />
-    //                     <button data-index="${index}" class="btn doit">Do It</button>
-    //                 </div>
-    //             </div>`
-    //     )
-    //     .join("");
-
-    // const htmlDataFinished = finishedTasks
-    //     .map(
-    //         (item, index) =>
-    //             `<div class="flex items-center justify-between p-3 task rounded [&.selected]:opacity-[50%] [&.hover-drag]:border-[var(--primary)] border-2 transition-all" data-index="${index}" data-type="finished" draggable="true" title="For: ${item.for}, ${item.description}" >
-    //                 <div class="flex gap-3 items-center">
-    //                     <div class="notDrag flex">
-    //                         <img draggable="true" data-index="${index}" title="restore" class="restore h-7 w-7 p-0.5 hover:bg-white/10 hover:cursor-pointer rounded active:bg-white/20" src='/assets/restore.svg'></img>
-    //                         <img draggable="true" data-index="${index}" title="delete" class="delete-from-finished h-7 w-7 p-0.5 hover:bg-white/10 hover:cursor-pointer rounded active:bg-white/20" src='/assets/delete.svg'></img>
-    //                     </div>
-    //                     <h3 class="title">${item.title}</h3>
-    //                 </div>
-    //                 <h3>${item.complete_name}</h3>
-    //             </div>`
-    //     )
-    //     .join("");
-
-    // /*
-    tasks = [
-        {
-            title: "Табрик",
-            tasks: [
-                {
-                    title: "Hello",
-                    description: "Tabrik",
-                    isDone: true,
-                },
-                {
-                    title: "Hello2",
-                    description: "Tabrikiston",
-                    isDone: false,
-                },
-            ],
-        },
-    ];
-    // */
-
     let htmlDataLists = "";
 
-    tasks.forEach((element) => {
+    tasks.forEach((element, listIndex) => {
         let htmlDataTasks = "";
         element.tasks.forEach((task) => {
             htmlDataTasks += `
-                <div>${task.title}</div>
+                <li class="border-2 border-[#e4e7ec] flex flex-col gap-2 p-3 shadow rounded-xl">
+                    <div>${task.title}</div>
+                    <div class="flex text-sm items-center gap-1">
+                        ${dateIcon}
+                        <div class="text-[var(--gray)]">${task.date}</div>
+                    </div>
+                </li>
             `;
         });
         htmlDataLists += `
-            <div class="flex">
+            <ul class="bg-white flex min-w-[var(--card-width)] flex-col gap-2 shadow border-2 border-[#e4e7ec] rounded-xl p-3">
+                <li>
+                    <h3 class="ml-2 text-xl font-bold">${element.title}</h3>
+                </li>
                 ${htmlDataTasks}
-            </div>
+                <li>
+                    <button
+                    data-list-index="${listIndex}"
+                    class="addTask w-full border-2 border-[#e4e7ec] rounded-xl px-3 py-1 shadow bg-neutral-100 hover:cursor-pointer hover:bg-neutral-200 transition-all">
+                        + Add New
+                    </button>
+                </li>
+            </ul>
         `;
     });
+
+    htmlDataLists += `
+            <div class="add_list">
+                <button class="add-list-button border-[#e4e7ec] w-[var(--card-width)] border-2 rounded-xl px-3 py-1 shadow bg-neutral-100 hover:cursor-pointer hover:bg-neutral-200 transition-all">+ Add another list</button>
+            </div>`;
 
     const render = () => {
         taskListsElement.innerHTML = htmlDataLists;
@@ -260,7 +181,7 @@ const renderTasks = (tasks, isInitial = false) => {
             "Content-Type": "application/json",
         },
         body: JSON.stringify({
-            data: { todoTasks, finishedTasks },
+            data: tasks,
         }),
     }).then((resp) => resp.json());
 };
@@ -296,60 +217,15 @@ const addTask = () => {
     inputForElement.value = "";
 };
 
-const addTaskListenerForInput = (event) => {
-    if (event.key == "Enter") {
-        addTask();
-    }
-};
-
-const handleDoIt = (event) => {
-    const index = +event.target.dataset.index;
-
-    const inputElement = document.querySelector(
-        `.doItInput[data-index="${index}"]`
-    );
-
-    if (!inputElement.value) {
-        toggleRedBorder(inputElement, true);
-        return;
-    }
-
-    const completeElement = {
-        title: todoTasks[index].title,
-        description: todoTasks[index].description,
-        for: todoTasks[index].for,
-        complete_name: inputElement.value,
-    };
-    todoTasks.splice(index, 1);
-    finishedTasks = [completeElement, ...finishedTasks];
-
-    renderTasks(todoTasks, finishedTasks);
-};
-
-const handleRestore = (event) => {
-    const index = event.target.dataset.index;
-    const task = finishedTasks.splice(index, 1)[0];
-
-    todoTasks = [task, ...todoTasks];
-
-    renderTasks(todoTasks, finishedTasks);
-};
-
-const handleDeleteFinished = (event) => {
-    const index = event.target.dataset.index;
-    finishedTasks.splice(index, 1);
-    renderTasks(todoTasks, finishedTasks);
-};
-
-const handleDeleteTodo = (event) => {
-    const index = event.target.dataset.index;
-    todoTasks.splice(index, 1);
-    renderTasks(todoTasks, finishedTasks);
-};
+function handleAddList(title) {
+    tasks.push({
+        title,
+        tasks: [],
+    });
+    renderTasks(tasks);
+}
 
 const loadInitialData = () => {
-    startLoading();
-
     fetch(`${API_URL}/todo`)
         .then((resp) => resp.json())
         .then((data) => {
@@ -359,10 +235,4 @@ const loadInitialData = () => {
         });
 };
 
-addBtnElement.addEventListener("click", addTask);
-
-inputTitleElement.addEventListener("keydown", addTaskListenerForInput);
-inputDescriptionElement.addEventListener("keydown", addTaskListenerForInput);
-inputForElement.addEventListener("keydown", addTaskListenerForInput);
-
-// loadInitialData();
+loadInitialData();
