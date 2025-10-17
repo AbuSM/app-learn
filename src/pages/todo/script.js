@@ -46,7 +46,7 @@ const handleAddTask = (event) => {
             title: inputTitle.value,
             description: "",
             date: "12 Jun, 2025",
-            completed: false,
+            completed: true,
         });
         renderTasks(tasks);
     };
@@ -111,6 +111,22 @@ function addListeners() {
                 closeAllInputs();
             }
         });
+
+        const completeCheckboxes =
+            document.querySelectorAll(".completeCheckbox");
+        completeCheckboxes.forEach((element) => {
+            element.addEventListener("click", (event) => {
+                const checkState = event.target.checked;
+                const liElement = event.target.closest("li");
+
+                const listIndex = liElement.dataset.listIndex;
+                const taskIndex = liElement.dataset.taskIndex;
+
+                tasks[listIndex].tasks[taskIndex].completed = checkState;
+
+                renderTasks(tasks);
+            });
+        });
     }, 0);
 }
 
@@ -126,14 +142,19 @@ const renderTasks = (tasks, isInitial = false) => {
 
     tasks.forEach((element, listIndex) => {
         let htmlDataTasks = "";
-        element.tasks.forEach((task) => {
+        element.tasks.forEach((task, taskIndex) => {
             htmlDataTasks += `
-                <li class="border-2 border-[#e4e7ec] flex flex-col gap-2 p-3 shadow rounded-xl">
-                    <div>${task.title}</div>
-                    <div class="flex text-sm items-center gap-1">
+                <li data-list-index="${listIndex}" data-task-index="${taskIndex}" class="border-2 flex items-center justify-between border-[#e4e7ec] p-3 shadow rounded-xl">
+                    <div class="flex flex-col gap-2 items-start">
+                        <div class=" ${ task.completed && "before:content-[''] before:w-full before:h-[1px] before:block before:absolute before:top-[50%] before:left-0 relative before:bg-black" }" >${task.title}</div>
+                        <div class="flex text-sm items-center gap-1">
                         ${dateIcon}
                         <div class="text-[var(--gray)]">${task.date}</div>
+                        </div>
                     </div>
+                    <div><input ${
+                        task.completed && "checked"
+                    } class="completeCheckbox focus:ring-0" type="checkbox" name="" id=""></div>
                 </li>
             `;
         });
