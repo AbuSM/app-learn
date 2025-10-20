@@ -19,6 +19,20 @@ const toggleRedBorder = (element, state) => {
     element.classList.toggle("focus:border-red-600", state);
 };
 
+const pushToServer = (tasks) => {
+    fetch(`${API_URL}/todo`, {
+        method: "PATCH",
+        headers: {
+            Accept: "application/json",
+            "X-GitHub-Api-Version": "2022-11-28",
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            data: tasks,
+        }),
+    }).then((resp) => resp.json());
+};
+
 let tasks = [];
 
 const handleAddTask = (event) => {
@@ -128,6 +142,7 @@ function addListeners() {
                 liElement.querySelector(".title").style[
                     "text-decoration-line"
                 ] = checkState ? "line-through" : "none";
+                pushToServer(tasks);
             });
         });
 
@@ -226,17 +241,7 @@ const renderTasks = (tasks, isInitial = false) => {
 
     render();
 
-    fetch(`${API_URL}/todo`, {
-        method: "PATCH",
-        headers: {
-            Accept: "application/json",
-            "X-GitHub-Api-Version": "2022-11-28",
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-            data: tasks,
-        }),
-    }).then((resp) => resp.json());
+    pushToServer(tasks);
 };
 
 const addTask = () => {
