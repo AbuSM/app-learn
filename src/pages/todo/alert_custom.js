@@ -38,5 +38,5 @@ export default function alert(message) {
             .addEventListener("click", (event) => {
                 event.stopPropagation();
             });
-    });
+    }, 0);
 }
