@@ -93,8 +93,9 @@ main {
 	padding: 10px 25px;
 	border: none;
 	cursor: pointer;
-	transition: all 0.3s;
+	transition: transform 0.3s, box-shadow 0.3s;
 	min-width: 202px;
+	margin: 5px;
 }
 
 .btn-sm {
