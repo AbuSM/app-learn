@@ -3,10 +3,11 @@ import alert from "./alert_custom.js";
 import dateIcon from "./dateIcon.js";
 import { hashing } from "./hashing.js";
 import promptPassword from "./prompt_password.js";
+import changeModal from "./change_modal.js";
+import getDOMElement from "../../api/getDOMElement.js";
+import getToday from "../../api/getToday.js";
 
-const loader = document.querySelector(".loader_backdrop");
-// const todoTasksElement = document.querySelector(".tasks");
-// const finishedTasksElement = document.querySelector(".finished");
+let loader = document.querySelector(".loader_backdrop");
 const taskListsElement = document.querySelector(".task-lists");
 const addBtnElement = document.querySelector(".add_container .btn");
 const inputTitleElement = document.querySelector("#input_title");
@@ -26,8 +27,8 @@ const handleAddTask = (event) => {
     closeAllInputs();
 
     parent.innerHTML += `
-                    <div class="titleInputBox w-fill flex flex-col gap-2 border-[#e4e7ec] border-2 rounded-xl p-3 shadow bg-neutral-100 hover:cursor-auto transition-all">
-                        <input class="titleInput w-full px-3 border-[#e4e7ec] py-1 rounded border-2 focus:ring-0 focus:border-[var(--primary)]" type="text">
+                    <div class="titleInputBox w-fill flex flex-col gap-2 border-[var(--border-gray)] border-2 rounded-xl p-3 shadow bg-neutral-100 hover:cursor-auto transition-all">
+                        <input class="titleInput w-full px-3 border-[var(--border-gray)] py-1 rounded border-2 focus:ring-0 focus:border-[var(--primary)]" type="text">
                         <button class="addButton bg-[#465fff] hover:brightness-95 hover:cursor-pointer active:brightness-90 px-3 py-1 text-white rounded">Add</button>
                     </div>
                 `;
@@ -45,8 +46,8 @@ const handleAddTask = (event) => {
         tasks[listIndex].tasks.push({
             title: inputTitle.value,
             description: "",
-            date: "12 Jun, 2025",
-            completed: true,
+            date: getToday(),
+            completed: false,
         });
         renderTasks(tasks);
     };
@@ -79,8 +80,8 @@ function addListeners() {
             const parent = event.target.parentElement;
 
             parent.innerHTML += `
-                <div class="flex flex-col gap-2 w-[var(--card-width)] border-[#e4e7ec] border-2 rounded-xl p-3 shadow bg-neutral-100 hover:cursor-auto transition-all">
-                    <input class="titleInput w-full px-3 border-[#e4e7ec] py-1 rounded border-2 focus:ring-0 focus:border-[var(--primary)]" type="text">
+                <div class="flex flex-col gap-2 w-[var(--card-width)] border-[var(--border-gray)] border-2 rounded-xl p-3 shadow bg-neutral-100 hover:cursor-auto transition-all">
+                    <input class="titleInput w-full px-3 border-[var(--border-gray)] py-1 rounded border-2 focus:ring-0 focus:border-[var(--primary)]" type="text">
                     <button class="addButton bg-[#465fff] hover:brightness-95 hover:cursor-pointer active:brightness-90 px-3 py-1 text-white rounded">Add</button>
                 </div>
             `;
@@ -112,29 +113,58 @@ function addListeners() {
             }
         });
 
-        const completeCheckboxes =
+        const completeCheckboxElements =
             document.querySelectorAll(".completeCheckbox");
-        completeCheckboxes.forEach((element) => {
+        completeCheckboxElements.forEach((element) => {
             element.addEventListener("click", (event) => {
-                const checkState = event.target.checked;
                 const liElement = event.target.closest("li");
+                let checkState = event.target.checked;
 
                 const listIndex = liElement.dataset.listIndex;
                 const taskIndex = liElement.dataset.taskIndex;
 
                 tasks[listIndex].tasks[taskIndex].completed = checkState;
 
-                renderTasks(tasks);
+                liElement.querySelector(".title").style[
+                    "text-decoration-line"
+                ] = checkState ? "line-through" : "none";
+            });
+        });
+
+        const taskElements = document.querySelectorAll(".task");
+        taskElements.forEach((element) => {
+            element.addEventListener("click", async (event) => {
+                if (event.target.tagName == "LI") {
+                    const listIndex = event.target.dataset.listIndex;
+                    const taskIndex = event.target.dataset.taskIndex;
+
+                    const title = tasks[listIndex].tasks[taskIndex].title;
+                    const description =
+                        tasks[listIndex].tasks[taskIndex].description;
+                    const date = tasks[listIndex].tasks[taskIndex].date;
+
+                    const task = await changeModal(title, description, date);
+
+                    tasks[listIndex].tasks[taskIndex] = {
+                        ...this,
+                        ...task,
+                    };
+
+                    renderTasks(tasks);
+                }
             });
         });
     }, 0);
 }
 
 const startLoading = () => {
-    loader.style.display = "flex";
+    loader = getDOMElement(`<div class="loader_backdrop">
+        <span class="loader"></span>
+    </div>`);
+    document.body.appendChild(loader);
 };
 const endLoading = () => {
-    loader.style.display = "none";
+    loader.remove();
 };
 
 const renderTasks = (tasks, isInitial = false) => {
@@ -144,9 +174,11 @@ const renderTasks = (tasks, isInitial = false) => {
         let htmlDataTasks = "";
         element.tasks.forEach((task, taskIndex) => {
             htmlDataTasks += `
-                <li data-list-index="${listIndex}" data-task-index="${taskIndex}" class="border-2 flex items-center justify-between border-[#e4e7ec] p-3 shadow rounded-xl">
+                <li data-list-index="${listIndex}" data-task-index="${taskIndex}" class="task border-2 flex items-center justify-between border-[var(--border-gray)] p-3 shadow rounded-xl">
                     <div class="flex flex-col gap-2 items-start">
-                        <div class=" ${ task.completed && "before:content-[''] before:w-full before:h-[1px] before:block before:absolute before:top-[50%] before:left-0 relative before:bg-black" }" >${task.title}</div>
+                        <div class="title ${
+                            task.completed && "line-through"
+                        }" >${task.title}</div>
                         <div class="flex text-sm items-center gap-1">
                         ${dateIcon}
                         <div class="text-[var(--gray)]">${task.date}</div>
@@ -154,12 +186,12 @@ const renderTasks = (tasks, isInitial = false) => {
                     </div>
                     <div><input ${
                         task.completed && "checked"
-                    } class="completeCheckbox focus:ring-0" type="checkbox" name="" id=""></div>
+                    } class="hover:cursor-pointer completeCheckbox focus:ring-0" type="checkbox" name="" id=""></div>
                 </li>
             `;
         });
         htmlDataLists += `
-            <ul class="bg-white flex min-w-[var(--card-width)] flex-col gap-2 shadow border-2 border-[#e4e7ec] rounded-xl p-3">
+            <ul class="bg-white flex min-w-[var(--card-width)] flex-col gap-2 shadow border-2 border-[var(--border-gray)] rounded-xl p-3">
                 <li>
                     <h3 class="ml-2 text-xl font-bold">${element.title}</h3>
                 </li>
@@ -167,7 +199,7 @@ const renderTasks = (tasks, isInitial = false) => {
                 <li>
                     <button
                     data-list-index="${listIndex}"
-                    class="addTask w-full border-2 border-[#e4e7ec] rounded-xl px-3 py-1 shadow bg-neutral-100 hover:cursor-pointer hover:bg-neutral-200 transition-all">
+                    class="addTask w-full border-2 border-[var(--border-gray)] rounded-xl px-3 py-1 shadow bg-neutral-100 hover:cursor-pointer hover:bg-neutral-200 transition-all">
                         + Add New
                     </button>
                 </li>
@@ -177,7 +209,7 @@ const renderTasks = (tasks, isInitial = false) => {
 
     htmlDataLists += `
             <div class="add_list">
-                <button class="add-list-button border-[#e4e7ec] w-[var(--card-width)] border-2 rounded-xl px-3 py-1 shadow bg-neutral-100 hover:cursor-pointer hover:bg-neutral-200 transition-all">+ Add another list</button>
+                <button class="add-list-button border-[var(--border-gray)] w-[var(--card-width)] border-2 rounded-xl px-3 py-1 shadow bg-neutral-100 hover:cursor-pointer hover:bg-neutral-200 transition-all">+ Add another list</button>
             </div>`;
 
     const render = () => {
@@ -247,6 +279,7 @@ function handleAddList(title) {
 }
 
 const loadInitialData = () => {
+    startLoading();
     fetch(`${API_URL}/todo`)
         .then((resp) => resp.json())
         .then((data) => {
@@ -257,3 +290,4 @@ const loadInitialData = () => {
 };
 
 loadInitialData();
+// changeModal("dnasj", "10.12.08", "ndkjanskj");

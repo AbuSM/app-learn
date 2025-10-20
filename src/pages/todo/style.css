@@ -92,6 +92,11 @@ h2 {
     box-sizing: border-box;
     animation: rotation 1s linear infinite;
 }
+
+body:has(.loader_backdrop) {
+    overflow-y: hidden;
+}
+
 .loader_backdrop {
     background-color: rgba(0, 0, 0, 0.5);
     position: fixed;
@@ -115,6 +120,7 @@ h2 {
 }
 :root {
     --primary: #3c50e0;
+    --border-gray: #e4e7ec;
     --gray: #667085;
     --card-width: 300px;
 }
