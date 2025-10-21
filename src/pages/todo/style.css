@@ -17,6 +17,7 @@ body:has(.loader_backdrop) {
 }
 
 .loader_backdrop {
+    animation: appear 0.2s ease-in-out 1;
     background-color: rgba(0, 0, 0, 0.5);
     position: fixed;
     top: 0;
@@ -37,6 +38,14 @@ body:has(.loader_backdrop) {
         transform: rotate(360deg);
     }
 }
+@keyframes appear {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
 :root {
     --primary: #3c50e0;
     --border-gray: #e4e7ec;
@@ -51,6 +60,13 @@ body:has(.loader_backdrop) {
 .task,
 .listHeading,
 .completeCheckbox,
-.addTask {
+.addTask,
+.editIcon,
+.inputBox,
+.listMenu,
+.listMenu * {
     pointer-events: auto;
+}
+.animate-appear {
+    animation: appear 0.2s ease-in-out 1;
 }

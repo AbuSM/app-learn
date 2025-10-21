@@ -1,8 +1,9 @@
+import getDOMElement from "../../api/getDOMElement";
 import getToday from "../../api/getToday";
 import changeModal from "./change_modal";
 import { pushToServer } from "./pushServer";
 import { renderTasks } from "./renderTasks";
-import { tasks } from "./script";
+import { dragData, tasks } from "./script";
 import { toggleRedBorder } from "./toggleRedBorder";
 
 function addDraggable(taskElements, tasks, listHeadingElements) {
@@ -11,10 +12,7 @@ function addDraggable(taskElements, tasks, listHeadingElements) {
             event.target.classList.add("draggable");
             const listIndex = event.target.dataset.listIndex;
             const taskIndex = event.target.dataset.taskIndex;
-            event.dataTransfer.setData(
-                "drag-data",
-                JSON.stringify({ listIndex, taskIndex })
-            );
+            dragData.current = { listIndex, taskIndex };
         });
         element.addEventListener("dragend", (event) => {
             event.target.classList.remove("draggable");
@@ -22,7 +20,8 @@ function addDraggable(taskElements, tasks, listHeadingElements) {
         element.addEventListener("dragenter", (event) => {
             const listIndex = event.target.dataset.listIndex;
             const taskIndex = event.target.dataset.taskIndex;
-            const target = JSON.parse(event.dataTransfer.getData("drag-data"));
+
+            const target = dragData.current;
 
             if (
                 !(
@@ -48,9 +47,7 @@ function addDraggable(taskElements, tasks, listHeadingElements) {
             if (event.target.tagName == "LI") {
                 const listIndex = event.target.dataset.listIndex;
                 const taskIndex = event.target.dataset.taskIndex;
-                const target = JSON.parse(
-                    event.dataTransfer.getData("drag-data")
-                );
+                const target = dragData.current;
 
                 const temp = tasks[listIndex].tasks[taskIndex];
                 tasks[listIndex].tasks[taskIndex] =
@@ -62,29 +59,31 @@ function addDraggable(taskElements, tasks, listHeadingElements) {
         });
     });
 
-    // console.log(listElements);
-
     listHeadingElements.forEach((element) => {
         element.addEventListener("dragenter", (event) => {
-            const target = JSON.parse(event.dataTransfer.getData("drag-data"));
-            const parent = event.target.closest(".todo-list");
+            const target = dragData.current;
+            const parent = event.target.closest(".list");
             if (parent.dataset.listIndex != target.listIndex) {
                 parent.classList.add("droppable");
             }
         });
         element.addEventListener("dragleave", (event) => {
-            const parent = event.target.closest(".todo-list");
+            const parent = event.target.closest(".list");
             parent.classList.remove("droppable");
         });
         element.addEventListener("dragover", (event) => {
             event.preventDefault();
+            const target = dragData.current;
+            const parent = event.target.closest(".list");
+            if (parent.dataset.listIndex != target.listIndex) {
+                parent.classList.add("droppable");
+            }
         });
         element.addEventListener("drop", (event) => {
             event.preventDefault();
 
-            const listIndex =
-                event.target.closest(".todo-list").dataset.listIndex;
-            const target = JSON.parse(event.dataTransfer.getData("drag-data"));
+            const listIndex = event.target.closest(".list").dataset.listIndex;
+            const target = dragData.current;
 
             if (listIndex != target.listIndex) {
                 const task = tasks[target.listIndex].tasks[target.taskIndex];
@@ -202,12 +201,55 @@ function handleAddList(event) {
     });
     titleInput.addEventListener("keydown", (event) => {
         if (event.key === "Enter") {
-            console.log("hello");
-
             addList(titleInput.value);
         }
     });
 }
+
+const activeEditableListTitle = (event) => {
+    const parent = event.target.closest(".list");
+    const listIndex = parent.dataset.listIndex;
+    parent.firstElementChild.style.display = "none";
+    const title = tasks[listIndex].title;
+
+    const inputBox =
+        getDOMElement(/*html*/ `<li class="inputBox relative h-[50px] -m-3 p-3 -mb-2 pb-2 flex justify-between items-center">
+                            <input value="${title}" type="text" class=" rounded-sm border-2 border-[var(--border-gray)] focus-within:ring-0 focus:ring-0 focus-within:border-[var(--primary)] focus:border-[var(--primary)] text-xl px-2 py-1 font-bold" value="hello" />
+                        </li>`);
+    parent.prepend(inputBox);
+
+    const titleInput = inputBox.querySelector("input");
+
+    titleInput.focus();
+    titleInput.setSelectionRange(
+        titleInput.value.length,
+        titleInput.value.length
+    );
+    titleInput.addEventListener("input", (event) => {
+        toggleRedBorder(event.target, !event.target.value.length);
+    });
+
+    titleInput.addEventListener("keydown", (event) => {
+        if (event.key == "Enter") {
+            if (!!titleInput.value.length) {
+                tasks[listIndex].title = titleInput.value;
+                renderTasks(tasks);
+            } else {
+                toggleRedBorder(titleInput, true);
+            }
+        } else if (event.key == "Escape") {
+            inputBox.remove();
+            parent.firstElementChild.style.display = "flex";
+        }
+    });
+};
+
+const removeAllListMenus = () => {
+    const menuElements = document.querySelectorAll(".listMenu");
+    menuElements.forEach((element) => {
+        element.remove();
+    });
+};
 
 export function addListeners() {
     setTimeout(() => {
@@ -275,6 +317,40 @@ export function addListeners() {
             if (event.key == "Escape") {
                 closeAllTaskInputs();
                 closeListInput();
+            }
+        });
+
+        const editIcons = document.querySelectorAll(".editIcon");
+        editIcons.forEach((element) => {
+            element.addEventListener("click", (event) => {
+                const parentElement = event.target.parentElement;
+                if (parentElement.children.length > 1) {
+                    parentElement.lastElementChild.remove();
+                } else {
+                    removeAllListMenus();
+                    const menuElement = getDOMElement(/* html */ `
+                        <ul class="animate-appear listMenu z-10 hover:cursor-pointer absolute w-[100px] flex flex-col bg-white p-1 border-2 border-[var(--border-gray)] rounded-sm">
+                            <li class="editBtn hover:text-black/70 hover:cursor-pointer transition-all"><button class="hover:cursor-pointer">Edit</button></li>
+                            <li class="removeBtn hover:text-black/70 hover:cursor-pointer transition-all"><button class="hover:cursor-pointer">Remove</button></li>
+                        </ul>
+                        `);
+                    parentElement.appendChild(menuElement);
+                    const editBtn = menuElement.querySelector(".editBtn");
+                    const removeBtn = menuElement.querySelector(".removeBtn");
+
+                    editBtn.addEventListener("click", activeEditableListTitle);
+                    removeBtn.addEventListener("click", (event) => {
+                        const listElement = event.target.closest(".list");
+                        const listIndex = listElement.dataset.listIndex;
+                        tasks.splice(listIndex, 1);
+                        renderTasks(tasks);
+                    });
+                }
+            });
+        });
+        document.body.addEventListener("click", (event) => {
+            if (!event.target.closest(".menuBox")) {
+                removeAllListMenus();
             }
         });
     }, 0);

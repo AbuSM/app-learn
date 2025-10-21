@@ -2,6 +2,7 @@ import dateIcon from "./dateIcon.js";
 import { pushToServer } from "./pushServer.js";
 import { endLoading } from "./loader.js";
 import { addListeners } from "./listeners.js";
+import "./ellipsisIcon.js";
 
 export const renderTasks = (tasks, isInitial = false) => {
     let htmlDataLists = "";
@@ -29,9 +30,10 @@ export const renderTasks = (tasks, isInitial = false) => {
             `;
         });
         htmlDataLists += /*html*/ `
-            <ul data-list-index="${listIndex}" class="gap-2 transition-all todo-list [&.droppable]:border-[var(--primary)] bg-white flex min-w-[var(--card-width)] flex-col shadow border-2 border-[var(--border-gray)] rounded-xl p-3">
-                <li class="listHeading -m-3 p-3 -mb-2 pb-2">
+            <ul data-list-index="${listIndex}" class="list gap-2 transition-all [&.droppable]:border-[var(--primary)] bg-white flex min-w-[var(--card-width)] flex-col shadow border-2 border-[var(--border-gray)] rounded-xl p-3">
+                <li class="listHeading h-[50px] -m-3 p-3 -mb-2 pb-2 flex justify-between items-center">
                     <h3 class="ml-2 text-xl font-bold">${element.title}</h3>
+                    <div class="menuBox hover:cursor-pointer relative transition-all p-[4px]"><ellipsis-icon class="editIcon flex transition-all active:scale-80"></ellipsis-icon></div>
                 </li>
                 ${htmlDataTasks}
                 <li>

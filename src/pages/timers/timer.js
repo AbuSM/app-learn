@@ -22,7 +22,6 @@ function setTimerArea(val) {
 
 initialNumber.addEventListener("input", function (event) {
     const val = event.target.value;
-    console.log("val: ", val);
     const m = val * 1000;
     setTimerArea(m);
     millisecondsTimer = m;
