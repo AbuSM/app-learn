@@ -3,6 +3,98 @@ import changeModal from "./change_modal";
 import { pushToServer } from "./pushServer";
 import { renderTasks } from "./renderTasks";
 import { tasks } from "./script";
+import { toggleRedBorder } from "./toggleRedBorder";
+
+function addDraggable(taskElements, tasks, listHeadingElements) {
+    taskElements.forEach((element) => {
+        element.addEventListener("dragstart", (event) => {
+            event.target.classList.add("draggable");
+            const listIndex = event.target.dataset.listIndex;
+            const taskIndex = event.target.dataset.taskIndex;
+            event.dataTransfer.setData(
+                "drag-data",
+                JSON.stringify({ listIndex, taskIndex })
+            );
+        });
+        element.addEventListener("dragend", (event) => {
+            event.target.classList.remove("draggable");
+        });
+        element.addEventListener("dragenter", (event) => {
+            const listIndex = event.target.dataset.listIndex;
+            const taskIndex = event.target.dataset.taskIndex;
+            const target = JSON.parse(event.dataTransfer.getData("drag-data"));
+
+            if (
+                !(
+                    listIndex == target.listIndex &&
+                    taskIndex == target.taskIndex
+                ) &&
+                event.target.tagName == "LI"
+            ) {
+                event.target.classList.add("droppable");
+            }
+        });
+        element.addEventListener("dragleave", (event) => {
+            if (event.target.tagName == "LI") {
+                event.target.classList.remove("droppable");
+            }
+        });
+
+        element.addEventListener("dragover", (event) => {
+            event.preventDefault();
+        });
+        element.addEventListener("drop", (event) => {
+            event.preventDefault();
+            if (event.target.tagName == "LI") {
+                const listIndex = event.target.dataset.listIndex;
+                const taskIndex = event.target.dataset.taskIndex;
+                const target = JSON.parse(
+                    event.dataTransfer.getData("drag-data")
+                );
+
+                const temp = tasks[listIndex].tasks[taskIndex];
+                tasks[listIndex].tasks[taskIndex] =
+                    tasks[target.listIndex].tasks[target.taskIndex];
+                tasks[target.listIndex].tasks[target.taskIndex] = temp;
+
+                renderTasks(tasks);
+            }
+        });
+    });
+
+    // console.log(listElements);
+
+    listHeadingElements.forEach((element) => {
+        element.addEventListener("dragenter", (event) => {
+            const target = JSON.parse(event.dataTransfer.getData("drag-data"));
+            const parent = event.target.closest(".todo-list");
+            if (parent.dataset.listIndex != target.listIndex) {
+                parent.classList.add("droppable");
+            }
+        });
+        element.addEventListener("dragleave", (event) => {
+            const parent = event.target.closest(".todo-list");
+            parent.classList.remove("droppable");
+        });
+        element.addEventListener("dragover", (event) => {
+            event.preventDefault();
+        });
+        element.addEventListener("drop", (event) => {
+            event.preventDefault();
+
+            const listIndex =
+                event.target.closest(".todo-list").dataset.listIndex;
+            const target = JSON.parse(event.dataTransfer.getData("drag-data"));
+
+            if (listIndex != target.listIndex) {
+                const task = tasks[target.listIndex].tasks[target.taskIndex];
+                tasks[target.listIndex].tasks.splice(target.taskIndex, 1);
+                tasks[listIndex].tasks = [task, ...tasks[listIndex].tasks];
+                renderTasks(tasks);
+            }
+        });
+    });
+}
 
 function closeAllTaskInputs() {
     const inputs = document.querySelectorAll(".titleInputBox");
@@ -46,17 +138,24 @@ function handleAddTask(event) {
     const addButton = parent.querySelector(".addButton");
 
     inputTitle.focus();
+    inputTitle.addEventListener("input", (event) => {
+        toggleRedBorder(event.target, !event.target.value.length);
+    });
 
     const listIndex = parent.firstElementChild.dataset.listIndex;
 
     const addTask = () => {
-        tasks[listIndex].tasks.push({
-            title: inputTitle.value,
-            description: "",
-            date: getToday(),
-            completed: false,
-        });
-        renderTasks(tasks);
+        if (!!inputTitle.value.length) {
+            tasks[listIndex].tasks.push({
+                title: inputTitle.value,
+                description: "",
+                date: getToday(),
+                completed: false,
+            });
+            renderTasks(tasks);
+        } else {
+            toggleRedBorder(inputTitle, true);
+        }
     };
 
     addButton.addEventListener("click", addTask);
@@ -80,15 +179,22 @@ function handleAddList(event) {
     const titleInput = parent.querySelector(".titleInput");
 
     titleInput.focus();
+    titleInput.addEventListener("input", (event) => {
+        toggleRedBorder(event.target, !event.target.value.length);
+    });
 
     parent.firstElementChild.style.display = "none";
 
     const addList = (title) => {
-        tasks.push({
-            title,
-            tasks: [],
-        });
-        renderTasks(tasks);
+        if (!!titleInput.value.length) {
+            tasks.push({
+                title,
+                tasks: [],
+            });
+            renderTasks(tasks);
+        } else {
+            toggleRedBorder(titleInput, true);
+        }
     };
 
     addButton.addEventListener("click", () => {
@@ -146,28 +252,30 @@ export function addListeners() {
                     const listIndex = parent.dataset.listIndex;
                     const taskIndex = parent.dataset.taskIndex;
 
-                    const title = tasks[listIndex].tasks[taskIndex].title;
-                    const description =
-                        tasks[listIndex].tasks[taskIndex].description;
-                    const date = tasks[listIndex].tasks[taskIndex].date;
+                    const task = await changeModal(
+                        tasks[listIndex].tasks[taskIndex]
+                    );
 
-                    const task = await changeModal(title, description, date);
-
-                    tasks[listIndex].tasks[taskIndex] = {
-                        ...this,
-                        ...task,
-                    };
+                    if (task.isDelete) {
+                        tasks[listIndex].tasks.splice(taskIndex, 1);
+                    } else {
+                        tasks[listIndex].tasks[taskIndex] = task;
+                    }
 
                     renderTasks(tasks);
                 }
             });
         });
-    }, 0);
 
-    document.addEventListener("keydown", (event) => {
-        if (event.key == "Escape") {
-            closeAllTaskInputs();
-            closeListInput();
-        }
-    });
+        const listHeadingElements = document.querySelectorAll(".listHeading");
+
+        addDraggable(taskElements, tasks, listHeadingElements);
+
+        document.addEventListener("keydown", (event) => {
+            if (event.key == "Escape") {
+                closeAllTaskInputs();
+                closeListInput();
+            }
+        });
+    }, 0);
 }

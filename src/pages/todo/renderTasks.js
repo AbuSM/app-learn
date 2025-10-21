@@ -12,7 +12,7 @@ export const renderTasks = (tasks, isInitial = false) => {
         let htmlDataTasks = "";
         element.tasks.forEach((task, taskIndex) => {
             htmlDataTasks += /*html*/ `
-                <li data-list-index="${listIndex}" data-task-index="${taskIndex}" class="hover:cursor-pointer task border-2 flex items-center justify-between border-[var(--border-gray)] p-3 shadow rounded-xl">
+                <li draggable="true" data-list-index="${listIndex}" data-task-index="${taskIndex}" class="hover:cursor-pointer transition-all [&.draggable]:opacity-50 [&.droppable]:border-[var(--primary)] task border-2 flex items-center justify-between border-[var(--border-gray)] p-3 shadow rounded-xl">
                     <div class="flex flex-col gap-2 items-start">
                         <div class="title ${
                             task.completed && "line-through"
@@ -29,8 +29,8 @@ export const renderTasks = (tasks, isInitial = false) => {
             `;
         });
         htmlDataLists += /*html*/ `
-            <ul class="bg-white flex min-w-[var(--card-width)] flex-col gap-2 shadow border-2 border-[var(--border-gray)] rounded-xl p-3">
-                <li>
+            <ul data-list-index="${listIndex}" class="gap-2 transition-all todo-list [&.droppable]:border-[var(--primary)] bg-white flex min-w-[var(--card-width)] flex-col shadow border-2 border-[var(--border-gray)] rounded-xl p-3">
+                <li class="listHeading -m-3 p-3 -mb-2 pb-2">
                     <h3 class="ml-2 text-xl font-bold">${element.title}</h3>
                 </li>
                 ${htmlDataTasks}

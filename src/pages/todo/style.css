@@ -43,3 +43,14 @@ body:has(.loader_backdrop) {
     --gray: #667085;
     --card-width: 300px;
 }
+
+.task *,
+.listHeading * {
+    pointer-events: none;
+}
+.task,
+.listHeading,
+.completeCheckbox,
+.addTask {
+    pointer-events: auto;
+}
