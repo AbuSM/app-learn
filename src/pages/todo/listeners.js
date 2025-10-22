@@ -214,7 +214,7 @@ const activeEditableListTitle = (event) => {
 
     const inputBox =
         getDOMElement(/*html*/ `<li class="inputBox relative h-[50px] -m-3 p-3 -mb-2 pb-2 flex justify-between items-center">
-                            <input value="${title}" type="text" class=" rounded-sm border-2 border-[var(--border-gray)] focus-within:ring-0 focus:ring-0 focus-within:border-[var(--primary)] focus:border-[var(--primary)] text-xl px-2 py-1 font-bold" value="hello" />
+                            <input value="${title}" type="text" class="min-w-0 rounded-sm border-2 border-[var(--border-gray)] focus-within:ring-0 focus:ring-0 focus-within:border-[var(--primary)] focus:border-[var(--primary)] text-xl px-2 py-1 font-bold" value="hello" />
                         </li>`);
     parent.prepend(inputBox);
 
