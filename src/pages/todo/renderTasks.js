@@ -30,13 +30,13 @@ export const renderTasks = (tasks, isInitial = false) => {
             `;
         });
         htmlDataLists += /*html*/ `
-            <ul data-list-index="${listIndex}" class="list gap-2 transition-all [&.droppable]:border-[var(--primary)] bg-white flex min-w-[var(--card-width)] flex-col shadow border-2 border-[var(--border-gray)] rounded-xl p-3">
+            <ul draggable="true" data-list-index="${listIndex}" class="list [&.draggable]:opacity-50 gap-2 transition-all [&.droppable]:border-[var(--primary)] bg-white flex min-w-[var(--card-width)] flex-col shadow border-2 border-[var(--border-gray)] rounded-xl p-3">
                 <li class="listHeading h-[50px] -m-3 p-3 -mb-2 pb-2 flex justify-between items-center">
                     <h3 class="ml-2 text-xl font-bold">${element.title}</h3>
                     <div class="menuBox hover:cursor-pointer relative transition-all p-[4px]"><ellipsis-icon class="editIcon flex transition-all active:scale-80"></ellipsis-icon></div>
                 </li>
                 ${htmlDataTasks}
-                <li>
+                <li>    
                     <button
                     data-list-index="${listIndex}"
                     class="addTask w-full border-2 border-[var(--border-gray)] rounded-xl px-3 py-1 shadow bg-neutral-100 hover:cursor-pointer hover:bg-neutral-200 transition-all">

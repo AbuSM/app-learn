@@ -6,7 +6,7 @@ import { renderTasks } from "./renderTasks";
 import { dragData, tasks } from "./script";
 import { toggleRedBorder } from "./toggleRedBorder";
 
-function addDraggable(taskElements, tasks, listHeadingElements) {
+function addDraggable(taskElements, tasks, listHeadingElements, listElements) {
     taskElements.forEach((element) => {
         element.addEventListener("dragstart", (event) => {
             event.target.classList.add("draggable");
@@ -28,7 +28,8 @@ function addDraggable(taskElements, tasks, listHeadingElements) {
                     listIndex == target.listIndex &&
                     taskIndex == target.taskIndex
                 ) &&
-                event.target.tagName == "LI"
+                event.target.tagName == "LI" &&
+                !target.isList
             ) {
                 event.target.classList.add("droppable");
             }
@@ -49,12 +50,14 @@ function addDraggable(taskElements, tasks, listHeadingElements) {
                 const taskIndex = event.target.dataset.taskIndex;
                 const target = dragData.current;
 
-                const temp = tasks[listIndex].tasks[taskIndex];
-                tasks[listIndex].tasks[taskIndex] =
-                    tasks[target.listIndex].tasks[target.taskIndex];
-                tasks[target.listIndex].tasks[target.taskIndex] = temp;
+                if (!target.isList) {
+                    const temp = tasks[listIndex].tasks[taskIndex];
+                    tasks[listIndex].tasks[taskIndex] =
+                        tasks[target.listIndex].tasks[target.taskIndex];
+                    tasks[target.listIndex].tasks[target.taskIndex] = temp;
 
-                renderTasks(tasks);
+                    renderTasks(tasks);
+                }
             }
         });
     });
@@ -86,11 +89,31 @@ function addDraggable(taskElements, tasks, listHeadingElements) {
             const target = dragData.current;
 
             if (listIndex != target.listIndex) {
-                const task = tasks[target.listIndex].tasks[target.taskIndex];
-                tasks[target.listIndex].tasks.splice(target.taskIndex, 1);
-                tasks[listIndex].tasks = [task, ...tasks[listIndex].tasks];
+                if (target.isList) {
+                    const temp = tasks[listIndex];
+                    tasks[listIndex] = tasks[target.listIndex];
+                    tasks[target.listIndex] = temp;
+                } else {
+                    const task =
+                        tasks[target.listIndex].tasks[target.taskIndex];
+                    tasks[target.listIndex].tasks.splice(target.taskIndex, 1);
+                    tasks[listIndex].tasks = [task, ...tasks[listIndex].tasks];
+                }
                 renderTasks(tasks);
             }
+        });
+    });
+
+    listElements.forEach((element) => {
+        element.addEventListener("dragstart", (event) => {
+            if (event.target.tagName == "UL") {
+                event.target.classList.add("draggable");
+                const listIndex = event.target.dataset.listIndex;
+                dragData.current = { listIndex, isList: true };
+            }
+        });
+        element.addEventListener("dragend", (event) => {
+            event.target.classList.remove("draggable");
         });
     });
 }
@@ -310,8 +333,9 @@ export function addListeners() {
         });
 
         const listHeadingElements = document.querySelectorAll(".listHeading");
+        const listElements = document.querySelectorAll(".list");
 
-        addDraggable(taskElements, tasks, listHeadingElements);
+        addDraggable(taskElements, tasks, listHeadingElements, listElements);
 
         document.addEventListener("keydown", (event) => {
             if (event.key == "Escape") {
