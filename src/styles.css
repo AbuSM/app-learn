@@ -3,6 +3,10 @@
 @plugin "flowbite/plugin";
 @source "../node_modules/flowbite";
 
+@theme {
+	--color-primary-dark: #1c2434;
+}
+
 :root {
 	--primary: rgb(78, 130, 208);
 	--black: #333;
@@ -24,155 +28,23 @@ h2 {
 	color: var(--primary);
 }
 
-header {
+app-shell {
 	display: flex;
-	align-items: center;
-	padding: 0 10px;
-	position: fixed;
-	width: 100%;
-	z-index: 100;
-	background-color: #1e2939;
-}
-header nav {
-	padding: 20px 30px;
-	width: 100%;
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
+	/* grid-template-areas:
+		"sidebar header header"
+		"sidebar main main";
+	grid-template-columns: 2fr 6fr 1fr; */
 }
 
-header nav ul {
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	gap: 40px;
-	list-style-type: none;
+app-sidebar {
+	grid-area: sidebar;
+	width: 280px;
 }
 
-.nav-link {
-	color: var(--primary);
-	text-decoration: none;
-	transition: border 0.2s linear;
-	padding-bottom: 10px;
-	border: 5px solid transparent;
+.main {
+	grid-area: main;
 }
 
-.nav-link:hover {
-	border-bottom: 5px solid var(--primary);
-}
-
-input,
-label {
-	color: var(--primary);
-}
-
-main {
-	padding: 0 60px;
-	padding-top: 150px;
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	align-items: center;
-}
-
-.container {
-	max-width: 1500px;
-	width: 100%;
-	padding: 50px 25px;
-	text-align: center;
-	margin: 0 auto;
-	border: 1px solid var(--primary);
-	border-radius: var(--border-radius-sm);
-	background-color: var(--container-bg-color);
-}
-
-.btn {
-	background-color: var(--primary);
-	color: white;
-	border-radius: var(--border-radius-md);
-	padding: 10px 25px;
-	border: none;
-	cursor: pointer;
-	transition: transform 0.3s, box-shadow 0.3s;
-	min-width: 202px;
-	margin: 5px;
-}
-
-.btn-sm {
-	min-width: 175px;
-	font-size: 35px;
-}
-
-.btn:hover {
-	box-shadow: 0 0 10px 0 #333;
-	transform: scale(1.05);
-}
-
-.area {
-	margin: 20px 0;
-	display: flex;
-	justify-content: center;
-	align-items: end;
-}
-
-dialog {
-	bottom: 0;
-	right: 0;
-	padding: 25px;
-	margin-left: auto;
-	margin-right: 0;
-	border: 2px solid var(--green);
-}
-.dialog p {
-	color: var(--green);
-	margin: 0 0 10px 0;
-}
-.dialog button {
-	color: var(--green);
-	background-color: transparent;
-	border: 1px solid var(--green);
-}
-
-ul > li > ul {
-	display: none;
-	flex-direction: column;
-	padding: 0;
-	align-items: start;
-	top: 100%;
-	left: 0;
-	position: absolute;
-	/* transition: 0.3s; */
-	background-color: white;
-	padding-top: 20px;
-	padding-bottom: 20px;
-	border: 1px solid rgba(0, 0, 0, 0.353);
-}
-
-ul li:hover ul {
-	display: flex;
-}
-ul > li {
-	position: relative;
-}
-
-.nav-link.open {
-	border-bottom: none;
-	position: relative;
-}
-.nav-link.open::after {
-	content: "▼";
-	position: absolute;
-	top: 50%;
-	right: -20px;
-	transform: translateY(-50%);
-	font-size: 30px;
-}
-#stopwatch,
-#timer {
-	width: 100%;
-}
-
-.weather-area {
-	display: flex;
-	gap: 10px;
+app-header {
+	grid-area: header;
 }

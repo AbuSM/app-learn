@@ -8,6 +8,7 @@ class UIToggle extends HTMLElement {
             <span class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300" hidden=${label}>${label}</span>
             </label>
         `;
+		import("");
 	}
 }
 

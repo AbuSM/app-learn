@@ -9,6 +9,7 @@ import "./styles.css"; // Your global CSS file
 // --- App logic ---
 // import "./stores.js";
 import "./router.js";
+import "./components";
 import "./shell/AppShell.js";
 
 // --- Alpine init ---
