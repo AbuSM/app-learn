@@ -22,6 +22,16 @@ weatherApiResult.then((res) => {
 		case 600:
 			comp = `❄️ <span id="weather-result">${temp}</span>&#8451;`;
 			break;
+		case 500:
+			comp = 	`🌧️ <span id="weather-result">${temp}</span>&#8451;`;
+			break;
+		case 200:
+			comp = `🌫️ <span id="weather-result">${temp}</span>&#8451;`;
+			break;
+		case 802:
+			comp = 	 `☁️ <span id="weather-result">${temp}</span>&#8451;`
+			break
+
 	}
 
 	if (weatherType === "Rain") {
@@ -36,3 +46,5 @@ weatherApiResult.then((res) => {
 		weatherArea.innerHTML = `🌦️ <span id="weather-result">${temp}</span>&#8451;`;
 	}
 });
+
+
