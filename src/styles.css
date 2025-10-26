@@ -15,6 +15,7 @@
 	--border-radius-sm: 15px;
 	--container-bg-color: rgb(83, 83, 140);
 }
+
 * {
 	box-sizing: border-box;
 	font-family: monospace;
@@ -28,23 +29,105 @@ h2 {
 	color: var(--primary);
 }
 
+/* App Shell Layout */
 app-shell {
 	display: flex;
-	/* grid-template-areas:
-		"sidebar header header"
-		"sidebar main main";
-	grid-template-columns: 2fr 6fr 1fr; */
+	min-height: 100vh;
+	background-color: #1a1f2e;
 }
 
 app-sidebar {
-	grid-area: sidebar;
+	flex-shrink: 0;
 	width: 280px;
 }
 
 .main {
-	grid-area: main;
+	flex: 1;
+	margin-left: 280px;
+	padding: 2rem;
+	transition: margin-left 0.3s ease;
 }
 
 app-header {
 	grid-area: header;
+}
+
+/* Dark theme scrollbar */
+.no-scrollbar::-webkit-scrollbar {
+	display: none;
+}
+
+.no-scrollbar {
+	-ms-overflow-style: none;
+	scrollbar-width: none;
+}
+
+/* Smooth transitions for sidebar interactions */
+aside a {
+	transition: all 0.3s ease;
+}
+
+/* Active state for nav links */
+aside a.active {
+	background-color: #2a3142;
+	color: white;
+}
+
+/* Nested menu items styling */
+aside ul ul li a {
+	padding-left: 1rem;
+}
+
+/* Badge styling */
+aside span.badge {
+	background-color: #3C50E0;
+	border-radius: 6px;
+	font-size: 12px;
+	font-weight: 500;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+	.main {
+		margin-left: 0;
+	}
+	
+	app-sidebar aside {
+		transform: translateX(-100%);
+	}
+	
+	app-sidebar aside.open {
+		transform: translateX(0);
+	}
+}
+
+/* Custom font sizes for sidebar */
+app-sidebar * {
+	font-size: 15px;
+	line-height: 1.5;
+}
+
+app-sidebar h3 {
+	font-size: 11px;
+	letter-spacing: 0.05em;
+}
+
+app-sidebar .text-sm {
+	font-size: 13px;
+}
+
+app-sidebar .text-xs {
+	font-size: 11px;
+}
+
+/* Logo section */
+app-sidebar svg {
+	max-width: 140px;
+	height: auto;
+}
+
+/* Submenu border */
+aside ul ul {
+	border-left: 2px solid #333a48;
+	margin-left: 1rem;
 }

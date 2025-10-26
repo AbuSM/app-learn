@@ -18,6 +18,10 @@ router
 		await import("./pages/timers/index.js"); // defines <page-timers>
 		mount("page-timers");
 	})
+	.on("/test", async () => {
+		await import("./pages/events/index.js");
+		mount("page-events");
+	})
 	// .on("/todo", async () => {
 	// 	await import("./pages/todo/index.js"); // defines <page-todo>
 	// 	mount("page-todo");
