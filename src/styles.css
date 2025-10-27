@@ -18,9 +18,11 @@
 
 * {
 	box-sizing: border-box;
-	font-family: monospace;
-	font-size: 30px;
 	color: white;
+}
+
+body {
+	font-family: Outfit, sans-serif;
 }
 
 h2 {
@@ -101,12 +103,6 @@ aside span.badge {
 	}
 }
 
-/* Custom font sizes for sidebar */
-app-sidebar * {
-	font-size: 15px;
-	line-height: 1.5;
-}
-
 /* Logo section */
 app-sidebar svg {
 	max-width: 140px;
@@ -115,6 +111,14 @@ app-sidebar svg {
 
 .nav-link {
 	@apply relative flex items-center px-3 py-1 gap-3 rounded-md font-medium text-white bg-primary-dark duration-300 ease-in-out hover:bg-[#333a48];
+}
+
+.submenu-link {
+	@apply relative flex items-center gap-1.5 rounded-md px-2 py-1 text-xs font-normal text-gray-400 duration-300 ease-in-out hover:text-white;
+}
+
+.submenu-link.active {
+	@apply text-white bg-transparent;
 }
 
 /* Submenu border */
