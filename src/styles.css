@@ -80,7 +80,7 @@ aside ul ul li a {
 
 /* Badge styling */
 aside span.badge {
-	background-color: #3C50E0;
+	background-color: #3c50e0;
 	border-radius: 6px;
 	font-size: 12px;
 	font-weight: 500;
@@ -91,11 +91,11 @@ aside span.badge {
 	.main {
 		margin-left: 0;
 	}
-	
+
 	app-sidebar aside {
 		transform: translateX(-100%);
 	}
-	
+
 	app-sidebar aside.open {
 		transform: translateX(0);
 	}
@@ -107,23 +107,14 @@ app-sidebar * {
 	line-height: 1.5;
 }
 
-app-sidebar h3 {
-	font-size: 11px;
-	letter-spacing: 0.05em;
-}
-
-app-sidebar .text-sm {
-	font-size: 13px;
-}
-
-app-sidebar .text-xs {
-	font-size: 11px;
-}
-
 /* Logo section */
 app-sidebar svg {
 	max-width: 140px;
 	height: auto;
+}
+
+.nav-link {
+	@apply relative flex items-center px-3 py-1 gap-3 rounded-md font-medium text-white bg-primary-dark duration-300 ease-in-out hover:bg-[#333a48];
 }
 
 /* Submenu border */
