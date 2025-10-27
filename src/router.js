@@ -18,14 +18,10 @@ router
 		await import("./pages/timers/index.js"); // defines <page-timers>
 		mount("page-timers");
 	})
-	.on("/test", async () => {
-		await import("./pages/events/index.js");
-		mount("page-events");
+	.on("/todo", async () => {
+		await import("./pages/todo/index.js"); // defines <page-todo>
+		mount("page-todo");
 	})
-	// .on("/todo", async () => {
-	// 	await import("./pages/todo/index.js"); // defines <page-todo>
-	// 	mount("page-todo");
-	// })
 	// .notFound(async () => {
 	// 	await import("./pages/not-found.js"); // defines <page-404>
 	// 	mount("page-404");
