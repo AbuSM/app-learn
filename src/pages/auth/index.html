@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ru" x-data="{ page: 'register' }">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Регистрация и Вход</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdn.jsdelivr.net/npm/flowbite@2.3.0/dist/flowbite.min.css" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/flowbite@2.3.0/dist/flowbite.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="bg-white-100 flex items-center justify-center w-screen h-screen">
+  <div class="bg-white shadow-2xl rounded-none overflow-hidden flex items-center w-full h-full">
+    <div class=" w-full  ">
+      <img src="tailadmin.jpg" class="w-full h-full mb-40 mt-40 p-20" alt="logo" />
+    </div>
+    <div class="w-full border-l border-black p-20 pb-0 pt-0">
+      <div x-show="page === 'register'" x-transition>
+        <p>Начните бесплатно</p>
+        <h1 class="text-4xl font-bold mb-10 text-gray-800 text-left">Зарегистрироваться</h1>
+        <form class="space-y-4">
+         
+          <div class="relative">
+             <label for="name" class="font-bold font-sans">Имя</label>
+            <span class="absolute inset-y-0 right-3 pt-5 flex items-center text-gray-400">
+              <i data-lucide="user" class="w-5 h-5"></i>
+            </span>
+            <input type="text" id="name"placeholder="Имя"
+              class="w-full pl-10 p-2 border rounded-lg focus:ring-2 focus:ring-blue-400 outline-none" required>
+          </div>
+          
+          <div class="relative">
+            <label for="email" class="font-bold font-sans">Email</label>
+            <span class="absolute inset-y-0 right-3 pt-5 flex items-center  text-gray-400">
+              <i data-lucide="mail" class="w-5 h-5"></i>
+            </span>
+            <input type="email" id="email" placeholder="Email"
+              class="w-full pl-10 p-2 border rounded-lg focus:ring-2 focus:ring-blue-400 outline-none" required>
+          </div>
+          
+          <div class="relative">
+            <label for="password" class="font-bold font-sans"> Пароль </label>
+            <span class="absolute inset-y-0 right-3 pt-5 flex items-center text-gray-400">
+              <i data-lucide="lock" class="w-5 h-5"></i>
+            </span>
+            <input type="password" id="password" placeholder="Пароль"
+              class="w-full pl-10 p-2 border rounded-lg focus:ring-2 focus:ring-blue-400 outline-none" required>
+          </div>
+          
+          <div class="relative pb-5">
+            <label for="r-password" class="font-bold font-sans">Повторите пароль</label>
+            <span class="absolute inset-y-0 right-3 pt-2 flex items-center text-gray-400">
+              <i data-lucide="lock" class="w-5 h-5"></i>
+            </span>
+            <input type="password" id="r-password" placeholder="Повторите пароль"
+              class="w-full pl-10 p-2  border rounded-lg focus:ring-2 focus:ring-blue-400 outline-none" required>
+          </div>
+          <button type="submit"
+            class="w-full bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-lg transition">Зарегистрироваться</button>
+        </form>
+        <p class="text-sm text-center mt-4 pt-20 text-gray-600">
+          Уже есть аккаунт?
+          <button @click="page = 'login'" class="text-blue-600 hover:underline">Войти</button>
+        </p>
+      </div>
+      <div x-show="page === 'login'" x-transition>
+        <p>Начните бесплатно</p>
+        <h2 class="text-4xl font-bold mb-6 text-gray-800 text-left">Войти</h2>
+        <form class="space-y-4">
+          <div class="relative">
+            <label for="email" class="font-bold font-sans">Email</label>
+            <span class="absolute inset-y-0 right-3 pt-5 flex items-center text-gray-400">
+              <i data-lucide="mail" class="w-5 h-5"></i>
+            </span>
+            <input type="email" placeholder="Email"
+              class="w-full pl-10 p-2 border rounded-lg focus:ring-2 focus:ring-blue-400 outline-none" required>
+          </div>
+          <div class="relative">
+            <label for="password" class="font-bold font-sans">Пароль</label>
+            <span class="absolute inset-y-0 right-3 pt-2 flex items-center text-gray-400">
+              <i data-lucide="lock" class="w-5 h-5"></i>
+            </span>
+            <input type="password" placeholder="Пароль"
+              class="w-full pl-10 p-2 mb-5 border rounded-lg focus:ring-2 focus:ring-blue-400 outline-none" required>
+          </div>
+          <button type="submit"
+            class="w-full bg-blue-600 hover:bg-blue-700 text-white p-3  rounded-lg transition">Войти</button>
+        </form>
+        <p class="text-sm text-center pt-20 mt-4 text-gray-600">
+          Нет аккаунта?
+          <button @click="page = 'register'" class="text-blue-600 hover:underline">Зарегистрироваться</button>
+        </p>
+      </div>
+    </div>
+  </div>
+  <script>
+    lucide.createIcons();
+  </script>
+</body>
+</html>
+
