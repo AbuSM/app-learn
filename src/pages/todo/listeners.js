@@ -245,6 +245,17 @@ const activeEditableListTitle = (event) => {
 
     const titleInput = inputBox.querySelector("input");
 
+    const closeInputBox = () => {
+        inputBox.remove();
+        renderTasks(tasks);
+    };
+
+    document.body.addEventListener("click", (event) => {
+        if (!event.target.closest(".inputBox,.listHeading")) {
+            closeInputBox();
+        }
+    });
+
     titleInput.focus();
     titleInput.setSelectionRange(
         titleInput.value.length,
@@ -263,8 +274,7 @@ const activeEditableListTitle = (event) => {
                 toggleRedBorder(titleInput, true);
             }
         } else if (event.key == "Escape") {
-            inputBox.remove();
-            parent.firstElementChild.style.display = "flex";
+            closeInputBox();
         }
     });
 };
@@ -341,6 +351,13 @@ export function addListeners() {
 
         listHeadingElements.forEach((element) => {
             element.addEventListener("click", activeEditableListTitle);
+        });
+        listHeadingElements.forEach((element) => {
+            element
+                .querySelector(".editIcon")
+                .addEventListener("click", (event) => {
+                    event.stopPropagation();
+                });
         });
 
         addDraggable(taskElements, tasks, listHeadingElements, listElements);
