@@ -3,7 +3,7 @@ import getToday from "../../api/getToday";
 import changeModal from "./change_modal";
 import { pushToServer } from "./pushServer";
 import { renderTasks } from "./renderTasks";
-import { dragData, tasks } from "./script";
+import { dragData, taskData, tasks } from "./script";
 import { toggleRedBorder } from "./toggleRedBorder";
 
 function addDraggable(taskElements, tasks, listHeadingElements, listElements) {
@@ -142,8 +142,8 @@ function closeListInput() {
     });
 }
 
-function handleAddTask(event) {
-    const parent = event.target.parentElement;
+function handleAddTask(element) {
+    const parent = element.parentElement;
 
     closeAllTaskInputs();
 
@@ -168,12 +168,14 @@ function handleAddTask(event) {
 
     const addTask = () => {
         if (!!inputTitle.value.length) {
-            tasks[listIndex].tasks.push({
+            const task = {
                 title: inputTitle.value,
                 description: "",
                 date: getToday(),
                 completed: false,
-            });
+            };
+            tasks[listIndex].tasks.push(task);
+            taskData.lastAdded = { listIndex };
             renderTasks(tasks);
         } else {
             toggleRedBorder(inputTitle, true);
@@ -281,7 +283,9 @@ export function addListeners() {
 
         const addTasks = document.querySelectorAll(".addTask");
         addTasks.forEach((element) => {
-            element.addEventListener("click", handleAddTask);
+            element.addEventListener("click", (event) => {
+                handleAddTask(event.target);
+            });
         });
 
         document.body.addEventListener("click", (event) => {
@@ -375,6 +379,20 @@ export function addListeners() {
         document.body.addEventListener("click", (event) => {
             if (!event.target.closest(".menuBox")) {
                 removeAllListMenus();
+            }
+        });
+        document.body.addEventListener("keydown", (event) => {
+            if (event.key == "Enter") {
+                if (!!taskData.lastAdded) {
+                    if (document.activeElement.tagName == "BODY") {
+                        const lastAddedTask = taskData.lastAdded;
+                        const addButtonElement = document.querySelector(
+                            `ul[data-list-index="${lastAddedTask.listIndex}"] .addTask`
+                        );
+                        handleAddTask(addButtonElement);
+                        console.log(addButtonElement);
+                    }
+                }
             }
         });
     }, 0);

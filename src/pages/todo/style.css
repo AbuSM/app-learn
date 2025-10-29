@@ -70,3 +70,6 @@ body:has(.loader_backdrop) {
 .animate-appear {
     animation: appear 0.2s ease-in-out 1;
 }
+.main {
+    overflow: hidden;
+}

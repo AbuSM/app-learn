@@ -6,6 +6,7 @@ import "./deleteIcon.js";
 
 export let tasks = [];
 export let dragData = {current: {}};
+export let taskData = {lastAdded: undefined};
 
 export const loadInitialData = () => {
     startLoading();
