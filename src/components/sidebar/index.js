@@ -18,17 +18,28 @@ class AppSidebar extends HTMLElement {
                     <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider">MENU</h3>
         
                     <ul class="flex flex-col gap-1.5 mt-2"> <!-- Главная (Main) with Dropdown -->
-                        <li> <a href="#" class="nav-link" onclick="event.preventDefault(); this.nextElementSibling.classList.toggle('hidden'); this.querySelector('.arrow-icon').classList.toggle('rotate-180')"> <ui-icon name="menu"></ui-icon> Главная <ui-icon name="chevron-down" class="arrow-icon absolute right-4 top-1/2 transition-transform duration-300 rotate-0"></ui-icon> </a>
+                        <li> <a href="#" class="nav-link" onclick="event.preventDefault(); this.nextElementSibling.classList.toggle('hidden'); this.querySelector('.arrow-icon').classList.toggle('rotate-x-180')"> <ui-icon name="menu"></ui-icon> Главная <ui-icon name="chevron-down" class="arrow-icon absolute right-4 top-1/2 transition-transform duration-300 -translate-1/2 rotate-0"></ui-icon> </a>
                             <ul class="flex flex-col gap-1 my-2">
                                 <li> <a href="/achievements" class="submenu-link"> <ui-icon name="trophy"></ui-icon> Мои достижения </a> </li>
-                                <li> <a href="/blog" class="submenu-link active"> <ui-icon name="document-text"></ui-icon> Блог </a> </li>
+                                <li> <a href="/blog" class="submenu-link"> <ui-icon name="document-text"></ui-icon> Блог </a> </li>
                                 <li> <a href="/events" class="submenu-link"> <ui-icon name="calendar"></ui-icon> События </a> </li>
                                 <li> <a href="/calendar" class="submenu-link"> <ui-icon name="calendar"></ui-icon> Календарь </a> </li>
                             </ul>
+                        </li>
+                        <li>
+                            <a href="/todo" class="nav-link">
+                                <ui-icon name="clipboard-list"></ui-icon> Задачи
+                            </a>
                         </li> <!-- Задачи (Tasks) -->
-                        <li> <a href="/tasks" class="nav-link"> <ui-icon name="clipboard-list"></ui-icon> Задачи </a> </li> <!-- О проекте (About) -->
-                        <li> <a href="/about" class="nav-link"> <ui-icon name="information-circle"></ui-icon> О проекте </a> </li> <!-- Курсы (Courses) with Dropdown -->
-                        <li> <a href="#" class="nav-link" onclick="event.preventDefault(); this.nextElementSibling.classList.toggle('hidden'); this.querySelector('.arrow-icon').classList.toggle('rotate-180')"> <ui-icon name="book-open"></ui-icon> Курсы <ui-icon name="chevron-down" class="arrow-icon absolute right-4 top-1/2 -translate-y-1/2 transition-transform duration-300 rotate-180"></ui-icon> </a>
+                        <li>
+                            <a href="/about" class="nav-link">
+                                <ui-icon name="information-circle"></ui-icon> О проекте
+                            </a>
+                        </li> <!-- Курсы (Courses) with Dropdown -->
+                        <li>
+                            <a href="#" class="nav-link" onclick="event.preventDefault(); this.nextElementSibling.classList.toggle('hidden'); this.querySelector('.arrow-icon').classList.toggle('rotate-180')">
+                                <ui-icon name="book-open"></ui-icon> Курсы <ui-icon name="chevron-down" class="arrow-icon absolute right-4 top-1/2 -translate-y-1/2 transition-transform duration-300 rotate-180"></ui-icon>
+                            </a>
                             <ul class="mt-2 flex flex-col gap-1 pl-4">
                                 <li> <a href="/my-courses" class="submenu-link"> <ui-icon name="book"></ui-icon> Мои курсы <span class="inline-flex items-center justify-center rounded-md bg-[#3C50E0] px-2 py-0.5 text-xs font-medium text-white">2</span> </a> </li>
                                 <li> <a href="/all-courses" class="submenu-link"> <ui-icon name="academic-cap"></ui-icon> Все курсы <span class="inline-flex items-center justify-center rounded-md bg-[#3C50E0] px-2 py-0.5 text-xs font-medium text-white">10</span> </a> </li>
