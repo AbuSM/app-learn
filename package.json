@@ -13,7 +13,7 @@
 	"author": "Technohub students",
 	"license": "ISC",
 	"devDependencies": {
-		"vite": "^6.3.6"
+		"vite": "^6.4.0"
 	},
 	"dependencies": {
 		"@alpinejs/persist": "^3.15.0",
