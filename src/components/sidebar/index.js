@@ -37,8 +37,8 @@ class AppSidebar extends HTMLElement {
                             </a>
                         </li> <!-- Курсы (Courses) with Dropdown -->
                         <li>
-                            <a href="#" class="nav-link" onclick="event.preventDefault(); this.nextElementSibling.classList.toggle('hidden'); this.querySelector('.arrow-icon').classList.toggle('rotate-180')">
-                                <ui-icon name="book-open"></ui-icon> Курсы <ui-icon name="chevron-down" class="arrow-icon absolute right-4 top-1/2 -translate-y-1/2 transition-transform duration-300 rotate-180"></ui-icon>
+                            <a href="#" class="nav-link" onclick="event.preventDefault(); this.nextElementSibling.classList.toggle('hidden'); this.querySelector('.arrow-icon').classList.toggle('rotate-x-180')">
+                                <ui-icon name="book-open"></ui-icon> Курсы <ui-icon name="chevron-down" class="arrow-icon absolute right-4 top-1/2 -translate-y-1/2 transition-transform duration-300"></ui-icon>
                             </a>
                             <ul class="mt-2 flex flex-col gap-1 pl-4">
                                 <li> <a href="/my-courses" class="submenu-link"> <ui-icon name="book"></ui-icon> Мои курсы <span class="inline-flex items-center justify-center rounded-md bg-[#3C50E0] px-2 py-0.5 text-xs font-medium text-white">2</span> </a> </li>
