@@ -4,7 +4,7 @@ class AppShell extends HTMLElement {
         <app-sidebar></app-sidebar>
         <div class="main">
             <app-header></app-header>
-            <main class="container mx-auto p-6">
+            <main class="p-6">
                 <app-outlet></app-outlet>
             </main>
             <app-footer></app-footer>
