@@ -339,6 +339,10 @@ export function addListeners() {
         const listHeadingElements = document.querySelectorAll(".listHeading");
         const listElements = document.querySelectorAll(".list");
 
+        listHeadingElements.forEach((element) => {
+            element.addEventListener("click", activeEditableListTitle);
+        });
+
         addDraggable(taskElements, tasks, listHeadingElements, listElements);
 
         document.addEventListener("keydown", (event) => {
