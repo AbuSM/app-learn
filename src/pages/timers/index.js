@@ -3,8 +3,8 @@ import "./timer.css";
 import "../../api/weather-api.js";
 
 class PageTimers extends HTMLElement {
-    connectedCallback() {
-        this.innerHTML = /*html*/ `
+	connectedCallback() {
+		this.innerHTML = /*html*/ `
         <section class="space-y-8">
             <div id="stopwatch">
                 <ui-toggle></ui-toggle>
@@ -58,6 +58,6 @@ class PageTimers extends HTMLElement {
             </audio>
         </section>
         `;
-    }
+	}
 }
 customElements.define("page-timers", PageTimers);
