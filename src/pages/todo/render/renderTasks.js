@@ -54,13 +54,7 @@ export const renderTasks = (tasks, isInitial = false) => {
     (() => {
         taskListsElement.innerHTML = htmlDataLists;
 
-        // controller.controller.abort();
-        setTimeout(() => {
-            const test = document.body.innerHTML;
-            console.log(document.body.innerHTML, test);
-
-            document.body.innerHTML = test;
-        }, 100);
+        controller.controller.abort();
 
         addListeners();
         endLoading();
