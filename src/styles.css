@@ -128,11 +128,11 @@ app-sidebar svg {
 }
 
 .nav-link {
-	@apply relative flex items-center px-3 py-1 gap-3 rounded-md font-medium text-white bg-primary-dark duration-300 ease-in-out hover:bg-[#333a48];
+	@apply relative flex items-center px-3 py-3 gap-3 rounded-md font-medium text-white bg-primary-dark duration-300 ease-in-out hover:bg-[#333a48];
 }
 
 .submenu-link {
-	@apply relative flex items-center gap-1.5 rounded-md px-2 py-1 font-normal text-gray-400 duration-300 ease-in-out hover:text-white;
+	@apply relative flex items-center gap-1.5 rounded-md px-2 py-2 text-base text-gray-400 duration-300 ease-in-out hover:text-white;
 }
 
 .submenu-link.active {
@@ -143,4 +143,12 @@ app-sidebar svg {
 aside ul ul {
 	border-left: 2px solid #333a48;
 	margin-left: 1rem;
+}
+
+#global-toast {
+	display: none;
+	position: fixed;
+	right: 10px;
+	bottom: 10px;
+	pointer-events: none;
 }

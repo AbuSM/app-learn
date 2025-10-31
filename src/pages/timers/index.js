@@ -36,6 +36,7 @@ class PageTimers extends HTMLElement {
             <div id="timer" class="mt-2">
                 <div class="container">
                     <h2>Timer</h2>
+                    <button onclick="window.showToast('Test Test', 5)" style="font-size: 24px; background-color: red">test</button>
                     <div class="area" id="timer-area">
                         <div class="seconds">0</div>
                         <span class="milliseconds">.</span>
