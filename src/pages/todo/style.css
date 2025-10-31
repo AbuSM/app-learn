@@ -61,7 +61,7 @@ body:has(.loader_backdrop) {
 .listHeading,
 .completeCheckbox,
 .addTask,
-.editIcon,
+.menuIcon,
 .inputBox,
 .listMenu,
 .listMenu * {
