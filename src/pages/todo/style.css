@@ -64,8 +64,9 @@ body:has(.loader_backdrop) {
 .menuIcon,
 .inputBox,
 .listMenu,
-.listMenu * {
-    pointer-events: auto;
+.listMenu *,
+h3 {
+    pointer-events: auto !important;
 }
 .animate-appear {
     animation: appear 0.2s ease-in-out 1;

@@ -1,3 +1,4 @@
+// listeners.js
 import getDOMElement from "../../../api/getDOMElement";
 import getToday from "../../../api/getToday";
 import changeModal from "../change_modal";
@@ -6,176 +7,230 @@ import { renderTasks } from "../render/renderTasks";
 import { controller, dragData, taskData, tasks } from "../script";
 import { toggleRedBorder } from "../toggleRedBorder";
 
-function addDraggable(taskElements, tasks, listHeadingElements, listElements) {
-    const signal = controller.controller.signal;
-    taskElements.forEach((element) => {
-        element.addEventListener(
-            "dragstart",
-            (event) => {
-                event.target.classList.add("draggable");
-                const listIndex = event.target.dataset.listIndex;
-                const taskIndex = event.target.dataset.taskIndex;
-                dragData.current = { listIndex, taskIndex };
-            },
-            { signal }
-        );
-        element.addEventListener(
-            "dragend",
-            (event) => {
-                event.target.classList.remove("draggable");
-            },
-            { signal }
-        );
-        element.addEventListener(
-            "dragenter",
-            (event) => {
-                const listIndex = event.target.dataset.listIndex;
-                const taskIndex = event.target.dataset.taskIndex;
-
-                const target = dragData.current;
-
-                if (
-                    !(
-                        listIndex == target.listIndex &&
-                        taskIndex == target.taskIndex
-                    ) &&
-                    event.target.tagName == "LI" &&
-                    !target.isList
-                ) {
-                    event.target.classList.add("droppable");
-                }
-            },
-            { signal }
-        );
-        element.addEventListener(
-            "dragleave",
-            (event) => {
-                if (event.target.tagName == "LI") {
-                    event.target.classList.remove("droppable");
-                }
-            },
-            { signal }
-        );
-
-        element.addEventListener(
-            "dragover",
-            (event) => {
-                event.preventDefault();
-            },
-            { signal }
-        );
-        element.addEventListener(
-            "drop",
-            (event) => {
-                event.preventDefault();
-                if (event.target.tagName == "LI") {
-                    const listIndex = event.target.dataset.listIndex;
-                    const taskIndex = event.target.dataset.taskIndex;
-                    const target = dragData.current;
-
-                    if (!target.isList) {
-                        const temp = tasks[listIndex].tasks[taskIndex];
-                        tasks[listIndex].tasks[taskIndex] =
-                            tasks[target.listIndex].tasks[target.taskIndex];
-                        tasks[target.listIndex].tasks[target.taskIndex] = temp;
-
-                        renderTasks(tasks);
-                    }
-                }
-            },
-            { signal }
-        );
-    });
-
-    listHeadingElements.forEach((element) => {
-        element.addEventListener(
-            "dragenter",
-            (event) => {
-                const target = dragData.current;
-                const parent = event.target.closest(".list");
-                if (parent.dataset.listIndex != target.listIndex) {
-                    parent.classList.add("droppable");
-                }
-            },
-            { signal }
-        );
-        element.addEventListener(
-            "dragleave",
-            (event) => {
-                const parent = event.target.closest(".list");
-                parent.classList.remove("droppable");
-            },
-            { signal }
-        );
-        element.addEventListener(
-            "dragover",
-            (event) => {
-                event.preventDefault();
-                const target = dragData.current;
-                const parent = event.target.closest(".list");
-                if (parent.dataset.listIndex != target.listIndex) {
-                    parent.classList.add("droppable");
-                }
-            },
-            { signal }
-        );
-        element.addEventListener(
-            "drop",
-            (event) => {
-                event.preventDefault();
-
-                const listIndex =
-                    event.target.closest(".list").dataset.listIndex;
-                const target = dragData.current;
-
-                if (listIndex != target.listIndex) {
-                    if (target.isList) {
-                        const temp = tasks[listIndex];
-                        tasks[listIndex] = tasks[target.listIndex];
-                        tasks[target.listIndex] = temp;
-                    } else {
-                        const task =
-                            tasks[target.listIndex].tasks[target.taskIndex];
-                        tasks[target.listIndex].tasks.splice(
-                            target.taskIndex,
-                            1
-                        );
-                        tasks[listIndex].tasks = [
-                            task,
-                            ...tasks[listIndex].tasks,
-                        ];
-                    }
-                    renderTasks(tasks);
-                }
-            },
-            { signal }
-        );
-    });
-
-    listElements.forEach((element) => {
-        element.addEventListener(
-            "dragstart",
-            (event) => {
-                if (event.target.tagName == "UL") {
-                    event.target.classList.add("draggable");
-                    const listIndex = event.target.dataset.listIndex;
-                    dragData.current = { listIndex, isList: true };
-                }
-            },
-            { signal }
-        );
-        element.addEventListener(
-            "dragend",
-            (event) => {
-                event.target.classList.remove("draggable");
-            },
-            { signal }
-        );
-    });
+export function onDragStart(event) {
+    event.target.classList.add("draggable");
+    const listIndex = event.target.dataset.listIndex;
+    const taskIndex = event.target.dataset.taskIndex;
+    dragData.current = { listIndex, taskIndex };
 }
 
-function closeAllTaskInputs() {
-    const signal = controller.controller.signal;
+export function onDragEnd(event) {
+    event.target.classList.remove("draggable");
+}
+
+export function onTaskDragEnter(event) {
+    const listIndex = event.target.dataset.listIndex;
+    const taskIndex = event.target.dataset.taskIndex;
+    const target = dragData.current;
+
+    if (
+        !(listIndex == target.listIndex && taskIndex == target.taskIndex) &&
+        event.target.tagName == "LI" &&
+        !target.isList
+    ) {
+        event.target.classList.add("droppable");
+    }
+}
+
+export function onTaskDragLeave(event) {
+    if (event.target.tagName == "LI") {
+        event.target.classList.remove("droppable");
+    }
+}
+
+export function onTaskDragOver(event) {
+    event.preventDefault();
+}
+
+export function onTaskDrop(event) {
+    event.preventDefault();
+    if (event.target.tagName == "LI") {
+        const listIndex = event.target.dataset.listIndex;
+        const taskIndex = event.target.dataset.taskIndex;
+        const target = dragData.current;
+
+        if (!target.isList) {
+            const temp = tasks[listIndex].tasks[taskIndex];
+            tasks[listIndex].tasks[taskIndex] =
+                tasks[target.listIndex].tasks[target.taskIndex];
+            tasks[target.listIndex].tasks[target.taskIndex] = temp;
+
+            renderTasks(tasks);
+        }
+    }
+}
+
+export function onListHeadingDragEnter(event) {
+    const target = dragData.current;
+    const parent = event.target.closest(".list");
+    if (parent.dataset.listIndex != target.listIndex) {
+        parent.classList.add("droppable");
+    }
+}
+
+export function onListHeadingDragLeave(event) {
+    const parent = event.target.closest(".list");
+    parent.classList.remove("droppable");
+}
+
+export function onListHeadingDragOver(event) {
+    event.preventDefault();
+    const target = dragData.current;
+    const parent = event.target.closest(".list");
+    if (parent.dataset.listIndex != target.listIndex) {
+        parent.classList.add("droppable");
+    }
+}
+
+export function onListHeadingDrop(event) {
+    event.preventDefault();
+
+    const listIndex = event.target.closest(".list").dataset.listIndex;
+    const target = dragData.current;
+
+    if (listIndex != target.listIndex) {
+        if (target.isList) {
+            const temp = tasks[listIndex];
+            tasks[listIndex] = tasks[target.listIndex];
+            tasks[target.listIndex] = temp;
+        } else {
+            const task = tasks[target.listIndex].tasks[target.taskIndex];
+            tasks[target.listIndex].tasks.splice(target.taskIndex, 1);
+            tasks[listIndex].tasks = [task, ...tasks[listIndex].tasks];
+        }
+        renderTasks(tasks);
+    }
+}
+
+export function onListDragStart(event) {
+    if (event.target.tagName == "UL") {
+        event.target.classList.add("draggable");
+        const listIndex = event.target.dataset.listIndex;
+        dragData.current = { listIndex, isList: true };
+    }
+}
+
+export function onListDragEnd(event) {
+    event.target.classList.remove("draggable");
+}
+
+export function onCompleteCheckboxClick(event) {
+    const liElement = event.target.closest("li");
+    let checkState = event.target.checked;
+
+    const listIndex = liElement.dataset.listIndex;
+    const taskIndex = liElement.dataset.taskIndex;
+
+    tasks[listIndex].tasks[taskIndex].completed = checkState;
+
+    liElement.querySelector(".title").style["text-decoration-line"] = checkState
+        ? "line-through"
+        : "none";
+    pushToServer(tasks);
+}
+
+export async function onTaskClick(event) {
+    if (event.target.tagName != "INPUT") {
+        const parent = event.target.closest(".task");
+        const listIndex = parent.dataset.listIndex;
+        const taskIndex = parent.dataset.taskIndex;
+
+        const task = await changeModal(tasks[listIndex].tasks[taskIndex]);
+
+        if (task.isDelete) {
+            tasks[listIndex].tasks.splice(taskIndex, 1);
+        } else {
+            tasks[listIndex].tasks[taskIndex] = task;
+        }
+
+        renderTasks(tasks);
+    }
+}
+
+export function onListHeadingClick(event) {
+    const parent = event.target.closest(".list");
+    const listIndex = parent.dataset.listIndex;
+    parent.firstElementChild.style.display = "none";
+    const title = tasks[listIndex].title;
+
+    const inputBox =
+        getDOMElement(/*html*/ `<li class="inputBox relative h-[50px] -m-3 p-3 -mb-2 pb-2 flex justify-between items-center">
+                            <input value="${title}" type="text" class="min-w-0 w-full rounded-sm border-2 border-[var(--border-gray)] focus-within:ring-0 focus:ring-0 focus-within:border-[var(--primary)] focus:border-[var(--primary)] text-xl px-2 py-1 font-bold" oninput="window.onTitleInputChange(event)" onkeydown="window.onTitleInputKeydown(event)" />
+                        </li>`);
+    parent.prepend(inputBox);
+
+    const titleInput = inputBox.querySelector("input");
+
+    window.currentListIndex = listIndex;
+    window.currentInputBox = inputBox;
+
+    titleInput.focus();
+    titleInput.setSelectionRange(
+        titleInput.value.length,
+        titleInput.value.length
+    );
+}
+
+export function onTitleInputChange(event) {
+    toggleRedBorder(event.target, !event.target.value.length);
+}
+
+export function onTitleInputKeydown(event) {
+    if (event.key == "Enter") {
+        const titleInput = event.target;
+        if (!!titleInput.value.length) {
+            tasks[window.currentListIndex].title = titleInput.value;
+            renderTasks(tasks);
+        } else {
+            toggleRedBorder(titleInput, true);
+        }
+    } else if (event.key == "Escape") {
+        window.currentInputBox.remove();
+        renderTasks(tasks);
+    }
+}
+
+export function onMenuIconClick(event) {
+    event.stopPropagation();
+    const parentElement = event.target.parentElement;
+    if (parentElement.children.length > 1) {
+        parentElement.lastElementChild.remove();
+    } else {
+        const menuElements = document.querySelectorAll(".listMenu");
+        menuElements.forEach((element) => {
+            element.remove();
+        });
+
+        const listElement = event.target.closest(".list");
+        const listIndex = listElement.dataset.listIndex;
+
+        const menuElement = getDOMElement(/* html */ `
+                        <ul class="animate-appear listMenu z-10 hover:cursor-pointer absolute w-[100px] flex flex-col bg-white p-1 border-2 border-[var(--border-gray)] rounded-sm">
+                            <li class="editBtn hover:text-black/70 hover:cursor-pointer transition-all"><button class="hover:cursor-pointer" onclick="window.onEditListClick(event)">Edit</button></li>
+                            <li class="removeBtn hover:text-black/70 hover:cursor-pointer transition-all"><button class="hover:cursor-pointer" onclick="window.onRemoveListClick(event)">Remove</button></li>
+                        </ul>
+                        `);
+        parentElement.appendChild(menuElement);
+    }
+}
+
+export function onEditListClick(event) {
+    const listElement = event.target.closest(".list");
+    const listHeading = listElement.querySelector(".listHeading");
+    onListHeadingClick({ target: listHeading });
+}
+
+export function onRemoveListClick(event) {
+    const listElement = event.target.closest(".list");
+    const listIndex = listElement.dataset.listIndex;
+    tasks.splice(listIndex, 1);
+    renderTasks(tasks);
+}
+
+export function onAddTaskClick(event) {
+    const parent = event.target.parentElement;
+    const listIndex = event.target.dataset.listIndex;
+
     const inputs = document.querySelectorAll(".titleInputBox");
     inputs.forEach((element) => {
         element.remove();
@@ -184,36 +239,7 @@ function closeAllTaskInputs() {
     const addTasks = document.querySelectorAll(`.addTask`);
     addTasks.forEach((element) => {
         element.style.display = "initial";
-        element.addEventListener(
-            "click",
-            (event) => {
-                handleAddTask(event.target);
-            },
-            { signal }
-        );
     });
-}
-function closeListInput() {
-    const signal = controller.controller.signal;
-    const inputs = document.querySelectorAll(".addListBox");
-    inputs.forEach((element) => {
-        element.remove();
-    });
-    const listButtons = document.querySelectorAll(".add-list-button");
-    listButtons.forEach((element) => {
-        element.style.display = "initial";
-        controller.controller.abort();
-        element.addEventListener("click", handleAddList, { signal });
-    });
-}
-
-function handleAddTask(element) {
-    const signal = controller.controller.signal;
-    const parent = element.parentElement;
-
-    closeAllTaskInputs();
-
-    console.log(element, parent);
 
     if (!parent) {
         return;
@@ -221,29 +247,33 @@ function handleAddTask(element) {
 
     parent.innerHTML += /*html*/ `
                     <div class="titleInputBox w-fill flex flex-col gap-2 border-[var(--border-gray)] border-2 rounded-xl p-3 shadow bg-neutral-100 hover:cursor-auto transition-all">
-                        <input class="titleInput w-full px-3 border-[var(--border-gray)] py-1 rounded border-2 focus:ring-0 focus:border-[var(--primary)]" type="text">
-                        <button class="addButton bg-[#465fff] hover:brightness-95 hover:cursor-pointer active:brightness-90 px-3 py-1 text-white rounded">Add</button>
+                        <input class="titleInput w-full px-3 border-[var(--border-gray)] py-1 rounded border-2 focus:ring-0 focus:border-[var(--primary)]" type="text" oninput="window.onTaskInputChange(event)" onkeydown="window.onTaskInputKeydown(event)">
+                        <button class="addButton bg-[#465fff] hover:brightness-95 hover:cursor-pointer active:brightness-90 px-3 py-1 text-white rounded" onclick="window.onAddTaskButtonClick(event)">Add</button>
                     </div>
                 `;
 
     parent.firstElementChild.style.display = "none";
 
     const inputTitle = parent.querySelector(".titleInput");
-    const addButton = parent.querySelector(".addButton");
+    window.currentTaskListIndex = listIndex;
 
     inputTitle.focus();
-    inputTitle.addEventListener("input", (event) => {
-        toggleRedBorder(event.target, !event.target.value.length);
-    }, {signal});
+}
 
-    const listIndex = parent.firstElementChild.dataset.listIndex;
+export function onTaskInputChange(event) {
+    toggleRedBorder(event.target, !event.target.value.length);
+}
 
-    const addTask = () => {
+export function onTaskInputKeydown(event) {
+    if (event.key === "Enter") {
+        const inputTitle = event.target;
+        const listIndex = window.currentTaskListIndex;
+
         if (!!inputTitle.value.length) {
             const task = {
                 title: inputTitle.value,
                 description: "",
-                date: getToday(),
+                date: "",
                 completed: false,
             };
             tasks[listIndex].tasks.push(task);
@@ -252,307 +282,198 @@ function handleAddTask(element) {
         } else {
             toggleRedBorder(inputTitle, true);
         }
-    };
-
-    addButton.addEventListener("click", addTask, { signal });
-    inputTitle.addEventListener("keydown", (event) => {
-        if (event.key === "Enter") {
-            addTask();
-        }
-    }, {signal});
+    }
 }
 
-function handleAddList(event) {
-    const signal = controller.controller.signal;
+export function onAddTaskButtonClick(event) {
+    const inputTitle = event.target.parentElement.querySelector(".titleInput");
+    const listIndex = window.currentTaskListIndex;
+
+    if (!!inputTitle.value.length) {
+        const task = {
+            title: inputTitle.value,
+            description: "",
+            date: getToday(),
+            completed: false,
+        };
+        tasks[listIndex].tasks.push(task);
+        taskData.lastAdded = { listIndex };
+        renderTasks(tasks);
+    } else {
+        toggleRedBorder(inputTitle, true);
+    }
+}
+
+export function onAddListClick(event) {
     const parent = event.target.parentElement;
+
+    const inputs = document.querySelectorAll(".addListBox");
+    inputs.forEach((element) => {
+        element.remove();
+    });
+
+    const listButtons = document.querySelectorAll(".add-list-button");
+    listButtons.forEach((element) => {
+        element.style.display = "initial";
+    });
 
     parent.innerHTML += `
                 <div class="addListBox flex flex-col gap-2 w-[var(--card-width)] border-[var(--border-gray)] border-2 rounded-xl p-3 shadow bg-neutral-100 hover:cursor-auto transition-all">
-                    <input class="titleInput w-full px-3 border-[var(--border-gray)] py-1 rounded border-2 focus:ring-0 focus:border-[var(--primary)]" type="text">
-                    <button class="addButton bg-[#465fff] hover:brightness-95 hover:cursor-pointer active:brightness-90 px-3 py-1 text-white rounded">Add</button>
+                    <input class="titleInput w-full px-3 border-[var(--border-gray)] py-1 rounded border-2 focus:ring-0 focus:border-[var(--primary)]" type="text" oninput="window.onListInputChange(event)" onkeydown="window.onListInputKeydown(event)">
+                    <button class="addButton bg-[#465fff] hover:brightness-95 hover:cursor-pointer active:brightness-90 px-3 py-1 text-white rounded" onclick="window.onAddListButtonClick(event)">Add</button>
                 </div>
             `;
-    const addButton = parent.querySelector(".addButton");
+
     const titleInput = parent.querySelector(".titleInput");
-
-    titleInput.focus();
-    titleInput.addEventListener(
-        "input",
-        (event) => {
-            toggleRedBorder(event.target, !event.target.value.length);
-        },
-        { signal }
-    );
-
     parent.firstElementChild.style.display = "none";
+    titleInput.focus();
+}
 
-    const addList = (title) => {
+export function onListInputChange(event) {
+    toggleRedBorder(event.target, !event.target.value.length);
+}
+
+export function onListInputKeydown(event) {
+    if (event.key === "Enter") {
+        const titleInput = event.target;
+
         if (!!titleInput.value.length) {
             tasks.push({
-                title,
+                title: titleInput.value,
                 tasks: [],
             });
             renderTasks(tasks);
         } else {
             toggleRedBorder(titleInput, true);
         }
-    };
-
-    addButton.addEventListener(
-        "click",
-        () => {
-            addList(titleInput.value);
-        },
-        { signal }
-    );
-    titleInput.addEventListener(
-        "keydown",
-        (event) => {
-            if (event.key === "Enter") {
-                addList(titleInput.value);
-            }
-        },
-        { signal }
-    );
+    }
 }
 
-const activeEditableListTitle = (event) => {
-    const signal = controller.controller.signal;
-    const parent = event.target.closest(".list");
-    const listIndex = parent.dataset.listIndex;
-    parent.firstElementChild.style.display = "none";
-    const title = tasks[listIndex].title;
+export function onAddListButtonClick(event) {
+    const titleInput = event.target.parentElement.querySelector(".titleInput");
 
-    const inputBox =
-        getDOMElement(/*html*/ `<li class="inputBox relative h-[50px] -m-3 p-3 -mb-2 pb-2 flex justify-between items-center">
-                            <input value="${title}" type="text" class="min-w-0 rounded-sm border-2 border-[var(--border-gray)] focus-within:ring-0 focus:ring-0 focus-within:border-[var(--primary)] focus:border-[var(--primary)] text-xl px-2 py-1 font-bold" value="hello" />
-                        </li>`);
-    parent.prepend(inputBox);
-
-    const titleInput = inputBox.querySelector("input");
-
-    const closeInputBox = () => {
-        inputBox.remove();
+    if (!!titleInput.value.length) {
+        tasks.push({
+            title: titleInput.value,
+            tasks: [],
+        });
         renderTasks(tasks);
-    };
+    } else {
+        toggleRedBorder(titleInput, true);
+    }
+}
 
-    document.body.addEventListener(
-        "click",
-        (event) => {
-            if (!event.target.closest(".inputBox,.listHeading")) {
-                closeInputBox();
-            }
-        },
-        { signal }
-    );
+export function onBodyClick(event) {
+    if (!event.target.closest(".titleInputBox,.addTask")) {
+        const inputs = document.querySelectorAll(".titleInputBox");
+        inputs.forEach((element) => {
+            element.remove();
+        });
 
-    titleInput.focus();
-    titleInput.setSelectionRange(
-        titleInput.value.length,
-        titleInput.value.length
-    );
-    titleInput.addEventListener(
-        "input",
-        (event) => {
-            toggleRedBorder(event.target, !event.target.value.length);
-        },
-        { signal }
-    );
+        const addTasks = document.querySelectorAll(`.addTask`);
+        addTasks.forEach((element) => {
+            element.style.display = "initial";
+        });
+    }
 
-    titleInput.addEventListener(
-        "keydown",
-        (event) => {
-            if (event.key == "Enter") {
-                if (!!titleInput.value.length) {
-                    tasks[listIndex].title = titleInput.value;
-                    renderTasks(tasks);
-                } else {
-                    toggleRedBorder(titleInput, true);
+    if (!event.target.closest(".inputBox,.listHeading")) {
+        if (
+            !!window.currentInputBox &&
+            !!window.currentInputBox.parentElement
+        ) {
+            const parent = window.currentInputBox.parentElement;
+            const listHeadingElement = parent.querySelector(".listHeading");
+            listHeadingElement.style.display = "flex";
+
+            window.currentInputBox.remove();
+        }
+    }
+
+    if (!event.target.closest(".menuBox")) {
+        const menuElements = document.querySelectorAll(".listMenu");
+        menuElements.forEach((element) => {
+            element.remove();
+        });
+    }
+}
+
+export function onBodyKeydown(event) {
+    if (event.key == "Escape") {
+        const inputs = document.querySelectorAll(".titleInputBox");
+        inputs.forEach((element) => {
+            element.remove();
+        });
+
+        const addTasks = document.querySelectorAll(`.addTask`);
+        addTasks.forEach((element) => {
+            element.style.display = "initial";
+        });
+
+        const listInputs = document.querySelectorAll(".addListBox");
+        listInputs.forEach((element) => {
+            element.remove();
+        });
+
+        const listButtons = document.querySelectorAll(".add-list-button");
+        listButtons.forEach((element) => {
+            element.style.display = "initial";
+        });
+    }
+
+    if (event.key == "Enter") {
+        if (!!taskData.lastAdded) {
+            if (event.target.tagName == "BODY") {
+                const lastAddedTask = taskData.lastAdded;
+                const addButtonElement = document.querySelector(
+                    `ul[data-list-index="${lastAddedTask.listIndex}"] .addTask`
+                );
+                if (addButtonElement) {
+                    onAddTaskClick({ target: addButtonElement });
                 }
-            } else if (event.key == "Escape") {
-                closeInputBox();
             }
-        },
-        { signal }
-    );
-};
+        }
+    }
+}
 
-const removeAllListMenus = () => {
-    const menuElements = document.querySelectorAll(".listMenu");
-    menuElements.forEach((element) => {
-        element.remove();
-    });
-};
+export function initGlobalHandlers() {
+    window.onDragStart = onDragStart;
+    window.onDragEnd = onDragEnd;
+    window.onTaskDragEnter = onTaskDragEnter;
+    window.onTaskDragLeave = onTaskDragLeave;
+    window.onTaskDragOver = onTaskDragOver;
+    window.onTaskDrop = onTaskDrop;
+    window.onListHeadingDragEnter = onListHeadingDragEnter;
+    window.onListHeadingDragLeave = onListHeadingDragLeave;
+    window.onListHeadingDragOver = onListHeadingDragOver;
+    window.onListHeadingDrop = onListHeadingDrop;
+    window.onListDragStart = onListDragStart;
+    window.onListDragEnd = onListDragEnd;
+    window.onCompleteCheckboxClick = onCompleteCheckboxClick;
+    window.onTaskClick = onTaskClick;
+    window.onListHeadingClick = onListHeadingClick;
+    window.onTitleInputChange = onTitleInputChange;
+    window.onTitleInputKeydown = onTitleInputKeydown;
+    window.onMenuIconClick = onMenuIconClick;
+    window.onEditListClick = onEditListClick;
+    window.onRemoveListClick = onRemoveListClick;
+    window.onAddTaskClick = onAddTaskClick;
+    window.onTaskInputChange = onTaskInputChange;
+    window.onTaskInputKeydown = onTaskInputKeydown;
+    window.onAddTaskButtonClick = onAddTaskButtonClick;
+    window.onAddListClick = onAddListClick;
+    window.onListInputChange = onListInputChange;
+    window.onListInputKeydown = onListInputKeydown;
+    window.onAddListButtonClick = onAddListButtonClick;
+    window.onBodyClick = onBodyClick;
+    window.onBodyKeydown = onBodyKeydown;
+}
 
-export function addListeners() {
-    controller.controller = new AbortController();
+export function initDocumentListeners() {
     const signal = controller.controller.signal;
 
-    setTimeout(() => {
-        const addListBtn = document.querySelector(".add-list-button");
-        addListBtn.addEventListener("click", handleAddList, { signal });
+    document.body.removeEventListener("click", onBodyClick);
+    document.body.addEventListener("click", onBodyClick, { signal });
 
-        const addTasks = document.querySelectorAll(".addTask");
-        addTasks.forEach((element) => {
-            element.addEventListener(
-                "click",
-                (event) => {
-                    handleAddTask(event.target, { signal });
-                },
-                { signal }
-            );
-        });
-
-        document.body.addEventListener(
-            "click",
-            (event) => {
-                if (!event.target.closest(".titleInputBox,.addTask")) {
-                    closeAllTaskInputs();
-                }
-            },
-            { signal }
-        );
-
-        const completeCheckboxElements =
-            document.querySelectorAll(".completeCheckbox");
-        completeCheckboxElements.forEach((element) => {
-            element.addEventListener(
-                "click",
-                (event) => {
-                    const liElement = event.target.closest("li");
-                    let checkState = event.target.checked;
-
-                    const listIndex = liElement.dataset.listIndex;
-                    const taskIndex = liElement.dataset.taskIndex;
-
-                    tasks[listIndex].tasks[taskIndex].completed = checkState;
-
-                    liElement.querySelector(".title").style[
-                        "text-decoration-line"
-                    ] = checkState ? "line-through" : "none";
-                    pushToServer(tasks);
-                },
-                { signal }
-            );
-        });
-
-        const taskElements = document.querySelectorAll(".task");
-        taskElements.forEach((element) => {
-            element.addEventListener(
-                "click",
-                async (event) => {
-                    if (event.target.tagName != "INPUT") {
-                        const parent = event.target.closest(".task");
-                        const listIndex = parent.dataset.listIndex;
-                        const taskIndex = parent.dataset.taskIndex;
-
-                        const task = await changeModal(
-                            tasks[listIndex].tasks[taskIndex]
-                        );
-
-                        if (task.isDelete) {
-                            tasks[listIndex].tasks.splice(taskIndex, 1);
-                        } else {
-                            tasks[listIndex].tasks[taskIndex] = task;
-                        }
-
-                        renderTasks(tasks);
-                    }
-                },
-                { signal }
-            );
-        });
-
-        const listHeadingElements = document.querySelectorAll(".listHeading");
-        const listElements = document.querySelectorAll(".list");
-
-        listHeadingElements.forEach((element) => {
-            element.addEventListener("click", activeEditableListTitle, {
-                signal,
-            });
-        });
-        listHeadingElements.forEach((element) => {
-            element.querySelector(".menuIcon").addEventListener(
-                "click",
-                (event) => {
-                    event.stopPropagation();
-                },
-                { signal }
-            );
-        });
-
-        addDraggable(taskElements, tasks, listHeadingElements, listElements);
-
-        document.addEventListener(
-            "keydown",
-            (event) => {
-                if (event.key == "Escape") {
-                    closeAllTaskInputs();
-                    closeListInput();
-                }
-            },
-            { signal }
-        );
-
-        const menuIconElements = document.querySelectorAll(".menuIcon");
-        menuIconElements.forEach((element) => {
-            element.addEventListener(
-                "click",
-                (event) => {
-                    console.log("hello");
-                    const parentElement = event.target.parentElement;
-                    if (parentElement.children.length > 1) {
-                        parentElement.lastElementChild.remove();
-                    } else {
-                        removeAllListMenus();
-                        const menuElement = getDOMElement(/* html */ `
-                        <ul class="animate-appear listMenu z-10 hover:cursor-pointer absolute w-[100px] flex flex-col bg-white p-1 border-2 border-[var(--border-gray)] rounded-sm">
-                            <li class="editBtn hover:text-black/70 hover:cursor-pointer transition-all"><button class="hover:cursor-pointer">Edit</button></li>
-                            <li class="removeBtn hover:text-black/70 hover:cursor-pointer transition-all"><button class="hover:cursor-pointer">Remove</button></li>
-                        </ul>
-                        `);
-                        parentElement.appendChild(menuElement);
-                        const editBtn = menuElement.querySelector(".editBtn");
-                        const removeBtn =
-                            menuElement.querySelector(".removeBtn");
-
-                        editBtn.addEventListener(
-                            "click",
-                            activeEditableListTitle
-                        );
-                        removeBtn.addEventListener("click", (event) => {
-                            const listElement = event.target.closest(".list");
-                            const listIndex = listElement.dataset.listIndex;
-                            tasks.splice(listIndex, 1);
-                            renderTasks(tasks);
-                        }, {signal});
-                    }
-                },
-                { signal }
-            );
-        });
-        document.body.addEventListener("click", (event) => {
-            if (!event.target.closest(".menuBox")) {
-                removeAllListMenus();
-            }
-        }, {signal});
-        document.body.addEventListener(
-            "keydown",
-            (event) => {
-                if (event.key == "Enter") {
-                    if (!!taskData.lastAdded) {
-                        if (document.activeElement.tagName == "BODY") {
-                            const lastAddedTask = taskData.lastAdded;
-                            const addButtonElement = document.querySelector(
-                                `ul[data-list-index="${lastAddedTask.listIndex}"] .addTask`
-                            );
-                            handleAddTask(addButtonElement);
-                            // console.log(addButtonElement);
-                        }
-                    }
-                }
-            },
-            { signal }
-        );
-    }, 0);
+    document.body.removeEventListener("keydown", onBodyKeydown);
+    document.body.addEventListener("keydown", onBodyKeydown, { signal });
 }
