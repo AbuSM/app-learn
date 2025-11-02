@@ -14,13 +14,17 @@ function mount(tagName) {
 }
 
 router
-	.on("/", async () => {
+	.on("/timers", async () => {
 		await import("./pages/timers/index.js"); // defines <page-timers>
 		mount("page-timers");
 	})
 	.on("/todo", async () => {
 		await import("./pages/todo/index.js"); // defines <page-todo>
 		mount("page-todo");
+	})
+	.on("/blog", async () => {
+		await import("./pages/blog/index.js");
+		mount("page-blog");
 	})
 	// .notFound(async () => {
 	// 	await import("./pages/not-found.js"); // defines <page-404>

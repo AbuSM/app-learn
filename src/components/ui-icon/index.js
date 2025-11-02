@@ -27,7 +27,7 @@ class UiIcon extends HTMLElement {
 	render() {
 		// Get attributes
 		const name = this.getAttribute("name") || "home";
-		const size = this.getAttribute("size") || "4";
+		const size = this.getAttribute("size") || "5";
 		const stroke = this.getAttribute("stroke") || "currentColor";
 		const fill = this.getAttribute("fill") || "none";
 		const strokeWidth = this.getAttribute("stroke-width") || "2";
