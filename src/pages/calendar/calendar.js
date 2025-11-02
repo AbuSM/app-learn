@@ -1,4 +1,7 @@
-  const monthBtn = document.getElementById('month-btn');
+import changeModal from "../todo/change_modal";
+
+export function initCalendar() {
+const monthBtn = document.getElementById('month-btn');
   const weekBtn = document.getElementById('week-btn');
   const dayBtn = document.getElementById('day-btn');
   const slider = document.getElementById('slider');
@@ -33,7 +36,7 @@
   const savedView = localStorage.getItem('calendarView') || 'month';
   showView(savedView);
 
-  const daysContainer = document.getElementById("days");
+const daysContainer = document.getElementById("days");
 const monthYear = document.getElementById("month-year");
 const prevMonthBtn = document.getElementById("prev-month");
 const nextMonthBtn = document.getElementById("next-month");
@@ -83,6 +86,15 @@ function renderCalendar() {
 
     dayDiv.textContent = day;
     daysContainer.appendChild(dayDiv);
+
+    dayDiv.addEventListener('click',  async () => {
+    dayDiv.classList.add('bg-gray-400', 'm-2'); 
+
+    setTimeout(() => {
+      dayDiv.classList.remove('bg-gray-400' ); 
+    }, 200);
+  });
+
   }
 
   const totalCells = daysContainer.children.length;
@@ -92,8 +104,11 @@ function renderCalendar() {
     dayDiv.classList.add("border", "border-gray-200", "min-h-32", "p-2", "text-gray-400");
     dayDiv.textContent = i;
     daysContainer.appendChild(dayDiv);
+
+    
   }
 }
+
 
 prevMonthBtn.addEventListener("click", () => {
   date.setMonth(date.getMonth() - 1);
@@ -109,3 +124,4 @@ renderCalendar();
 
 
 
+}

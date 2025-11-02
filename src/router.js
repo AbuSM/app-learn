@@ -22,6 +22,10 @@ router
 		await import("./pages/todo/index.js"); // defines <page-todo>
 		mount("page-todo");
 	})
+	.on("/calendar", async () => {
+		await import('./pages/calendar/index.js');
+		mount('page-calendar')
+	})
 	// .notFound(async () => {
 	// 	await import("./pages/not-found.js"); // defines <page-404>
 	// 	mount("page-404");
