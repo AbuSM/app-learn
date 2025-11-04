@@ -1,10 +1,65 @@
 import getDOMElement from "../../../api/getDOMElement";
 import getToday from "../../../api/getToday";
+import {
+    AUTOSCROLL_HEIGHT,
+    AUTOSCROLL_INTERVAL,
+    AUTOSCROLL_SPEED,
+} from "../../../constants";
 import changeModal from "../change_modal";
 import { pushToServer } from "../pushServer";
 import { renderTasks } from "../render/renderTasks";
 import { controller, dragData, taskData, tasks } from "../script";
 import { toggleRedBorder } from "../toggleRedBorder";
+
+function scrollToDown(listIndex) {
+    const ulElement = document.querySelector(
+        `ul[data-list-index="${listIndex}"] ul`
+    );
+    ulElement.scrollTo({ top: ulElement.scrollHeight });
+}
+
+function stopAutoScroll() {
+    if (window.currentAutoScrollInterval) {
+        clearInterval(window.currentAutoScrollInterval);
+        window.currentAutoScrollInterval = null;
+    }
+}
+
+function startAutoScroll(element, direction) {
+    if (window.currentAutoScrollInterval) {
+        return;
+    }
+    window.currentAutoScrollInterval = setInterval(() => {
+        element.scrollTop += AUTOSCROLL_SPEED * (direction == "up" ? -1 : 1);
+    }, AUTOSCROLL_INTERVAL);
+}
+
+function onTaskListScroll(event) {
+    const element = event.target.closest("ul");
+    const listIndex = element.closest(".list").dataset.listIndex;
+
+    tasks[listIndex].scrollTop = element.scrollTop;
+}
+
+function onTaskListDragLeave() {
+    stopAutoScroll();
+}
+function onTaskListDragOver(event) {
+    event.preventDefault();
+
+    const mouseY = event.clientY;
+    const element = event.target.closest("ul");
+    const elementRect = element.getBoundingClientRect();
+    // window.currentAutoScrollInterval = null;
+
+    if (mouseY - elementRect.top <= AUTOSCROLL_HEIGHT) {
+        startAutoScroll(element, "up");
+    } else if (elementRect.bottom - mouseY <= AUTOSCROLL_HEIGHT) {
+        startAutoScroll(element, "down");
+    } else {
+        stopAutoScroll();
+    }
+}
 
 export function onDragStart(event) {
     event.target.classList.add("draggable");
@@ -15,6 +70,7 @@ export function onDragStart(event) {
 
 export function onDragEnd(event) {
     event.target.classList.remove("draggable");
+    stopAutoScroll();
 }
 
 export function onTaskDragEnter(event) {
@@ -251,6 +307,8 @@ export function onAddTaskClick(event) {
                     </div>
                 `;
 
+    scrollToDown(listIndex);
+
     parent.firstElementChild.style.display = "none";
 
     const inputTitle = parent.querySelector(".titleInput");
@@ -265,22 +323,7 @@ export function onTaskInputChange(event) {
 
 export function onTaskInputKeydown(event) {
     if (event.key === "Enter") {
-        const inputTitle = event.target;
-        const listIndex = window.currentTaskListIndex;
-
-        if (!!inputTitle.value.length) {
-            const task = {
-                title: inputTitle.value,
-                description: "",
-                date: "",
-                completed: false,
-            };
-            tasks[listIndex].tasks.push(task);
-            taskData.lastAdded = { listIndex };
-            renderTasks(tasks);
-        } else {
-            toggleRedBorder(inputTitle, true);
-        }
+        onAddTaskButtonClick(event);
     }
 }
 
@@ -292,12 +335,14 @@ export function onAddTaskButtonClick(event) {
         const task = {
             title: inputTitle.value,
             description: "",
-            date: getToday(),
+            date: "",
             completed: false,
         };
+
         tasks[listIndex].tasks.push(task);
-        taskData.lastAdded = { listIndex }; 
+        taskData.lastAdded = { listIndex };
         renderTasks(tasks);
+        scrollToDown(listIndex);
     } else {
         toggleRedBorder(inputTitle, true);
     }
@@ -465,6 +510,9 @@ export function initGlobalHandlers() {
     window.onAddListButtonClick = onAddListButtonClick;
     window.onBodyClick = onBodyClick;
     window.onBodyKeydown = onBodyKeydown;
+    window.onTaskListDragOver = onTaskListDragOver;
+    window.onTaskListDragLeave = onTaskListDragLeave;
+    window.onTaskListScroll = onTaskListScroll;
 }
 
 export function initDocumentListeners() {

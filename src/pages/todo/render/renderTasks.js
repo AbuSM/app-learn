@@ -70,7 +70,7 @@ export const renderTasks = (tasks, isInitial = false) => {
             ></ellipsis-icon>
           </div>
         </li>
-        <ul class="flex scrollbar-none overflow-auto flex-col gap-2">
+        <ul onscroll="window.onTaskListScroll(event)" ondragover="window.onTaskListDragOver(event)" ondragleave="window.onTaskListDragLeave(event)" class="flex scrollbar-none overflow-auto flex-col gap-2">
             ${htmlDataTasks}
             <li>    
               <button 
@@ -97,12 +97,22 @@ export const renderTasks = (tasks, isInitial = false) => {
     </div>
   `;
 
+    function addScrollTopToLists() {
+        const listElements = document.querySelectorAll(".list ul");
+        for (let index = 0; index < tasks.length; index++) {
+            if (tasks[index].scrollTop) {
+                listElements[index].scrollTop = tasks[index].scrollTop;
+            }
+        }
+    }
+
     (() => {
         controller.controller.abort();
         controller.controller = new AbortController();
         taskListsElement.innerHTML = htmlDataLists;
         initGlobalHandlers();
         initDocumentListeners();
+        addScrollTopToLists();
         endLoading();
     })();
 
