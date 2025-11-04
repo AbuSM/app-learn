@@ -73,4 +73,20 @@ h3 {
 }
 .main {
     overflow: hidden;
+    max-height: 100vh;
+}
+
+app-outlet,
+page-todo {
+    height: 100%;
+}
+page-todo {
+    display: flex;
+    flex-direction: column;
+}
+.scrollbar-none {
+    scrollbar-width: none;
+}
+.scrollbar-none::-webkit-scrollbar {
+    width: 8px;
 }

@@ -1,4 +1,3 @@
-// listeners.js
 import getDOMElement from "../../../api/getDOMElement";
 import getToday from "../../../api/getToday";
 import changeModal from "../change_modal";
@@ -297,7 +296,7 @@ export function onAddTaskButtonClick(event) {
             completed: false,
         };
         tasks[listIndex].tasks.push(task);
-        taskData.lastAdded = { listIndex };
+        taskData.lastAdded = { listIndex }; 
         renderTasks(tasks);
     } else {
         toggleRedBorder(inputTitle, true);

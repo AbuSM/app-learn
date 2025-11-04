@@ -48,10 +48,10 @@ export const renderTasks = (tasks, isInitial = false) => {
         });
 
         htmlDataLists += /*html*/ `
-      <ul 
-        draggable="true" 
+      <ul
+        draggable="true"    
         data-list-index="${listIndex}" 
-        class="list [&.draggable]:opacity-50 gap-2 transition-all [&.droppable]:border-[var(--primary)] bg-white flex min-w-[var(--card-width)] flex-col shadow border-2 border-[var(--border-gray)] rounded-xl p-3" 
+        class="list max-h-full flex-[1_1_0] [&.draggable]:opacity-50 gap-2 transition-all [&.droppable]:border-[var(--primary)] bg-white flex min-w-[var(--card-width)] flex-col shadow border-2 border-[var(--border-gray)] rounded-xl p-3" 
         ondragstart="window.onListDragStart(event)" 
         ondragend="window.onListDragEnd(event)"
       >
@@ -70,16 +70,18 @@ export const renderTasks = (tasks, isInitial = false) => {
             ></ellipsis-icon>
           </div>
         </li>
-        ${htmlDataTasks}
-        <li>    
-          <button 
-            data-list-index="${listIndex}" 
-            class="addTask w-full border-2 border-[var(--border-gray)] rounded-xl px-3 py-1 shadow bg-neutral-100 hover:cursor-pointer hover:bg-neutral-200 transition-all" 
-            onclick="window.onAddTaskClick(event)"
-          >
-            + Add New
-          </button>
-        </li>
+        <ul class="flex scrollbar-none overflow-auto flex-col gap-2">
+            ${htmlDataTasks}
+            <li>    
+              <button 
+                data-list-index="${listIndex}" 
+                class="addTask w-full border-2 border-[var(--border-gray)] rounded-xl px-3 py-1 shadow bg-neutral-100 hover:cursor-pointer hover:bg-neutral-200 transition-all" 
+                onclick="window.onAddTaskClick(event)"
+              >
+                + Add New
+              </button>
+            </li>
+        </ul>
       </ul>
     `;
     });
