@@ -51,7 +51,7 @@ export const renderTasks = (tasks, isInitial = false) => {
       <ul
         draggable="true"    
         data-list-index="${listIndex}" 
-        class="list max-h-full flex-[1_1_0] [&.draggable]:opacity-50 gap-2 transition-all [&.droppable]:border-[var(--primary)] bg-white flex min-w-[var(--card-width)] flex-col shadow border-2 border-[var(--border-gray)] rounded-xl p-3" 
+        class="list max-h-full w-[250px] [&.draggable]:opacity-50 gap-2 transition-all [&.droppable]:border-[var(--primary)] bg-white flex min-w-[var(--card-width)] flex-col shadow border-2 border-[var(--border-gray)] rounded-xl p-3" 
         ondragstart="window.onListDragStart(event)" 
         ondragend="window.onListDragEnd(event)"
       >
