@@ -1,7 +1,12 @@
+@import url("./font.css");
 @import "tailwindcss";
 @import "flowbite/src/themes/default";
 @plugin "flowbite/plugin";
 @source "../node_modules/flowbite";
+
+@theme {
+	--color-primary-dark: #1c2434;
+}
 
 :root {
 	--primary: rgb(78, 130, 208);
@@ -11,11 +16,13 @@
 	--border-radius-sm: 15px;
 	--container-bg-color: rgb(83, 83, 140);
 }
+
 * {
 	box-sizing: border-box;
-	font-family: monospace;
-	font-size: 30px;
-	color: white;
+	font-family: Outfit, Nunito, sans-serif;
+}
+
+body {
 }
 
 h2 {
@@ -24,186 +31,124 @@ h2 {
 	color: var(--primary);
 }
 
-header {
+/* App Shell Layout */
+app-shell {
 	display: flex;
-	align-items: center;
-	padding: 0 10px;
-	position: fixed;
-	width: 100%;
-	z-index: 100;
-	background-color: #1e2939;
+	min-height: 100vh;
 }
-header nav {
-	padding: 20px 30px;
-	width: 100%;
+
+app-sidebar {
+	flex-shrink: 0;
+	width: 280px;
+}
+
+.main {
+	flex: 1;
+	transition: margin-left 0.3s ease;
 	display: flex;
-	align-items: center;
-	justify-content: space-between;
-}
-
-header nav ul {
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	gap: 40px;
-	list-style-type: none;
-}
-
-.nav-link {
-	color: var(--primary);
-	text-decoration: none;
-	transition: border 0.2s linear;
-	padding-bottom: 10px;
-	border: 5px solid transparent;
-}
-
-.nav-link:hover {
-	border-bottom: 5px solid var(--primary);
-}
-
-input,
-label {
-	color: var(--primary);
+	flex-direction: column;
 }
 
 main {
-	padding: 0 60px;
-	padding-top: 150px;
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	align-items: center;
+	@apply bg-gray-100 mt-14 flex-1;
 }
 
-.container {
-	max-width: 1500px;
-	width: 100%;
-	padding: 50px 25px;
-	text-align: center;
-	margin: 0 auto;
-	border: 1px solid var(--primary);
-	border-radius: var(--border-radius-sm);
-	background-color: var(--container-bg-color);
-}
-
-.btn {
-	background-color: var(--primary);
-	color: white;
-	border-radius: var(--border-radius-md);
-	padding: 10px 25px;
-	border: none;
-	cursor: pointer;
-	transition: all 0.3s;
-	min-width: 202px;
-}
-
-.btn-sm {
-	min-width: 175px;
-	font-size: 35px;
-}
-
-.btn:hover {
-	box-shadow: 0 0 10px 0 #333;
-	transform: scale(1.05);
-}
-
-.area {
-	margin: 20px 0;
-	display: flex;
-	justify-content: center;
-	align-items: end;
-}
-
-dialog {
-	bottom: 0;
-	right: 0;
-	padding: 25px;
-	margin-left: auto;
-	margin-right: 0;
-	border: 2px solid var(--green);
-}
-.dialog p {
-	color: var(--green);
-	margin: 0 0 10px 0;
-}
-.dialog button {
-	color: var(--green);
-	background-color: transparent;
-	border: 1px solid var(--green);
-}
-
-ul > li > ul {
-	display: none;
-	flex-direction: column;
-	padding: 0;
-	align-items: start;
-	top: 100%;
-	left: 0;
-	position: absolute;
-	/* transition: 0.3s; */
+app-header {
+	height: 65px;
 	background-color: white;
-	padding-top: 20px;
-	padding-bottom: 20px;
-	border: 1px solid rgba(0, 0, 0, 0.353);
-}
-
-ul li:hover ul {
-	display: flex;
-}
-ul > li {
-	position: relative;
-}
-
-.nav-link.open {
-	border-bottom: none;
-	position: relative;
-}
-.nav-link.open::after {
-	content: "▼";
-	position: absolute;
-	top: 50%;
-	right: -20px;
-	transform: translateY(-50%);
-	font-size: 30px;
-}
-#stopwatch,
-#timer {
-	width: 100%;
-}
-
-.weather-area {
-	display: flex;
-	gap: 10px;
-}
-
-.loader {
-	width: 48px;
-	height: 48px;
-	border: 5px solid white;
-	border-bottom-color: transparent;
-	border-radius: 50%;
-	display: inline-block;
-	box-sizing: border-box;
-	animation: rotation 1s linear infinite;
-}
-.loader_backdrop {
-	background-color: rgba(0, 0, 0, 0.5);
 	position: fixed;
-	top: 0;
-	left: 0;
 	width: 100%;
-	height: 100%;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	z-index: 1000000;
+	top: 0;
 }
 
-@keyframes rotation {
-	0% {
-		transform: rotate(0deg);
+header {
+	height: 100%;
+	align-items: center;
+	display: flex;
+	@apply border-b-1 border-gray-200;
+}
+
+app-footer {
+	margin-top: auto;
+}
+
+/* Dark theme scrollbar */
+.no-scrollbar::-webkit-scrollbar {
+	display: none;
+}
+
+.no-scrollbar {
+	-ms-overflow-style: none;
+	scrollbar-width: none;
+}
+
+/* Smooth transitions for sidebar interactions */
+aside a {
+	transition: all 0.3s ease;
+}
+
+/* Active state for nav links */
+aside a.active {
+	background-color: #2a3142;
+	color: white;
+}
+
+/* Nested menu items styling */
+aside ul ul li a {
+	padding-left: 1rem;
+}
+
+/* Badge styling */
+aside span.badge {
+	background-color: #3c50e0;
+	border-radius: 6px;
+	font-size: 12px;
+	font-weight: 500;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+	.main {
+		margin-left: 0;
 	}
-	100% {
-		transform: rotate(360deg);
+
+	app-sidebar aside {
+		transform: translateX(-100%);
 	}
+
+	app-sidebar aside.open {
+		transform: translateX(0);
+	}
+}
+
+/* Logo section */
+app-sidebar svg {
+	max-width: 140px;
+	height: auto;
+}
+
+.nav-link {
+	@apply relative flex items-center px-3 py-3 gap-3 rounded-md font-medium text-white bg-primary-dark duration-300 ease-in-out hover:bg-[#333a48];
+}
+
+.submenu-link {
+	@apply relative flex items-center gap-1.5 rounded-md px-2 py-2 text-base text-gray-400 duration-300 ease-in-out hover:text-white;
+}
+
+.submenu-link.active {
+	@apply text-white bg-transparent;
+}
+
+/* Submenu border */
+aside ul ul {
+	border-left: 2px solid #333a48;
+	margin-left: 1rem;
+}
+
+#global-toast {
+	display: none;
+	position: fixed;
+	right: 10px;
+	bottom: 10px;
+	pointer-events: none;
 }

@@ -1,5 +1,5 @@
-# t-stopwatch
-Stopwatch website with complicated functionality in vanilla Js
+# App Learn
+Platform for learning and working stuff with complicated functionality in vanilla Js
 
 
 ## Bug fixing

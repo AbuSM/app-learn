@@ -21,7 +21,6 @@ const setStopWatchArea = () => {
     `;
 };
 
-// console.log("clear: ", clearIntervalId);
 setStopWatchArea(millisecond);
 
 function onStart() {
@@ -32,7 +31,6 @@ function onStart() {
 			setStopWatchArea();
 			millisecond += TIMER_RANGE;
 		}, TIMER_RANGE);
-		console.log("clear: ", clearIntervalId);
 	}
 }
 
@@ -65,7 +63,6 @@ function onSave() {
 }
 
 function onTrack() {
-	// console.log("Save btn");
 	const seconds = stopwatchArea.textContent.split("\n")[1].trim();
 	const milliseconds = stopwatchArea.textContent.split("\n")[3].trim();
 	const time = Date().split(" ");

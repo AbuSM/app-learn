@@ -1,78 +1,75 @@
-.container {
-    padding: 20px;
+@import "tailwindcss";
+@import "flowbite/src/themes/default";
+
+.loader {
+    width: 48px;
+    height: 48px;
+    border: 5px solid white;
+    border-bottom-color: transparent;
+    border-radius: 50%;
+    display: inline-block;
+    box-sizing: border-box;
+    animation: rotation 1s linear infinite;
+}
+
+body:has(.loader_backdrop) {
+    overflow-y: hidden;
+}
+
+.loader_backdrop {
+    animation: appear 0.2s ease-in-out 1;
+    background-color: rgba(0, 0, 0, 0.5);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    flex-direction: row;
-}
-.input_name_cont .btn {
-    border-radius: 0;
-    min-width: auto;
-}
-.input_name_cont .btn:hover {
-    transform: none;
-    box-shadow: none;
-}
-.input_name_cont {
-    display: flex;
-}
-.input_name_cont input {
-    border-radius: 3px 0 0 3px !important;
+    justify-content: center;
+    z-index: 1000000;
 }
 
-input {
-    color: var(--primary) !important;
-    padding: 10px 0 !important;
-    border-width: 1.5px !important;
-    border-style: solid !important;
-    border-color: gray;
-    border-radius: 3px;
-    padding-left: 10px !important;
+@keyframes rotation {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
 }
-input:focus,
-input:focus-visible,
-input:focus-within {
-    outline: none;
-    border-color: var(--primary);
+@keyframes appear {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
 }
-
-h2 {
-    margin: 20px 0;
-}
-
-.tasks {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-.finished .title {
-    position: relative;
+:root {
+    --primary: #3c50e0;
+    --border-gray: #e4e7ec;
+    --gray: #667085;
+    --card-width: 300px;
 }
 
-.finished .title::before {
-    content: "";
-    width: 100%;
-    height: 2px;
-    background-color: white;
-    position: absolute;
-    top: 50%;
-    left: 0;
+.task *,
+.listHeading * {
+    pointer-events: none;
 }
-.finished .container {
-    background-color: #3c3c67;
+.task,
+.listHeading,
+.completeCheckbox,
+.addTask,
+.editIcon,
+.inputBox,
+.listMenu,
+.listMenu * {
+    pointer-events: auto;
 }
-
-.add_container {
-    margin-bottom: 20px;
-    display: flex;
-    gap: 10px;
+.animate-appear {
+    animation: appear 0.2s ease-in-out 1;
 }
-
-.add_container * {
-    min-width: 0px;
-}
-.add_container .btn {
-    width: 200px;
-    border-radius: 3px;
+.main {
+    overflow: hidden;
 }
