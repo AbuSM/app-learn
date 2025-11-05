@@ -61,15 +61,32 @@ body:has(.loader_backdrop) {
 .listHeading,
 .completeCheckbox,
 .addTask,
-.editIcon,
+.menuIcon,
 .inputBox,
 .listMenu,
-.listMenu * {
-    pointer-events: auto;
+.listMenu *,
+h3 {
+    pointer-events: auto !important;
 }
 .animate-appear {
     animation: appear 0.2s ease-in-out 1;
 }
 .main {
     overflow: hidden;
+    max-height: 100vh;
+}
+
+app-outlet,
+page-todo {
+    height: 100%;
+}
+page-todo {
+    display: flex;
+    flex-direction: column;
+}
+.scrollbar-none {
+    scrollbar-width: none;
+}
+.scrollbar-none::-webkit-scrollbar {
+    width: 8px;
 }
