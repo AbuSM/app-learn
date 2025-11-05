@@ -8,6 +8,7 @@ class AppShell extends HTMLElement {
                 <app-outlet></app-outlet>
             </main>
             <app-footer></app-footer>
+            <ui-toast id="global-toast"></ui-toast>
         </div>
         `;
 	}

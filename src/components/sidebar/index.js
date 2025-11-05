@@ -15,10 +15,10 @@ class AppSidebar extends HTMLElement {
             <div class="no-scrollbar flex flex-col overflow-y-auto duration-300 ease-linear">
                 <nav class="mt-2 p-2">
                     <!-- MENU Header -->
-                    <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider">MENU</h3>
+                    <h3 class="font-semibold text-gray-500 uppercase tracking-wider">MENU</h3>
         
                     <ul class="flex flex-col gap-1.5 mt-2"> <!-- Главная (Main) with Dropdown -->
-                        <li> <a href="#" class="nav-link" onclick="event.preventDefault(); this.nextElementSibling.classList.toggle('hidden'); this.querySelector('.arrow-icon').classList.toggle('rotate-x-180')"> <ui-icon name="menu"></ui-icon> Главная <ui-icon name="chevron-down" class="arrow-icon absolute right-4 top-1/2 transition-transform duration-300 -translate-1/2 rotate-0"></ui-icon> </a>
+                        <li> <a href="#" class="nav-link" onclick="event.preventDefault(); this.nextElementSibling.classList.toggle('hidden'); this.querySelector('.arrow-icon').classList.toggle('rotate-x-180')"> <ui-icon name="menu"></ui-icon> Главная <ui-icon name="chevron-up" class="arrow-icon absolute right-4 top-1/2 transition-transform duration-300 -translate-1/2"></ui-icon> </a>
                             <ul class="flex flex-col gap-1 my-2">
                                 <li> <a href="/achievements" class="submenu-link"> <ui-icon name="trophy"></ui-icon> Мои достижения </a> </li>
                                 <li> <a href="/blog" class="submenu-link"> <ui-icon name="document-text"></ui-icon> Блог </a> </li>
@@ -38,11 +38,11 @@ class AppSidebar extends HTMLElement {
                         </li> <!-- Курсы (Courses) with Dropdown -->
                         <li>
                             <a href="#" class="nav-link" onclick="event.preventDefault(); this.nextElementSibling.classList.toggle('hidden'); this.querySelector('.arrow-icon').classList.toggle('rotate-x-180')">
-                                <ui-icon name="book-open"></ui-icon> Курсы <ui-icon name="chevron-down" class="arrow-icon absolute right-4 top-1/2 -translate-y-1/2 transition-transform duration-300"></ui-icon>
+                                <ui-icon name="book-open"></ui-icon> Курсы <ui-icon name="chevron-up" class="arrow-icon absolute right-4 top-1/2 -translate-y-1/2 transition-transform duration-300"></ui-icon>
                             </a>
-                            <ul class="mt-2 flex flex-col gap-1 pl-4">
-                                <li> <a href="/my-courses" class="submenu-link"> <ui-icon name="book"></ui-icon> Мои курсы <span class="inline-flex items-center justify-center rounded-md bg-[#3C50E0] px-2 py-0.5 text-xs font-medium text-white">2</span> </a> </li>
-                                <li> <a href="/all-courses" class="submenu-link"> <ui-icon name="academic-cap"></ui-icon> Все курсы <span class="inline-flex items-center justify-center rounded-md bg-[#3C50E0] px-2 py-0.5 text-xs font-medium text-white">10</span> </a> </li>
+                            <ul class="mt-2 flex flex-col gap-1">
+                                <li> <a href="/my-courses" class="submenu-link"> <ui-icon name="book"></ui-icon> Мои курсы <span class="inline-flex items-center justify-center rounded-md bg-[#3C50E0] px-2 py-0.5 font-medium text-white">2</span> </a> </li>
+                                <li> <a href="/all-courses" class="submenu-link"> <ui-icon name="academic-cap"></ui-icon> Все курсы <span class="inline-flex items-center justify-center rounded-md bg-[#3C50E0] px-2 py-0.5 font-medium text-white">10</span> </a> </li>
                             </ul>
                         </li> <!-- Таймеры (Timers) -->
                         <li> <a href="/timers" class="nav-link"> <ui-icon name="clock"></ui-icon> Таймеры </a> </li> <!-- Профиль (Profile) -->
