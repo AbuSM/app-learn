@@ -178,10 +178,7 @@ export function onCompleteCheckboxClick(event) {
 
     tasks[listIndex].tasks[taskIndex].completed = checkState;
 
-    liElement.querySelector(".title").style["text-decoration-line"] = checkState
-        ? "line-through"
-        : "none";
-    pushToServer(tasks);
+    renderTasks(tasks);
 }
 
 export async function onTaskClick(event) {

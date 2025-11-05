@@ -14,7 +14,7 @@ export const renderTasks = (tasks, isInitial = false) => {
         let htmlDataTasks = "";
 
         element.tasks.forEach((task, taskIndex) => {
-            const dateBadge = `<date-badge date="${task.date}"></date-badge>`;
+            const dateBadge = `<date-badge date="${task.date}" completed="${task.completed}"></date-badge>`;
             htmlDataTasks += /*html*/ `
         <li 
           draggable="true" 
@@ -36,7 +36,7 @@ export const renderTasks = (tasks, isInitial = false) => {
             ${task.date ? dateBadge : ""}
           </div>
           <div>
-            <input 
+            <input
               ${task.completed ? "checked" : ""} 
               class="hover:cursor-pointer completeCheckbox focus:ring-0" 
               type="checkbox" 
