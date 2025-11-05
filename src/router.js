@@ -23,8 +23,9 @@ router
 		mount("page-todo");
 	})
 	.on("/calendar", async () => {
-		await import('./pages/calendar/index.js');
-		mount('page-calendar')
+		await import("./pages/calendar/index.js");
+		mount("page-calendar");
+	})
 	.on("/blog", async () => {
 		await import("./pages/blog/index.js");
 		mount("page-blog");
