@@ -75,15 +75,10 @@ h3 {
     overflow: hidden;
     max-height: 100vh;
 }
+main {
+    padding: 0;
+}
 
-app-outlet,
-page-todo {
-    height: 100%;
-}
-page-todo {
-    display: flex;
-    flex-direction: column;
-}
 .scrollbar-none {
     scrollbar-width: none;
 }

@@ -8,6 +8,9 @@ export let tasks = [];
 export let dragData = { current: {} };
 export let taskData = { lastAdded: undefined };
 export let controller = { controller: new AbortController() };
+window.taskHistory = JSON.parse(
+    !!localStorage.getItem("taskHistory") ? localStorage.getItem("taskHistory") : "[]"
+);
 
 export const loadInitialData = () => {
     startLoading();

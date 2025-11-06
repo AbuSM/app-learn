@@ -5,150 +5,150 @@
 @source "../node_modules/flowbite";
 
 @theme {
-	--color-primary-dark: #1c2434;
+    --color-primary-dark: #1c2434;
 }
 
 :root {
-	--primary: rgb(78, 130, 208);
-	--black: #333;
-	--green: rgb(42, 208, 27);
-	--border-radius-md: 25px;
-	--border-radius-sm: 15px;
-	--container-bg-color: rgb(83, 83, 140);
+    --primary: rgb(78, 130, 208);
+    --black: #333;
+    --green: rgb(42, 208, 27);
+    --border-radius-md: 25px;
+    --border-radius-sm: 15px;
+    --container-bg-color: rgb(83, 83, 140);
 }
 
 * {
-	box-sizing: border-box;
-	font-family: Outfit, Nunito, sans-serif;
+    box-sizing: border-box;
+    font-family: Outfit, Nunito, sans-serif;
 }
 
 body {
 }
 
 h2 {
-	font-size: 50px;
-	margin: 0;
-	color: var(--primary);
+    font-size: 50px;
+    margin: 0;
+    color: var(--primary);
 }
 
 /* App Shell Layout */
 app-shell {
-	display: flex;
-	min-height: 100vh;
+    display: flex;
+    min-height: 100vh;
 }
 
 app-sidebar {
-	flex-shrink: 0;
-	width: 280px;
+    flex-shrink: 0;
+    width: 280px;
 }
 
 .main {
-	flex: 1;
-	transition: margin-left 0.3s ease;
-	display: flex;
-	flex-direction: column;
+    flex: 1;
+    transition: margin-left 0.3s ease;
+    display: flex;
+    flex-direction: column;
 }
 
 main {
-	@apply bg-gray-100 mt-14 flex-1;
+    @apply bg-gray-100 mt-[65px] flex-1;
 }
 
 app-header {
-	height: 65px;
-	background-color: white;
-	position: fixed;
-	width: 100%;
-	top: 0;
+    height: 65px;
+    background-color: white;
+    position: fixed;
+    width: 100%;
+    top: 0;
 }
 
 header {
-	height: 100%;
-	align-items: center;
-	display: flex;
-	@apply border-b-1 border-gray-200;
+    height: 100%;
+    align-items: center;
+    display: flex;
+    @apply border-b-1 border-gray-200;
 }
 
 app-footer {
-	margin-top: auto;
+    margin-top: auto;
 }
 
 /* Dark theme scrollbar */
 .no-scrollbar::-webkit-scrollbar {
-	display: none;
+    display: none;
 }
 
 .no-scrollbar {
-	-ms-overflow-style: none;
-	scrollbar-width: none;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
 }
 
 /* Smooth transitions for sidebar interactions */
 aside a {
-	transition: all 0.3s ease;
+    transition: all 0.3s ease;
 }
 
 /* Active state for nav links */
 aside a.active {
-	background-color: #2a3142;
-	color: white;
+    background-color: #2a3142;
+    color: white;
 }
 
 /* Nested menu items styling */
 aside ul ul li a {
-	padding-left: 1rem;
+    padding-left: 1rem;
 }
 
 /* Badge styling */
 aside span.badge {
-	background-color: #3c50e0;
-	border-radius: 6px;
-	font-size: 12px;
-	font-weight: 500;
+    background-color: #3c50e0;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 500;
 }
 
 /* Responsive adjustments */
 @media (max-width: 1024px) {
-	.main {
-		margin-left: 0;
-	}
+    .main {
+        margin-left: 0;
+    }
 
-	app-sidebar aside {
-		transform: translateX(-100%);
-	}
+    app-sidebar aside {
+        transform: translateX(-100%);
+    }
 
-	app-sidebar aside.open {
-		transform: translateX(0);
-	}
+    app-sidebar aside.open {
+        transform: translateX(0);
+    }
 }
 
 /* Logo section */
 app-sidebar svg {
-	max-width: 140px;
-	height: auto;
+    max-width: 140px;
+    height: auto;
 }
 
 .nav-link {
-	@apply relative flex items-center px-3 py-3 gap-3 rounded-md font-medium text-white bg-primary-dark duration-300 ease-in-out hover:bg-[#333a48];
+    @apply relative flex items-center px-3 py-3 gap-3 rounded-md font-medium text-white bg-primary-dark duration-300 ease-in-out hover:bg-[#333a48];
 }
 
 .submenu-link {
-	@apply relative flex items-center gap-1.5 rounded-md px-2 py-2 text-base text-gray-400 duration-300 ease-in-out hover:text-white;
+    @apply relative flex items-center gap-1.5 rounded-md px-2 py-2 text-base text-gray-400 duration-300 ease-in-out hover:text-white;
 }
 
 .submenu-link.active {
-	@apply text-white bg-transparent;
+    @apply text-white bg-transparent;
 }
 
 /* Submenu border */
 aside ul ul {
-	border-left: 2px solid #333a48;
-	margin-left: 1rem;
+    border-left: 2px solid #333a48;
+    margin-left: 1rem;
 }
 
 #global-toast {
-	display: none;
-	position: fixed;
-	right: 10px;
-	bottom: 10px;
-	pointer-events: none;
+    display: none;
+    position: fixed;
+    right: 10px;
+    bottom: 10px;
+    pointer-events: none;
 }

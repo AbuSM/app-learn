@@ -32,7 +32,7 @@ const getFormattedDate = (date) => {
     };
 
     const month = date.split("-")[1];
-    const day = date.split("-")[2];
+    const day = Number(date.split("-")[2]).toString();
     const year = date.split("-")[0];
 
     return `${day} ${months[month]}. ${year}`;

@@ -7,7 +7,7 @@ import {
 } from "../../../constants";
 import changeModal from "../change_modal";
 import { pushToServer } from "../pushServer";
-import { renderTasks } from "../render/renderTasks";
+import { addEventToHistory, renderTasks } from "../render/renderTasks";
 import { controller, dragData, taskData, tasks } from "../script";
 import { toggleRedBorder } from "../toggleRedBorder";
 
@@ -179,6 +179,11 @@ export function onCompleteCheckboxClick(event) {
     tasks[listIndex].tasks[taskIndex].completed = checkState;
 
     renderTasks(tasks);
+    addEventToHistory(
+        `Вы пометили как "${checkState ? "" : "не "}сделано" задачу: ${
+            tasks[listIndex].tasks[taskIndex].title
+        }`
+    );
 }
 
 export async function onTaskClick(event) {
@@ -190,8 +195,16 @@ export async function onTaskClick(event) {
         const task = await changeModal(tasks[listIndex].tasks[taskIndex]);
 
         if (task.isDelete) {
+            addEventToHistory(
+                `Вы удалили задачу: "${tasks[listIndex].tasks[taskIndex].title}"`
+            );
             tasks[listIndex].tasks.splice(taskIndex, 1);
         } else {
+            if (tasks[listIndex].tasks[taskIndex].title != task.title) {
+                addEventToHistory(
+                    `Вы изменили заголовок задачи: "${tasks[listIndex].tasks[taskIndex].title}" на "${task.title}"`
+                );
+            }
             tasks[listIndex].tasks[taskIndex] = task;
         }
 
@@ -275,6 +288,7 @@ export function onEditListClick(event) {
 export function onRemoveListClick(event) {
     const listElement = event.target.closest(".list");
     const listIndex = listElement.dataset.listIndex;
+    addEventToHistory(`Вы удалили список "${tasks[listIndex].title}"`);
     tasks.splice(listIndex, 1);
     renderTasks(tasks);
 }
@@ -338,6 +352,7 @@ export function onAddTaskButtonClick(event) {
 
         tasks[listIndex].tasks.push(task);
         taskData.lastAdded = { listIndex };
+        addEventToHistory(`Вы добавили задачу "${task.title}"`);
         renderTasks(tasks);
         scrollToDown(listIndex);
     } else {
@@ -376,17 +391,18 @@ export function onListInputChange(event) {
 
 export function onListInputKeydown(event) {
     if (event.key === "Enter") {
-        const titleInput = event.target;
+        // const titleInput = event.target;
 
-        if (!!titleInput.value.length) {
-            tasks.push({
-                title: titleInput.value,
-                tasks: [],
-            });
-            renderTasks(tasks);
-        } else {
-            toggleRedBorder(titleInput, true);
-        }
+        // if (!!titleInput.value.length) {
+        //     tasks.push({
+        //         title: titleInput.value,
+        //         tasks: [],
+        //     });
+        //     renderTasks(tasks);
+        // } else {
+        //     toggleRedBorder(titleInput, true);
+        // }
+        onAddListButtonClick(event);
     }
 }
 
@@ -398,6 +414,7 @@ export function onAddListButtonClick(event) {
             title: titleInput.value,
             tasks: [],
         });
+        addEventToHistory(`Вы добавили список "${titleInput.value}"`);
         renderTasks(tasks);
     } else {
         toggleRedBorder(titleInput, true);

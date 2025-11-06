@@ -4,7 +4,15 @@ import {
     initGlobalHandlers,
     initDocumentListeners,
 } from "../listeners/listeners.js";
-import { controller, taskData } from "../script.js";
+import { controller } from "../script.js";
+
+export function addEventToHistory(title) {
+    console.log("Hello");
+    
+    window.taskHistory.push({ title });
+    localStorage.setItem("taskHistory", JSON.stringify(window.taskHistory));
+    console.log(window.taskHistory);
+}
 
 export const renderTasks = (tasks, isInitial = false) => {
     let htmlDataLists = "";
@@ -115,6 +123,9 @@ export const renderTasks = (tasks, isInitial = false) => {
         addScrollTopToLists();
         endLoading();
     })();
+
+    const pTasks = window.previousTasks;
+    window.previousTasks = tasks;
 
     if (isInitial) {
         return;
