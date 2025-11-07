@@ -182,7 +182,8 @@ export function onCompleteCheckboxClick(event) {
     addEventToHistory(
         `Вы пометили как "${checkState ? "" : "не "}сделано" задачу: ${
             tasks[listIndex].tasks[taskIndex].title
-        }`
+        }`,
+        `history-${checkState ? "complete" : "x"}-icon`
     );
 }
 
@@ -196,13 +197,15 @@ export async function onTaskClick(event) {
 
         if (task.isDelete) {
             addEventToHistory(
-                `Вы удалили задачу: "${tasks[listIndex].tasks[taskIndex].title}"`
+                `Вы удалили задачу: "${tasks[listIndex].tasks[taskIndex].title}"`,
+                "history-delete-icon"
             );
             tasks[listIndex].tasks.splice(taskIndex, 1);
         } else {
             if (tasks[listIndex].tasks[taskIndex].title != task.title) {
                 addEventToHistory(
-                    `Вы изменили заголовок задачи: "${tasks[listIndex].tasks[taskIndex].title}" на "${task.title}"`
+                    `Вы изменили заголовок задачи: "${tasks[listIndex].tasks[taskIndex].title}" на "${task.title}"`,
+                    "history-edit-icon"
                 );
             }
             tasks[listIndex].tasks[taskIndex] = task;
@@ -244,6 +247,12 @@ export function onTitleInputKeydown(event) {
     if (event.key == "Enter") {
         const titleInput = event.target;
         if (!!titleInput.value.length) {
+            addEventToHistory(
+                `Вы изменили название списка "${
+                    tasks[window.currentListIndex].title
+                }" на "${titleInput.value}"`,
+                "history-edit-icon"
+            );
             tasks[window.currentListIndex].title = titleInput.value;
             renderTasks(tasks);
         } else {
@@ -288,7 +297,10 @@ export function onEditListClick(event) {
 export function onRemoveListClick(event) {
     const listElement = event.target.closest(".list");
     const listIndex = listElement.dataset.listIndex;
-    addEventToHistory(`Вы удалили список "${tasks[listIndex].title}"`);
+    addEventToHistory(
+        `Вы удалили список "${tasks[listIndex].title}"`,
+        "history-delete-icon"
+    );
     tasks.splice(listIndex, 1);
     renderTasks(tasks);
 }
@@ -352,7 +364,10 @@ export function onAddTaskButtonClick(event) {
 
         tasks[listIndex].tasks.push(task);
         taskData.lastAdded = { listIndex };
-        addEventToHistory(`Вы добавили задачу "${task.title}"`);
+        addEventToHistory(
+            `Вы добавили задачу "${task.title}"`,
+            "history-add-icon"
+        );
         renderTasks(tasks);
         scrollToDown(listIndex);
     } else {
@@ -391,17 +406,6 @@ export function onListInputChange(event) {
 
 export function onListInputKeydown(event) {
     if (event.key === "Enter") {
-        // const titleInput = event.target;
-
-        // if (!!titleInput.value.length) {
-        //     tasks.push({
-        //         title: titleInput.value,
-        //         tasks: [],
-        //     });
-        //     renderTasks(tasks);
-        // } else {
-        //     toggleRedBorder(titleInput, true);
-        // }
         onAddListButtonClick(event);
     }
 }
@@ -414,7 +418,10 @@ export function onAddListButtonClick(event) {
             title: titleInput.value,
             tasks: [],
         });
-        addEventToHistory(`Вы добавили список "${titleInput.value}"`);
+        addEventToHistory(
+            `Вы добавили список "${titleInput.value}"`,
+            "history-add-icon"
+        );
         renderTasks(tasks);
     } else {
         toggleRedBorder(titleInput, true);

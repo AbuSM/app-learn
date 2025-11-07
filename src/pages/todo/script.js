@@ -3,6 +3,7 @@ import { renderTasks } from "./render/renderTasks.js";
 import "./style.css";
 import { startLoading } from "./loader.js";
 import "../../assets/index.js";
+import renderHistory from "./render/renderHistory.js";
 
 export let tasks = [];
 export let dragData = { current: {} };
@@ -11,6 +12,7 @@ export let controller = { controller: new AbortController() };
 window.taskHistory = JSON.parse(
     !!localStorage.getItem("taskHistory") ? localStorage.getItem("taskHistory") : "[]"
 );
+renderHistory();
 
 export const loadInitialData = () => {
     startLoading();

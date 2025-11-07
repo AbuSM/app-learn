@@ -85,3 +85,10 @@ main {
 .scrollbar-none::-webkit-scrollbar {
     width: 8px;
 }
+
+.inline-icon svg {
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    margin-right: 0.2em;
+}

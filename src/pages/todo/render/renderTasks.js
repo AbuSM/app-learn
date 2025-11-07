@@ -5,13 +5,15 @@ import {
     initDocumentListeners,
 } from "../listeners/listeners.js";
 import { controller } from "../script.js";
+import renderHistory from "./renderHistory.js";
 
-export function addEventToHistory(title) {
-    console.log("Hello");
-    
-    window.taskHistory.push({ title });
+export function addEventToHistory(title, icon = "history-edit-icon") {
+    window.taskHistory.push({ title, icon });
+    if (window.taskHistory.length > 100) {
+        window.taskHistory.splice(0, 1);
+    }
     localStorage.setItem("taskHistory", JSON.stringify(window.taskHistory));
-    console.log(window.taskHistory);
+    renderHistory();
 }
 
 export const renderTasks = (tasks, isInitial = false) => {
@@ -123,9 +125,6 @@ export const renderTasks = (tasks, isInitial = false) => {
         addScrollTopToLists();
         endLoading();
     })();
-
-    const pTasks = window.previousTasks;
-    window.previousTasks = tasks;
 
     if (isInitial) {
         return;

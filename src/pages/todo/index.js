@@ -1,13 +1,16 @@
 class TodoPage extends HTMLElement {
     connectedCallback() {
         this.innerHTML = /* html */ `
-            <div class="flex h-full overflow-auto relative">
-                <div class="flex flex-col h-full p-6">
-                    <h2 class="my-3 text-2xl font-bold">ToDo List</h2>
-                    <div class="task-lists flex-[1_1_0] overflow-hidden flex items-start gap-3 py-4"></div>
+            <div class="flex h-full overflow-auto flex-col">
+                <div class="w-full px-6 py-2 flex justify-between items-center">
+                    <h3 class="text-2xl">ToDo List</h3>
+                    <div class="flex">
+                        <history-icon data-popover-target="todo-history-popover" class="rounded hover:bg-black/10 transition hover:cursor-pointer p-1.5"></history-icon>
+                        <todo-history-popover custom-id="todo-history-popover"></todo-history-popover>
+                    </div>
                 </div>
-                <div class="fixed h-full bg-white pt-[65px] p-3 top-0 right-0">
-                    Hello
+                <div class="flex flex-col h-full">
+                    <div class="task-lists flex-[1_1_0] overflow-y-hidden px-6 flex items-start gap-3 py-4"></div>
                 </div>
             </div>
         `;
