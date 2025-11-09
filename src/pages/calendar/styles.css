@@ -1,0 +1,21 @@
+@reference "../../styles.css";
+
+.event-start, .event-middle, .event-end {
+    @apply text-sm bg-orange-100 text-orange-600 h-[40px] flex items-center relative;
+}
+
+.event-start {
+    @apply rounded-l-lg w-full h-[40px] ;
+}
+
+.event-middle {
+    @apply flex items-center relative w-auto;
+}
+
+.event-end {
+    @apply rounded-r-lg mr-[10px];
+}
+
+.single-day {
+    @apply border rounded-lg m-2;
+}
