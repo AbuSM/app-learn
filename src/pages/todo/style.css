@@ -96,8 +96,8 @@ main {
 input:not(input[type="checkbox"]),
 textarea,
 .input_style {
-    @apply min-w-0 w-full px-3 border-[var(--border-gray)] py-1 rounded border-2 focus:ring-0 focus:border-[var(--primary)];
+    @apply min-w-0 w-full px-3 border-[var(--border-gray)] py-1 rounded border-1 focus:ring-0 focus:border-[var(--primary)];
 }
 .border-gray {
-    @apply border-[var(--border-gray)] py-1 rounded border-2;
+    @apply border-[var(--border-gray)] py-1 rounded border-1;
 }
