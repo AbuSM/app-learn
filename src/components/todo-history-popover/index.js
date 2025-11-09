@@ -12,7 +12,7 @@ class taskHistoryPopover extends HTMLElement {
 
         for (let element of taskHistory) {
             historyListHTML += /*html*/ `
-                <li class="inline-icon text-[16px] text-neutral-600">
+                <li class="inline-icon border-2 border-[var(--border-gray)] p-2 rounded-xl text-[16px] text-neutral-900">
                     <${element.icon} class="icon" size="16"></${element.icon}>
                     ${element.title}
                 </li>

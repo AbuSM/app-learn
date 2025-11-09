@@ -85,10 +85,10 @@ export const renderTasks = (tasks, isInitial = false) => {
             <li>    
               <button 
                 data-list-index="${listIndex}" 
-                class="addTask w-full border-2 border-[var(--border-gray)] rounded-xl px-3 py-1 shadow bg-neutral-100 hover:cursor-pointer hover:bg-neutral-200 transition-all" 
+                class="addTask flex gap-1.5 items-center w-full border-2 border-[var(--border-gray)] rounded-xl px-3 py-1 shadow bg-neutral-100 hover:cursor-pointer hover:bg-neutral-200 transition-all" 
                 onclick="window.onAddTaskClick(event)"
               >
-                + Add New
+                 <add-task-icon></add-task-icon>Добавить задачу
               </button>
             </li>
         </ul>

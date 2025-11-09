@@ -316,7 +316,7 @@ export function onAddTaskClick(event) {
 
     const addTasks = document.querySelectorAll(`.addTask`);
     addTasks.forEach((element) => {
-        element.style.display = "initial";
+        element.style.display = "flex";
     });
 
     if (!parent) {
@@ -330,7 +330,7 @@ export function onAddTaskClick(event) {
                     </div>
                 `;
 
-    scrollToDown(listIndex);
+    scrollToDown(listIndex); 
 
     parent.firstElementChild.style.display = "none";
 
@@ -437,7 +437,7 @@ export function onBodyClick(event) {
 
         const addTasks = document.querySelectorAll(`.addTask`);
         addTasks.forEach((element) => {
-            element.style.display = "initial";
+            element.style.display = "flex";
         });
     }
 
@@ -471,7 +471,7 @@ export function onBodyKeydown(event) {
 
         const addTasks = document.querySelectorAll(`.addTask`);
         addTasks.forEach((element) => {
-            element.style.display = "initial";
+            element.style.display = "flex";
         });
 
         const listInputs = document.querySelectorAll(".addListBox");
@@ -481,8 +481,14 @@ export function onBodyKeydown(event) {
 
         const listButtons = document.querySelectorAll(".add-list-button");
         listButtons.forEach((element) => {
-            element.style.display = "initial";
+            element.style.display = "flex";
         });
+
+        if (document.activeElement.closest(".addMembersContainer")) {
+            if (window.removeMemberMenu) window.removeMemberMenu();
+        } else {
+            if (!!window.onCancel) window.onCancel();
+        }
     }
 
     if (event.key == "Enter") {

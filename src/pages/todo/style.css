@@ -17,7 +17,7 @@ body:has(.loader_backdrop) {
 }
 
 .loader_backdrop {
-    animation: appear 0.2s ease-in-out 1;
+    animation: appear 0.1s ease-in-out 1;
     background-color: rgba(0, 0, 0, 0.5);
     position: fixed;
     top: 0;
@@ -50,7 +50,7 @@ body:has(.loader_backdrop) {
     --primary: #3c50e0;
     --border-gray: #e4e7ec;
     --gray: #667085;
-    --card-width: 300px;
+    --card-width: 250px;
 }
 
 .task *,
@@ -91,4 +91,13 @@ main {
     width: 1em;
     height: 1em;
     margin-right: 0.2em;
+}
+
+input:not(input[type="checkbox"]),
+textarea,
+.input_style {
+    @apply min-w-0 w-full px-3 border-[var(--border-gray)] py-1 rounded border-2 focus:ring-0 focus:border-[var(--primary)];
+}
+.border-gray {
+    @apply border-[var(--border-gray)] py-1 rounded border-2;
 }
