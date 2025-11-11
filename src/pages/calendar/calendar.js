@@ -1,4 +1,5 @@
 import changeModal from "../todo/change_modal";
+import "./styles.css";
 
 export function initCalendar() {
     const monthBtn = document.getElementById("month-btn");
@@ -90,12 +91,7 @@ export function initCalendar() {
 
         for (let day = 1; day <= totalDays; day++) {
             const dayDiv = document.createElement("div");
-            dayDiv.classList.add(
-                "border",
-                "border-gray-200",
-                "min-h-32",
-                "p-2"
-            );
+            dayDiv.classList.add("border", "border-gray-200", "min-h-32");
 
             if (
                 day === today.getDate() &&
@@ -112,11 +108,50 @@ export function initCalendar() {
             }
 
             dayDiv.textContent = day;
+
+            //   function addEvent(dayDiv, type, title) {
+            //   const baseClass = " text-sm bg-orange-100 text-orange-600 h-[40px] flex items-center ";
+
+            //   let ourClass = "";
+            //   if (type === "start-day")  ourClass = " rounded-l-lg w-full ml-[10px]";
+            //   else if (type === "middle-day")  ourClass = " flex items-center  w-auto";
+            //   else if (type === "end-day")  ourClass = " rounded-r-lg mr-[10px]";
+            //  else if (type === "single-day") ourClass = "border rounded-lg m-2";
+
+            //   const eventDiv = document.createElement("div");
+            //   eventDiv.textContent = title;
+            //   eventDiv.className = baseClass +  ourClass + " " + type;
+            //   dayDiv.appendChild(eventDiv);
+            // }
+
+            // if (month === 10 && year === 2025) {
+            //   if (day === 7) addEvent(dayDiv, "start-day", "Seminar");
+            //   if (day === 5) addEvent(dayDiv, "single-day", "Seminar");
+            //   if (day === 5) addEvent(dayDiv, "single-day", "Seminar");
+            //   if (day === 5) addEvent(dayDiv, "single-day", "Seminar");
+            //   if (day === 8) addEvent(dayDiv, "middle-day",);
+            //   if (day === 9) addEvent(dayDiv, "end-day",);
+            //   if (day === 21) addEvent(dayDiv, "start-day", "Seminar");
+            //   if (day === 22) addEvent(dayDiv, "middle-day",);
+            //   if (day === 23) addEvent(dayDiv, "end-day",);
+            //   if (day === 5) addEvent(dayDiv, "single-day", "Seminar");
+            //   if (day === 18) addEvent(dayDiv, "start-day", "Seminar" ,);
+            //   if (day === 19) addEvent(dayDiv, "end-day",);
+            //   if (day === 10) addEvent(dayDiv, "start-day","Seminar");
+            //   if (day === 12) addEvent(dayDiv, "middle-day",);
+            //   if (day === 11) addEvent(dayDiv, "middle-day",);
+            //   if (day === 14) addEvent(dayDiv, "middle-day",);
+            //   if (day === 13) addEvent(dayDiv, "middle-day",);
+            //   if (day === 15) addEvent(dayDiv, "middle-day",);
+            //   if (day === 16) addEvent(dayDiv, "middle-day",);
+            //   if (day === 17) addEvent(dayDiv, "end-day",);
+            //   if (day === 29) addEvent(dayDiv, "single-day", "Seminar");
+            // }
+
             daysContainer.appendChild(dayDiv);
 
             dayDiv.addEventListener("click", async () => {
                 dayDiv.classList.add("bg-gray-400", "m-2");
-
                 setTimeout(() => {
                     dayDiv.classList.remove("bg-gray-400");
                 }, 200);
