@@ -1,13 +1,13 @@
 import "../ui-icon/index.js";
 
 class AppSidebar extends HTMLElement {
-	connectedCallback() {
-		this.innerHTML = /*html*/ `
+    connectedCallback() {
+        this.innerHTML = /*html*/ `
         <aside class="fixed left-0 top-0 z-50 flex h-screen w-[280px] flex-col overflow-y-hidden bg-[#1c2434] duration-300 ease-linear">
             <!-- SIDEBAR HEADER -->
             <div class="flex flex-col items-center justify-center gap-2 p-2 border-b border-gray-700">
                 <a href="/">
-                    <img src="assets/logo.svg" />
+                    <img src="/assets/logo.svg" />
                 </a>
             </div>
         
@@ -53,7 +53,7 @@ class AppSidebar extends HTMLElement {
             </div>
         </aside>
         `;
-	}
+    }
 }
 
 customElements.define("app-sidebar", AppSidebar);

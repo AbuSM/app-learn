@@ -157,8 +157,6 @@ export default function changeModal(task) {
         // const deleteBtn = modalElement.querySelector(".deleteBtn");
 
         const onCancel = () => {
-            console.log("HELLO");
-
             resolve(task);
             modalElement.remove();
             window.onCancel = undefined;

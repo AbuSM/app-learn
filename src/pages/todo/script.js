@@ -1,4 +1,4 @@
-import { API_URL } from "./../../constants.js";
+import { API_URL } from "../../constants.js";
 import { renderTasks } from "./render/renderTasks.js";
 import "./style.css";
 import { startLoading } from "./loader.js";
@@ -19,6 +19,7 @@ renderHistory();
 
 export const loadInitialData = () => {
     startLoading();
+    console.log(window.todoID);
     fetch(`${API_URL}/todo`)
         .then((resp) => resp.json())
         .then((data) => {
