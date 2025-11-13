@@ -5,3 +5,4 @@ import "./historyIcon.js";
 import "./historyIcons";
 import "./userPlusIcon.js";
 import "./addTaskIcon.js";
+import "./comments";

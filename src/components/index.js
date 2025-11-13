@@ -7,3 +7,4 @@ export * from "./date-badge";
 export * from "./ui-toast";
 export * from "./ui-modal";
 export * from "./todo-history-popover";
+export * from "./comment";

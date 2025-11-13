@@ -193,7 +193,11 @@ export async function onTaskClick(event) {
         const listIndex = parent.dataset.listIndex;
         const taskIndex = parent.dataset.taskIndex;
 
-        const task = await changeModal(tasks[listIndex].tasks[taskIndex]);
+        const task = await changeModal(
+            tasks[listIndex].tasks[taskIndex],
+            listIndex,
+            taskIndex
+        );
 
         if (task.isDelete) {
             addEventToHistory(
@@ -330,7 +334,7 @@ export function onAddTaskClick(event) {
                     </div>
                 `;
 
-    scrollToDown(listIndex); 
+    scrollToDown(listIndex);
 
     parent.firstElementChild.style.display = "none";
 
@@ -355,11 +359,18 @@ export function onAddTaskButtonClick(event) {
     const listIndex = window.currentTaskListIndex;
 
     if (!!inputTitle.value.length) {
+        const title = inputTitle.value;
         const task = {
-            title: inputTitle.value,
+            title,
             description: "",
             date: "",
             completed: false,
+            comments: [
+                {
+                    username: "Kayumov Muhammad",
+                    message: `Создана задача ${title}`,
+                },
+            ],
         };
 
         tasks[listIndex].tasks.push(task);

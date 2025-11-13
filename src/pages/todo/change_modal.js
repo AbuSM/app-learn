@@ -1,9 +1,14 @@
 import getDOMElement from "../../api/getDOMElement";
+import { pushToServer } from "./pushServer";
+import { tasks } from "./script";
 import { toggleRedBorder } from "./toggleRedBorder";
 
-export default function changeModal(task) {
+export default function changeModal(task, listIndex, taskIndex) {
     return new Promise((resolve) => {
-        const members = task.members || [];
+        let members = task.members || [];
+        let comments = task.comments || [];
+
+        // members:
 
         const getMembersHTML = () => {
             let ans = "";
@@ -59,7 +64,7 @@ export default function changeModal(task) {
                 membersContainer.innerHTML += /*html*/ `
                     <div class="membersMenu w-[250px] absolute top-[110%] p-3 left-0 bg-white rounded border-gray">
                         <h3 class="flex flex-col items-center">Участники</h3>
-                        <input oninput="window.onMemberInput(event)" onkeydown="window.onMemberInputKeyDown(event)" class="name-search text-sm mt-3" type="text" placeholder="Искать участников">
+                        <input oninput="window.onElementInput(event)" onkeydown="window.onElementInputKeyDown(event)" class="name-search text-sm mt-3" type="text" placeholder="Искать участников">
                         <ul class="membersList flex flex-col mt-2 gap-1">
                             ${getMembersHTML()}     
                         </ul>
@@ -84,10 +89,51 @@ export default function changeModal(task) {
         };
         window.onMemberInputKeyDown = onMemberInputKeyDown;
 
-        const onMemberInput = (event) => {
+        const onElementInput = (event) => {
             toggleRedBorder(event.target, !event.target.value);
         };
-        window.onMemberInput = onMemberInput;
+        window.onElementInput = onElementInput;
+
+        // comment:
+
+        const renderComments = () => {
+            let commentsHTML = "";
+
+            for (let comment of comments) {
+                commentsHTML += /*html*/ `
+                    <li>
+                        <ui-comment username="${comment.username}" message="${comment.message}"></ui-comment>
+                    </li>
+                `;
+            }
+
+            const commentsListElement = document.querySelector(".comments");
+            commentsListElement.innerHTML = commentsHTML;
+        };
+
+        const onPublishComment = (event) => {
+            const inputElement = document.querySelector(".comment-input");
+            const message = inputElement.value;
+            const username = "Kayumov Muhammad";
+            if (!message) {
+                toggleRedBorder(inputElement, true);
+            } else {
+                comments = [
+                    {
+                        message,
+                        username,
+                    },
+                    ...comments,
+                ];
+                tasks[listIndex].tasks[taskIndex].comments = comments;
+                pushToServer(tasks);
+                inputElement.value = "";
+                renderComments();
+            }
+        };
+        window.onPublishComment = onPublishComment;
+
+        // modal:
 
         const modalElement = getDOMElement(/*html*/ `
                      <div class="loader_backdrop">
@@ -119,11 +165,16 @@ export default function changeModal(task) {
                                                         </button>
                                                     </div>
                                                 </div>
-                                                <textarea rows="5" placeholder="Описание" class="description min-w-0 w-full">${task.description}</textarea>
+                                                <textarea rows="8" placeholder="Описание" class="description min-w-0 w-full">${task.description}</textarea>
                                             </div>
                                             <div class="p-4 !pl-0 md:p-5 flex flex-col gap-2 flex-3">
                                                 <h4>Коментарии и активности</h4>
-                                                <input type="text" placeholder="Написать коментарий" class="w-full">
+                                                <div class="relative">
+                                                    <textarea oninput="window.onElementInput(event)" placeholder="Написать коментарий" class="w-full comment-input"></textarea>
+                                                    <button onclick="window.onPublishComment(event)" class="bg-[var(--primary)] px-3 py-1.5 text-white rounded text-sm hover:cursor-pointer mt-1.5 hover:brightness-90 active:brightness-80 transition">Отправить</button>
+                                                </div>
+                                                <ul class="comments flex-[1_1_0] overflow-auto flex flex-col gap-2">
+                                                </ul>
                                             </div>
                                         </div>
                                         <div class="flex items-center p-4 md:p-5 border-t border-gray-200 rounded-b">
@@ -142,6 +193,8 @@ export default function changeModal(task) {
         const titleInput = modalElement.querySelector(".title");
         const descriptionInput = modalElement.querySelector(".description");
         const dateInput = modalElement.querySelector(".date");
+
+        renderComments();
 
         titleInput.focus();
         titleInput.setSelectionRange(
@@ -169,7 +222,8 @@ export default function changeModal(task) {
                     title: titleInput.value,
                     description: descriptionInput.value,
                     date: dateInput.value,
-                    members: members,
+                    members,
+                    comments,
                 });
                 modalElement.remove();
             } else {
