@@ -6,12 +6,13 @@ class UICard extends HTMLElement {
         const onBtnClick = this.getAttribute("onBtnClick");
         const direction = this.getAttribute("direction") || "vertical";
         const link = this.getAttribute("link") || "#";
+        const imageLink = this.getAttribute("image-link") || "";
 
         if (direction === "vertical") {
             this.innerHTML = /*html */ `
                 <div class="max-w-sm bg-white border border-gray-200 rounded-lg shadow-sm">
                     <a href="${link}">
-                        <img class="rounded-t-lg" src="/docs/images/blog/image-1.jpg" alt="" />
+                        <img class="rounded-t-lg" src="${imageLink}" alt="" />
                     </a>
                     <div class="p-5">
                         <a href="${link}">
