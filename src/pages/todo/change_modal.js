@@ -62,11 +62,11 @@ export default function changeModal(task, listIndex, taskIndex) {
 
             if (membersContainer.children.length < 2) {
                 membersContainer.innerHTML += /*html*/ `
-                    <div class="membersMenu w-[250px] absolute top-[110%] p-3 left-0 bg-white rounded border-gray">
+                    <div class="membersMenu z-100 w-[250px] absolute top-[110%] p-3 left-0 bg-white rounded border-gray">
                         <h3 class="flex flex-col items-center">Участники</h3>
-                        <input oninput="window.onElementInput(event)" onkeydown="window.onElementInputKeyDown(event)" class="name-search text-sm mt-3" type="text" placeholder="Искать участников">
+                        <input oninput="window.onElementInput(event)" onkeydown="window.onMemberInputKeyDown(event)" class="name-search text-sm mt-3" type="text" placeholder="Искать участников">
                         <ul class="membersList flex flex-col mt-2 gap-1">
-                            ${getMembersHTML()}     
+                            ${getMembersHTML()}  
                         </ul>
                     </div>
                 `;
