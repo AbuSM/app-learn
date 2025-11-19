@@ -1,8 +1,6 @@
 import "./stopwatch.css";
 import "./timer.css";
 import "../../api/weather-api.js";
-import "./stopwatch.js";
-import "./timer.js";
 
 class PageTimers extends HTMLElement {
 	connectedCallback() {
@@ -66,9 +64,9 @@ class PageTimers extends HTMLElement {
         </section>
         `;
 
-		// Import and run timer scripts after DOM is ready
 		setTimeout(() => {
-			// Scripts are imported at the top, they'll run automatically
+			import("./stopwatch.js");
+			import("./timer.js");
 		}, 0);
 	}
 }
