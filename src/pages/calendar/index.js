@@ -1,15 +1,9 @@
-import {
-    initCalendar
-} from './calendar';
-
-
-
+import { initCalendar } from "./calendar";
 
 class PageCalendar extends HTMLElement {
-    connectedCallback() {
-
-        this.innerHTML = /*html*/ `
-        <ui-modal id="static-modal"></ui-modal>
+	connectedCallback() {
+		this.innerHTML = /*html*/ `
+        <ui-modal modal-id="static-modal"></ui-modal>
         <h1 class="text-gray-500 ml-12 mt-6 text-3xl">Calendar</h1>
         <div class="calendar border border-gray-200 rounded-md m-8">
             <div class="head flex justify-between p-6">
@@ -113,10 +107,10 @@ class PageCalendar extends HTMLElement {
                 <div class="dni border h-[60px] w-[60px] border-gray-200">22</div>
                 <div class="dni border h-[60px] w-[60px] border-gray-200">23</div>
             </div>
-        </div>`
+        </div>`;
 
-        initCalendar();
-    }
+		initCalendar();
+	}
 }
 
-customElements.define('page-calendar', PageCalendar)
+customElements.define("page-calendar", PageCalendar);

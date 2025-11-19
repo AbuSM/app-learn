@@ -22,7 +22,6 @@ class AppSidebar extends HTMLElement {
                             <ul class="flex flex-col gap-1 my-2">
                                 <li> <a href="/achievements" class="submenu-link"> <ui-icon name="trophy"></ui-icon> Мои достижения </a> </li>
                                 <li> <a href="/blog" class="submenu-link"> <ui-icon name="document-text"></ui-icon> Блог </a> </li>
-                                <li> <a href="/events" class="submenu-link"> <ui-icon name="calendar"></ui-icon> События </a> </li>
                                 <li> <a href="/calendar" class="submenu-link"> <ui-icon name="calendar"></ui-icon> Календарь </a> </li>
                             </ul>
                         </li>
