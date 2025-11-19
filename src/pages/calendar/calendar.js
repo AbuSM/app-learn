@@ -48,8 +48,8 @@ export function initCalendar() {
   weekBtn.addEventListener('click', () => showView('week'));
   dayBtn.addEventListener('click', () => showView('day'));
 
-
-
+  const events = {};
+  
   function renderCalendar() {
     const year = viewDate.getFullYear();
     const month = viewDate.getMonth();
