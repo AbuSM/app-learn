@@ -303,20 +303,9 @@ export function initCalendar() {
 					);
 					eventDiv.textContent = event.title;
 
-					// Edit event on click
-					eventDiv.addEventListener("click", (e) => {
-						e.stopPropagation();
-						openEventModal(new Date(dateKey), event);
-					});
-
 					dayDiv.appendChild(eventDiv);
 				});
 			}
-
-			// Open modal on day click
-			dayDiv.addEventListener("click", () => {
-				openEventModal(new Date(year, month, day));
-			});
 
 			daysContainer.appendChild(dayDiv);
 		}
@@ -399,10 +388,6 @@ export function initCalendar() {
 				const cell = document.createElement("div");
 				cell.classList.add("flex-1", "border-l", "border-gray-100", "min-h-12", "hover:bg-gray-50", "cursor-pointer");
 
-				cell.addEventListener("click", () => {
-					openEventModal(weekDates[i]);
-				});
-
 				timeSlot.appendChild(cell);
 			}
 
@@ -450,10 +435,6 @@ export function initCalendar() {
 
 			const cell = document.createElement("div");
 			cell.classList.add("flex-1", "border-l", "border-gray-100", "min-h-12", "hover:bg-gray-50", "cursor-pointer");
-
-			cell.addEventListener("click", () => {
-				openEventModal(dayViewDate);
-			});
 
 			timeSlot.appendChild(timeLabel);
 			timeSlot.appendChild(cell);
