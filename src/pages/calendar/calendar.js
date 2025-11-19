@@ -2,263 +2,485 @@ import changeModal from "../todo/change_modal";
 import "./styles.css";
 
 export function initCalendar() {
-  const monthBtn = document.getElementById('month-btn');
-  const weekBtn = document.getElementById('week-btn');
-  const dayBtn = document.getElementById('day-btn');
-  const slider = document.getElementById('slider');
+	const monthBtn = document.getElementById("month-btn");
+	const weekBtn = document.getElementById("week-btn");
+	const dayBtn = document.getElementById("day-btn");
+	const slider = document.getElementById("slider");
 
-  const monthView = document.getElementById('month-view');
-  const weekView = document.getElementById('week-view');
-  const dayView = document.getElementById('day-view');
-  
-  const daysContainer = document.getElementById("days");
-  const monthYear = document.getElementById("month-year");
-  const prevMonthBtn = document.getElementById("prev-month");
-  const nextMonthBtn = document.getElementById("next-month");
+	const monthView = document.getElementById("month-view");
+	const weekView = document.getElementById("week-view");
+	const dayView = document.getElementById("day-view");
 
-  const realToday = new Date(); 
-  let viewDate = new Date(); 
-  let weekViewDate = new Date(); 
-  let dayViewDate = new Date(); 
-  let currentView = 'month';
+	const daysContainer = document.getElementById("days");
+	const monthYear = document.getElementById("month-year");
+	const prevMonthBtn = document.getElementById("prev-month");
+	const nextMonthBtn = document.getElementById("next-month");
+	const addEventBtn = document.getElementById("add-event-btn");
 
-  function showView(view) {
-    currentView = view;
-    localStorage.setItem('calendarView', view); 
-    monthView.classList.add('hidden');
-    weekView.classList.add('hidden');
-    dayView.classList.add('hidden');
+	const realToday = new Date();
+	let viewDate = new Date();
+	let weekViewDate = new Date();
+	let dayViewDate = new Date();
+	let currentView = "month";
 
-    if (view === 'month') {
-      slider.style.left = '4px';
-      monthView.classList.remove('hidden');
-      renderCalendar();
-    } else if (view === 'week') {
-      slider.style.left = 'calc(33.333% + 2px)';
-      weekView.classList.remove('hidden');
-      renderWeekView();
-    } else if (view === 'day') {
-      slider.style.left = 'calc(66.666% + 2px)';
-      dayView.classList.remove('hidden');
-      renderDayView();
-    }
-  }
+	// Event management
+	let events = JSON.parse(localStorage.getItem("calendarEvents")) || {};
 
-  monthBtn.addEventListener('click', () => showView('month'));
-  weekBtn.addEventListener('click', () => showView('week'));
-  dayBtn.addEventListener('click', () => showView('day'));
+	// Create and append modal
+	const modal = document.createElement("ui-modal");
+	modal.setAttribute("title", "Add / Edit Event");
+	modal.setAttribute("ok-text", "Update changes");
+	modal.setAttribute("cancel-text", "Close");
+	document.body.appendChild(modal);
 
-  const events = {};
-  
-  function renderCalendar() {
-    const year = viewDate.getFullYear();
-    const month = viewDate.getMonth();
+	function createEventForm(date = null, event = null) {
+		const dateStr = date
+			? `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`
+			: null;
 
-    const firstDay = new Date(year, month, 1);
-    const lastDay = new Date(year, month + 1, 0);
+		const eventData = event || {
+			title: "",
+			color: "danger",
+			startDate: dateStr || new Date().toISOString().split("T")[0],
+			endDate: dateStr || new Date().toISOString().split("T")[0],
+		};
 
-    const startDay = firstDay.getDay();
-    const totalDays = lastDay.getDate();
-    const prevMonthLastDay = new Date(year, month, 0).getDate();
+		const formHTML = `
+			<div class="event-form-container">
+				<p class="event-form-subtitle">Plan your next big moment: schedule or edit an event to stay on track</p>
 
-    const monthNames = [
-      "January", "February", "March", "April", "May", "June",
-      "July", "August", "September", "October", "November", "December"
-    ];
+				<div class="form-group">
+					<label for="event-title">Event Title</label>
+					<input
+						type="text"
+						id="event-title"
+						placeholder="Seminar #6"
+						value="${eventData.title}"
+						class="form-input"
+					/>
+				</div>
 
-    monthYear.textContent = `${monthNames[month]} ${year}`;
-    daysContainer.innerHTML = "";
+				<div class="form-group">
+					<label>Event Color</label>
+					<div class="color-selector">
+						<label class="color-option">
+							<input type="radio" name="color" value="danger" ${eventData.color === "danger" ? "checked" : ""} />
+							<span class="color-dot danger"></span>
+							<span>Danger</span>
+						</label>
+						<label class="color-option">
+							<input type="radio" name="color" value="success" ${eventData.color === "success" ? "checked" : ""} />
+							<span class="color-dot success"></span>
+							<span>Success</span>
+						</label>
+						<label class="color-option">
+							<input type="radio" name="color" value="primary" ${eventData.color === "primary" ? "checked" : ""} />
+							<span class="color-dot primary"></span>
+							<span>Primary</span>
+						</label>
+						<label class="color-option">
+							<input type="radio" name="color" value="warning" ${eventData.color === "warning" ? "checked" : ""} />
+							<span class="color-dot warning"></span>
+							<span>Warning</span>
+						</label>
+					</div>
+				</div>
 
-    const prevDays = startDay === 0 ? 6 : startDay - 1;
-    for (let i = prevDays; i > 0; i--) {
-      const dayDiv = document.createElement("div");
-      dayDiv.classList.add("border", "border-gray-100", "min-h-32", "p-2", "text-gray-300", "bg-white");
-      dayDiv.textContent = prevMonthLastDay - i + 1;
-      daysContainer.appendChild(dayDiv);
-    }
+				<div class="form-group">
+					<label for="event-start-date">Enter Start Date</label>
+					<input
+						type="date"
+						id="event-start-date"
+						value="${eventData.startDate}"
+						class="form-input"
+					/>
+				</div>
 
-    for (let day = 1; day <= totalDays; day++) {
-      const dayDiv = document.createElement("div");
-      dayDiv.classList.add("border", "border-gray-100", "min-h-32", "p-2", "cursor-pointer", "transition-colors");
+				<div class="form-group">
+					<label for="event-end-date">Enter End Date</label>
+					<input
+						type="date"
+						id="event-end-date"
+						value="${eventData.endDate}"
+						class="form-input"
+					/>
+				</div>
+			</div>
+		`;
 
-      const dayNumber = document.createElement("div");
-      dayNumber.classList.add("font-semibold", "mb-2", "text-sm");
-      dayNumber.textContent = day;
+		return formHTML;
+	}
 
-      if (
-        day === realToday.getDate() &&
-        month === realToday.getMonth() &&
-        year === realToday.getFullYear()
-      ) {
+	function openEventModal(date = null, event = null) {
+		const isEditing = event !== null;
+		modal.setAttribute("title", isEditing ? "Edit Event" : "Add / Edit Event");
+		modal.setAttribute("ok-text", isEditing ? "Update changes" : "Update changes");
 
-        dayDiv.classList.add("bg-gray-200", "border-gray-300" , "rounded-[5px]" , "m-[10px]");
-        dayDiv.classList.remove("border-gray-100");
-        dayNumber.classList.add("text-white", "font-bold");
-      } else {
+		modal.innerHTML = createEventForm(date, event);
 
-        dayDiv.classList.add("bg-white", "hover:bg-gray-50");
-        dayNumber.classList.add("text-gray-700");
-      }
+		modal.show()
+			.then(() => {
+				const titleInput = modal.querySelector("#event-title");
+				const colorInput = modal.querySelector('input[name="color"]:checked');
+				const startDateInput = modal.querySelector("#event-start-date");
+				const endDateInput = modal.querySelector("#event-end-date");
 
-      dayDiv.appendChild(dayNumber);
+				const eventTitle = titleInput.value.trim();
 
-      const dateKey = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-      if (events[dateKey]) {
-        events[dateKey].forEach(event => {
-          const eventDiv = document.createElement("div");
-          const colorClass = getEventColor(event.color);
-          eventDiv.classList.add(
-            "text-xs", "px-2", "py-1", "mb-1", "rounded",
-            colorClass.bg, colorClass.text, "border-l-4", colorClass.border,
-            "truncate", "font-medium"
-          );
-          eventDiv.textContent = event.title;
-          dayDiv.appendChild(eventDiv);
-        });
-      }
+				if (!eventTitle) {
+					window.showToast("Please enter an event title", 3);
+					return;
+				}
 
-      dayDiv.setAttribute('data-modal-target', 'event-modal');
-      dayDiv.setAttribute('data-modal-toggle', 'event-modal');
+				const eventData = {
+					id: event?.id || Date.now().toString(),
+					title: eventTitle,
+					color: colorInput.value,
+					startDate: startDateInput.value,
+					endDate: endDateInput.value,
+				};
 
-      daysContainer.appendChild(dayDiv);
-    }
+				// Save event to localStorage
+				const dateKey = eventData.startDate;
+				if (!events[dateKey]) {
+					events[dateKey] = [];
+				}
 
-    const totalCells = daysContainer.children.length;
-    const nextDays = 42 - totalCells;
-    for (let i = 1; i <= nextDays; i++) {
-      const dayDiv = document.createElement("div");
-      dayDiv.classList.add("border", "border-gray-100", "min-h-32", "p-2", "text-gray-300", "bg-white");
-      dayDiv.textContent = i;
-      daysContainer.appendChild(dayDiv);
-    }
-  }
+				if (isEditing) {
+					// Update existing event
+					const index = events[dateKey].findIndex((e) => e.id === event.id);
+					if (index !== -1) {
+						events[dateKey][index] = eventData;
+					}
+				} else {
+					// Add new event
+					events[dateKey].push(eventData);
+				}
 
-  function getWeekDates() {
-    const dayOfWeek = weekViewDate.getDay(); 
-    const adjustedDay = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
-    const monday = new Date(weekViewDate);
-    monday.setDate(weekViewDate.getDate() - adjustedDay);
+				localStorage.setItem("calendarEvents", JSON.stringify(events));
+				window.showToast("Success!", 3);
 
-    const weekDates = [];
-    for (let i = 0; i < 7; i++) {
-      const date = new Date(monday);
-      date.setDate(monday.getDate() + i);
-      weekDates.push(date);
-    }
-    return weekDates;
-  }
+				// Re-render calendar
+				showView(currentView);
+			})
+			.catch(() => {
+				// Modal cancelled
+			});
+	}
 
-  function renderWeekView() {
-    const weekDates = getWeekDates();
-    const weekHeader = document.getElementById('week-header');
+	function showView(view) {
+		currentView = view;
+		localStorage.setItem("calendarView", view);
+		monthView.classList.add("hidden");
+		weekView.classList.add("hidden");
+		dayView.classList.add("hidden");
 
-    const days = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
-    weekHeader.innerHTML = '<div class="py-3"></div>';
-    
-    weekDates.forEach((date, index) => {
-      const headerCell = document.createElement('div');
-      headerCell.classList.add('py-3', 'border-l', 'border-gray-100');
-      headerCell.textContent = `${days[index]} ${date.getMonth() + 1}/${date.getDate()}`;
-      weekHeader.appendChild(headerCell);
-    });
+		if (view === "month") {
+			slider.style.left = "4px";
+			monthView.classList.remove("hidden");
+			renderCalendar();
+		} else if (view === "week") {
+			slider.style.left = "calc(33.333% + 2px)";
+			weekView.classList.remove("hidden");
+			renderWeekView();
+		} else if (view === "day") {
+			slider.style.left = "calc(66.666% + 2px)";
+			dayView.classList.remove("hidden");
+			renderDayView();
+		}
+	}
 
-    const startDate = weekDates[0];
-    const endDate = weekDates[6];
-    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-    monthYear.textContent = `${monthNames[startDate.getMonth()]} ${startDate.getDate()} – ${endDate.getDate()}, ${startDate.getFullYear()}`;
+	monthBtn.addEventListener("click", () => showView("month"));
+	weekBtn.addEventListener("click", () => showView("week"));
+	dayBtn.addEventListener("click", () => showView("day"));
+	addEventBtn.addEventListener("click", () => openEventModal(viewDate));
 
-    const weekContainer = document.getElementById('week-grid');
-    if (!weekContainer) return;
+	function getEventColor(color) {
+		const colorMap = {
+			danger: {
+				bg: "bg-red-100",
+				text: "text-red-700",
+				border: "border-red-400",
+			},
+			success: {
+				bg: "bg-green-100",
+				text: "text-green-700",
+				border: "border-green-400",
+			},
+			primary: {
+				bg: "bg-blue-100",
+				text: "text-blue-700",
+				border: "border-blue-400",
+			},
+			warning: {
+				bg: "bg-yellow-100",
+				text: "text-yellow-700",
+				border: "border-yellow-400",
+			},
+		};
+		return colorMap[color] || colorMap.danger;
+	}
 
-    weekContainer.innerHTML = '';
+	function renderCalendar() {
+		const year = viewDate.getFullYear();
+		const month = viewDate.getMonth();
 
-    const hours = Array.from({ length: 19 }, (_, i) => i + 6); 
+		const firstDay = new Date(year, month, 1);
+		const lastDay = new Date(year, month + 1, 0);
 
-    hours.forEach(hour => {
-      const timeSlot = document.createElement('div');
-      timeSlot.classList.add('flex', 'border-b', 'border-gray-100');
+		const startDay = firstDay.getDay();
+		const totalDays = lastDay.getDate();
+		const prevMonthLastDay = new Date(year, month, 0).getDate();
 
-      const timeLabel = document.createElement('div');
-      timeLabel.classList.add('w-20', 'text-xs', 'text-gray-400', 'py-2', 'pr-2', 'text-right');
-      timeLabel.textContent = hour >= 12 ? `${hour === 12 ? 12 : hour - 12}pm` : `${hour}am`;
+		const monthNames = [
+			"January",
+			"February",
+			"March",
+			"April",
+			"May",
+			"June",
+			"July",
+			"August",
+			"September",
+			"October",
+			"November",
+			"December",
+		];
 
-      timeSlot.appendChild(timeLabel);
+		monthYear.textContent = `${monthNames[month]} ${year}`;
+		daysContainer.innerHTML = "";
 
-      for (let i = 0; i < 7; i++) {
-        const cell = document.createElement('div');
-        cell.classList.add('flex-1', 'border-l', 'border-gray-100', 'min-h-12', 'hover:bg-gray-50', 'cursor-pointer');
-        
-        cell.setAttribute('data-modal-target', 'event-modal');
-        cell.setAttribute('data-modal-toggle', 'event-modal');
-        
-        timeSlot.appendChild(cell);
-      }
+		const prevDays = startDay === 0 ? 6 : startDay - 1;
+		for (let i = prevDays; i > 0; i--) {
+			const dayDiv = document.createElement("div");
+			dayDiv.classList.add("border", "border-gray-100", "min-h-32", "p-2", "text-gray-300", "bg-white");
+			dayDiv.textContent = prevMonthLastDay - i + 1;
+			daysContainer.appendChild(dayDiv);
+		}
 
-      weekContainer.appendChild(timeSlot);
-    });
-  }
+		for (let day = 1; day <= totalDays; day++) {
+			const dayDiv = document.createElement("div");
+			dayDiv.classList.add("border", "border-gray-100", "min-h-32", "p-2", "cursor-pointer", "transition-colors", "bg-white", "hover:bg-gray-50");
 
-  function renderDayView() {
-    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-    const dayName = days[dayViewDate.getDay()].toUpperCase();
-    
-    const dayHeader = document.getElementById('day-header');
-    dayHeader.textContent = dayName;
+			const dayNumber = document.createElement("div");
+			dayNumber.classList.add("font-semibold", "mb-2", "text-sm", "text-gray-700");
+			dayNumber.textContent = day;
 
-    const monthNames = ["January", "February", "March", "April", "May", "June",
-      "July", "August", "September", "October", "November", "December"];
-    monthYear.textContent = `${monthNames[dayViewDate.getMonth()]} ${dayViewDate.getDate()}, ${dayViewDate.getFullYear()}`;
+			if (
+				day === realToday.getDate() &&
+				month === realToday.getMonth() &&
+				year === realToday.getFullYear()
+			) {
+				dayDiv.classList.add("bg-gray-200", "border-gray-300", "rounded-[5px]", "m-[10px]");
+				dayDiv.classList.remove("border-gray-100", "bg-white", "hover:bg-gray-50");
+				dayNumber.classList.add("text-white", "font-bold");
+			}
 
-    const dayContainer = document.getElementById('day-grid');
-    if (!dayContainer) return;
+			dayDiv.appendChild(dayNumber);
 
-    dayContainer.innerHTML = '';
+			const dateKey = `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+			if (events[dateKey]) {
+				events[dateKey].forEach((event) => {
+					const eventDiv = document.createElement("div");
+					const colorClass = getEventColor(event.color);
+					eventDiv.classList.add(
+						"text-xs",
+						"px-2",
+						"py-1",
+						"mb-1",
+						"rounded",
+						colorClass.bg,
+						colorClass.text,
+						"border-l-4",
+						colorClass.border,
+						"truncate",
+						"font-medium",
+						"cursor-pointer",
+						"hover:opacity-80",
+						"transition-opacity"
+					);
+					eventDiv.textContent = event.title;
 
-    const hours = Array.from({ length: 19 }, (_, i) => i + 6);
+					// Edit event on click
+					eventDiv.addEventListener("click", (e) => {
+						e.stopPropagation();
+						openEventModal(new Date(dateKey), event);
+					});
 
-    hours.forEach(hour => {
-      const timeSlot = document.createElement('div');
-      timeSlot.classList.add('flex', 'border-b', 'border-gray-100');
+					dayDiv.appendChild(eventDiv);
+				});
+			}
 
-      const timeLabel = document.createElement('div');
-      timeLabel.classList.add('w-20', 'text-xs', 'text-gray-400', 'py-2', 'pr-2', 'text-right');
-      timeLabel.textContent = hour >= 12 ? `${hour === 12 ? 12 : hour - 12}pm` : `${hour}am`;
+			// Open modal on day click
+			dayDiv.addEventListener("click", () => {
+				openEventModal(new Date(year, month, day));
+			});
 
-      const cell = document.createElement('div');
-      cell.classList.add('flex-1', 'border-l', 'border-gray-100', 'min-h-12', 'hover:bg-gray-50', 'cursor-pointer');
+			daysContainer.appendChild(dayDiv);
+		}
 
-      cell.setAttribute('data-modal-target', 'event-modal');
-      cell.setAttribute('data-modal-toggle', 'event-modal');
+		const totalCells = daysContainer.children.length;
+		const nextDays = 42 - totalCells;
+		for (let i = 1; i <= nextDays; i++) {
+			const dayDiv = document.createElement("div");
+			dayDiv.classList.add("border", "border-gray-100", "min-h-32", "p-2", "text-gray-300", "bg-white");
+			dayDiv.textContent = i;
+			daysContainer.appendChild(dayDiv);
+		}
+	}
 
-      timeSlot.appendChild(timeLabel);
-      timeSlot.appendChild(cell);
-      dayContainer.appendChild(timeSlot);
-    });
-  }
+	function getWeekDates() {
+		const dayOfWeek = weekViewDate.getDay();
+		const adjustedDay = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
+		const monday = new Date(weekViewDate);
+		monday.setDate(weekViewDate.getDate() - adjustedDay);
 
-  prevMonthBtn.addEventListener("click", () => {
-    if (currentView === 'month') {
-      viewDate.setMonth(viewDate.getMonth() - 1);
-    } else if (currentView === 'week') {
-      weekViewDate.setDate(weekViewDate.getDate() - 7);
-    } else if (currentView === 'day') {
-      dayViewDate.setDate(dayViewDate.getDate() - 1); 
-    }
-    showView(currentView); 
-  });
+		const weekDates = [];
+		for (let i = 0; i < 7; i++) {
+			const date = new Date(monday);
+			date.setDate(monday.getDate() + i);
+			weekDates.push(date);
+		}
+		return weekDates;
+	}
 
-  nextMonthBtn.addEventListener("click", () => {
-    if (currentView === 'month') {
-      viewDate.setMonth(viewDate.getMonth() + 1);
-    } else if (currentView === 'week') {
-      weekViewDate.setDate(weekViewDate.getDate() + 7); 
-    } else if (currentView === 'day') {
-      dayViewDate.setDate(dayViewDate.getDate() + 1);
-    }
-    showView(currentView);
-  });
+	function renderWeekView() {
+		const weekDates = getWeekDates();
+		const weekHeader = document.getElementById("week-header");
 
-  const savedView = localStorage.getItem('calendarView') || 'month'; 
-  showView(savedView);
+		const days = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"];
+		weekHeader.innerHTML = "<div class=\"py-3\"></div>";
+
+		weekDates.forEach((date, index) => {
+			const headerCell = document.createElement("div");
+			headerCell.classList.add("py-3", "border-l", "border-gray-100");
+			headerCell.textContent = `${days[index]} ${date.getMonth() + 1}/${date.getDate()}`;
+			weekHeader.appendChild(headerCell);
+		});
+
+		const startDate = weekDates[0];
+		const endDate = weekDates[6];
+		const monthNames = [
+			"Jan",
+			"Feb",
+			"Mar",
+			"Apr",
+			"May",
+			"Jun",
+			"Jul",
+			"Aug",
+			"Sep",
+			"Oct",
+			"Nov",
+			"Dec",
+		];
+		monthYear.textContent = `${monthNames[startDate.getMonth()]} ${startDate.getDate()} – ${endDate.getDate()}, ${startDate.getFullYear()}`;
+
+		const weekContainer = document.getElementById("week-grid");
+		if (!weekContainer) return;
+
+		weekContainer.innerHTML = "";
+
+		const hours = Array.from({ length: 19 }, (_, i) => i + 6);
+
+		hours.forEach((hour) => {
+			const timeSlot = document.createElement("div");
+			timeSlot.classList.add("flex", "border-b", "border-gray-100");
+
+			const timeLabel = document.createElement("div");
+			timeLabel.classList.add("w-20", "text-xs", "text-gray-400", "py-2", "pr-2", "text-right");
+			timeLabel.textContent = hour >= 12 ? `${hour === 12 ? 12 : hour - 12}pm` : `${hour}am`;
+
+			timeSlot.appendChild(timeLabel);
+
+			for (let i = 0; i < 7; i++) {
+				const cell = document.createElement("div");
+				cell.classList.add("flex-1", "border-l", "border-gray-100", "min-h-12", "hover:bg-gray-50", "cursor-pointer");
+
+				cell.addEventListener("click", () => {
+					openEventModal(weekDates[i]);
+				});
+
+				timeSlot.appendChild(cell);
+			}
+
+			weekContainer.appendChild(timeSlot);
+		});
+	}
+
+	function renderDayView() {
+		const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+		const dayName = days[dayViewDate.getDay()].toUpperCase();
+
+		const dayHeader = document.getElementById("day-header");
+		dayHeader.textContent = dayName;
+
+		const monthNames = [
+			"January",
+			"February",
+			"March",
+			"April",
+			"May",
+			"June",
+			"July",
+			"August",
+			"September",
+			"October",
+			"November",
+			"December",
+		];
+		monthYear.textContent = `${monthNames[dayViewDate.getMonth()]} ${dayViewDate.getDate()}, ${dayViewDate.getFullYear()}`;
+
+		const dayContainer = document.getElementById("day-grid");
+		if (!dayContainer) return;
+
+		dayContainer.innerHTML = "";
+
+		const hours = Array.from({ length: 19 }, (_, i) => i + 6);
+
+		hours.forEach((hour) => {
+			const timeSlot = document.createElement("div");
+			timeSlot.classList.add("flex", "border-b", "border-gray-100");
+
+			const timeLabel = document.createElement("div");
+			timeLabel.classList.add("w-20", "text-xs", "text-gray-400", "py-2", "pr-2", "text-right");
+			timeLabel.textContent = hour >= 12 ? `${hour === 12 ? 12 : hour - 12}pm` : `${hour}am`;
+
+			const cell = document.createElement("div");
+			cell.classList.add("flex-1", "border-l", "border-gray-100", "min-h-12", "hover:bg-gray-50", "cursor-pointer");
+
+			cell.addEventListener("click", () => {
+				openEventModal(dayViewDate);
+			});
+
+			timeSlot.appendChild(timeLabel);
+			timeSlot.appendChild(cell);
+			dayContainer.appendChild(timeSlot);
+		});
+	}
+
+	prevMonthBtn.addEventListener("click", () => {
+		if (currentView === "month") {
+			viewDate.setMonth(viewDate.getMonth() - 1);
+		} else if (currentView === "week") {
+			weekViewDate.setDate(weekViewDate.getDate() - 7);
+		} else if (currentView === "day") {
+			dayViewDate.setDate(dayViewDate.getDate() - 1);
+		}
+		showView(currentView);
+	});
+
+	nextMonthBtn.addEventListener("click", () => {
+		if (currentView === "month") {
+			viewDate.setMonth(viewDate.getMonth() + 1);
+		} else if (currentView === "week") {
+			weekViewDate.setDate(weekViewDate.getDate() + 7);
+		} else if (currentView === "day") {
+			dayViewDate.setDate(dayViewDate.getDate() + 1);
+		}
+		showView(currentView);
+	});
+
+	const savedView = localStorage.getItem("calendarView") || "month";
+	showView(savedView);
 }
-
