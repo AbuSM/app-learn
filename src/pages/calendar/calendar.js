@@ -33,9 +33,16 @@ export function initCalendar() {
 	modal.setAttribute("cancel-text", "Close");
 	document.body.appendChild(modal);
 
-	function createEventForm(date = null, event = null) {
+	function createEventForm(
+		date = null,
+		event = null,
+		showDatePickers = true
+	) {
 		const dateStr = date
-			? `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`
+			? `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(
+					2,
+					"0"
+			  )}-${String(date.getDate()).padStart(2, "0")}`
 			: null;
 
 		const eventData = event || {
@@ -64,66 +71,87 @@ export function initCalendar() {
 					<label>Цвет события</label>
 					<div class="color-selector">
 						<label class="color-option">
-							<input type="radio" name="color" value="danger" ${eventData.color === "danger" ? "checked" : ""} />
+							<input type="radio" name="color" value="danger" ${
+								eventData.color === "danger" ? "checked" : ""
+							} />
 							<span class="color-dot danger"></span>
 							<span>Красный</span>
 						</label>
 						<label class="color-option">
-							<input type="radio" name="color" value="success" ${eventData.color === "success" ? "checked" : ""} />
+							<input type="radio" name="color" value="success" ${
+								eventData.color === "success" ? "checked" : ""
+							} />
 							<span class="color-dot success"></span>
 							<span>Зелёный</span>
 						</label>
 						<label class="color-option">
-							<input type="radio" name="color" value="primary" ${eventData.color === "primary" ? "checked" : ""} />
+							<input type="radio" name="color" value="primary" ${
+								eventData.color === "primary" ? "checked" : ""
+							} />
 							<span class="color-dot primary"></span>
 							<span>Синий</span>
 						</label>
 						<label class="color-option">
-							<input type="radio" name="color" value="warning" ${eventData.color === "warning" ? "checked" : ""} />
+							<input type="radio" name="color" value="warning" ${
+								eventData.color === "warning" ? "checked" : ""
+							} />
 							<span class="color-dot warning"></span>
 							<span>Жёлтый</span>
 						</label>
 					</div>
 				</div>
 
-				<div class="form-group">
-					<label for="event-start-date">Дата начала</label>
-					<input
-						type="date"
-						id="event-start-date"
-						value="${eventData.startDate}"
-						class="form-input"
-					/>
-				</div>
+				${
+					showDatePickers
+						? `
+					<div class="form-group">
+						<label for="event-start-date">Дата начала</label>
+						<input
+							type="date"
+							id="event-start-date"
+							value="${eventData.startDate}"
+							class="form-input"
+						/>
+					</div>
 
-				<div class="form-group">
-					<label for="event-end-date">Дата окончания</label>
-					<input
-						type="date"
-						id="event-end-date"
-						value="${eventData.endDate}"
-						class="form-input"
-					/>
-				</div>
+					<div class="form-group">
+						<label for="event-end-date">Дата окончания</label>
+						<input
+							type="date"
+							id="event-end-date"
+							value="${eventData.endDate}"
+							class="form-input"
+						/>
+					</div>
+				`
+						: ""
+				}
 			</div>
 		`;
 
 		return formHTML;
 	}
 
-	function openEventModal(date = null, event = null) {
+	function openEventModal(date = null, event = null, showDatePickers = true) {
 		const isEditing = event !== null;
-		modal.setTitle(isEditing ? "Редактировать событие" : "Добавить / Редактировать событие");
-		modal.setButtonText("Обновить", "Закрыть");
+		modal.setTitle(
+			isEditing
+				? "Редактировать событие"
+				: "Добавить / Редактировать событие"
+		);
+		modal.setButtonText("Добавить", "Закрыть");
 
 		const body = modal.getBody();
-		body.innerHTML = createEventForm(date, event);
+		body.innerHTML = createEventForm(date, event, showDatePickers);
 
-		modal.show()
+		modal
+			.show()
 			.then(() => {
 				const body = modal.getBody();
 				const titleInput = body.querySelector("#event-title");
-				const colorInput = body.querySelector('input[name="color"]:checked');
+				const colorInput = body.querySelector(
+					'input[name="color"]:checked'
+				);
 				const startDateInput = body.querySelector("#event-start-date");
 				const endDateInput = body.querySelector("#event-end-date");
 
@@ -134,12 +162,25 @@ export function initCalendar() {
 					return;
 				}
 
+				// If no date pickers, use the selected date
+				const startDate = startDateInput
+					? startDateInput.value
+					: date
+					? `${date.getFullYear()}-${String(
+							date.getMonth() + 1
+					  ).padStart(2, "0")}-${String(date.getDate()).padStart(
+							2,
+							"0"
+					  )}`
+					: new Date().toISOString().split("T")[0];
+				const endDate = endDateInput ? endDateInput.value : startDate;
+
 				const eventData = {
 					id: event?.id || Date.now().toString(),
 					title: eventTitle,
 					color: colorInput.value,
-					startDate: startDateInput.value,
-					endDate: endDateInput.value,
+					startDate: startDate,
+					endDate: endDate,
 				};
 
 				// Save event to localStorage
@@ -150,7 +191,9 @@ export function initCalendar() {
 
 				if (isEditing) {
 					// Update existing event
-					const index = events[dateKey].findIndex((e) => e.id === event.id);
+					const index = events[dateKey].findIndex(
+						(e) => e.id === event.id
+					);
 					if (index !== -1) {
 						events[dateKey][index] = eventData;
 					}
@@ -255,17 +298,38 @@ export function initCalendar() {
 		const prevDays = startDay === 0 ? 6 : startDay - 1;
 		for (let i = prevDays; i > 0; i--) {
 			const dayDiv = document.createElement("div");
-			dayDiv.classList.add("border", "border-gray-100", "min-h-32", "p-2", "text-gray-300", "bg-white");
+			dayDiv.classList.add(
+				"border",
+				"border-gray-100",
+				"min-h-32",
+				"p-2",
+				"text-gray-300",
+				"bg-white"
+			);
 			dayDiv.textContent = prevMonthLastDay - i + 1;
 			daysContainer.appendChild(dayDiv);
 		}
 
 		for (let day = 1; day <= totalDays; day++) {
 			const dayDiv = document.createElement("div");
-			dayDiv.classList.add("border", "border-gray-100", "min-h-32", "p-2", "cursor-pointer", "transition-colors", "bg-white", "hover:bg-gray-50");
+			dayDiv.classList.add(
+				"border",
+				"border-gray-100",
+				"min-h-32",
+				"p-2",
+				"cursor-pointer",
+				"transition-colors",
+				"bg-white",
+				"hover:bg-gray-50"
+			);
 
 			const dayNumber = document.createElement("div");
-			dayNumber.classList.add("font-semibold", "mb-2", "text-sm", "text-gray-700");
+			dayNumber.classList.add(
+				"font-semibold",
+				"mb-2",
+				"text-sm",
+				"text-gray-700"
+			);
 			dayNumber.textContent = day;
 
 			if (
@@ -273,14 +337,26 @@ export function initCalendar() {
 				month === realToday.getMonth() &&
 				year === realToday.getFullYear()
 			) {
-				dayDiv.classList.add("bg-gray-200", "border-gray-300", "rounded-[5px]", "m-[10px]");
-				dayDiv.classList.remove("border-gray-100", "bg-white", "hover:bg-gray-50");
+				dayDiv.classList.add(
+					"bg-gray-200",
+					"border-gray-300",
+					"rounded-[5px]",
+					"m-[10px]"
+				);
+				dayDiv.classList.remove(
+					"border-gray-100",
+					"bg-white",
+					"hover:bg-gray-50"
+				);
 				dayNumber.classList.add("text-white", "font-bold");
 			}
 
 			dayDiv.appendChild(dayNumber);
 
-			const dateKey = `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+			const dateKey = `${year}-${String(month + 1).padStart(
+				2,
+				"0"
+			)}-${String(day).padStart(2, "0")}`;
 			if (events[dateKey]) {
 				events[dateKey].forEach((event) => {
 					const eventDiv = document.createElement("div");
@@ -307,6 +383,11 @@ export function initCalendar() {
 				});
 			}
 
+			// Open modal on day click (without datepickers)
+			dayDiv.addEventListener("click", () => {
+				openEventModal(new Date(year, month, day), null, false);
+			});
+
 			daysContainer.appendChild(dayDiv);
 		}
 
@@ -314,7 +395,14 @@ export function initCalendar() {
 		const nextDays = 42 - totalCells;
 		for (let i = 1; i <= nextDays; i++) {
 			const dayDiv = document.createElement("div");
-			dayDiv.classList.add("border", "border-gray-100", "min-h-32", "p-2", "text-gray-300", "bg-white");
+			dayDiv.classList.add(
+				"border",
+				"border-gray-100",
+				"min-h-32",
+				"p-2",
+				"text-gray-300",
+				"bg-white"
+			);
 			dayDiv.textContent = i;
 			daysContainer.appendChild(dayDiv);
 		}
@@ -340,12 +428,14 @@ export function initCalendar() {
 		const weekHeader = document.getElementById("week-header");
 
 		const days = ["ПН", "ВТ", "СР", "ЧТ", "ПТ", "СБ", "ВС"];
-		weekHeader.innerHTML = "<div class=\"py-3\"></div>";
+		weekHeader.innerHTML = '<div class="py-3"></div>';
 
 		weekDates.forEach((date, index) => {
 			const headerCell = document.createElement("div");
 			headerCell.classList.add("py-3", "border-l", "border-gray-100");
-			headerCell.textContent = `${days[index]} ${date.getMonth() + 1}/${date.getDate()}`;
+			headerCell.textContent = `${days[index]} ${
+				date.getMonth() + 1
+			}/${date.getDate()}`;
 			weekHeader.appendChild(headerCell);
 		});
 
@@ -365,7 +455,9 @@ export function initCalendar() {
 			"Ноя",
 			"Дек",
 		];
-		monthYear.textContent = `${monthNames[startDate.getMonth()]} ${startDate.getDate()} – ${endDate.getDate()}, ${startDate.getFullYear()}`;
+		monthYear.textContent = `${
+			monthNames[startDate.getMonth()]
+		} ${startDate.getDate()} – ${endDate.getDate()}, ${startDate.getFullYear()}`;
 
 		const weekContainer = document.getElementById("week-grid");
 		if (!weekContainer) return;
@@ -379,15 +471,33 @@ export function initCalendar() {
 			timeSlot.classList.add("flex", "border-b", "border-gray-100");
 
 			const timeLabel = document.createElement("div");
-			timeLabel.classList.add("w-20", "text-xs", "text-gray-400", "py-2", "pr-2", "text-right");
-			timeLabel.textContent = hour >= 12 ? `${hour === 12 ? 12 : hour - 12}pm` : `${hour}am`;
+			timeLabel.classList.add(
+				"w-20",
+				"text-xs",
+				"text-gray-400",
+				"py-2",
+				"pr-2",
+				"text-right"
+			);
+			timeLabel.textContent =
+				hour >= 12 ? `${hour === 12 ? 12 : hour - 12}pm` : `${hour}am`;
 
 			timeSlot.appendChild(timeLabel);
 
 			for (let i = 0; i < 7; i++) {
 				const cell = document.createElement("div");
-				cell.classList.add("flex-1", "border-l", "border-gray-100", "min-h-12", "hover:bg-gray-50", "cursor-pointer");
+				cell.classList.add(
+					"flex-1",
+					"border-l",
+					"border-gray-100",
+					"min-h-12",
+					"hover:bg-gray-50",
+					"cursor-pointer"
+				);
 
+				cell.addEventListener("click", () => {
+					openEventModal(weekDates[i], null, false);
+				});
 				timeSlot.appendChild(cell);
 			}
 
@@ -396,7 +506,15 @@ export function initCalendar() {
 	}
 
 	function renderDayView() {
-		const days = ["Воскресенье", "Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота"];
+		const days = [
+			"Воскресенье",
+			"Понедельник",
+			"Вторник",
+			"Среда",
+			"Четверг",
+			"Пятница",
+			"Суббота",
+		];
 		const dayName = days[dayViewDate.getDay()].toUpperCase();
 
 		const dayHeader = document.getElementById("day-header");
@@ -416,7 +534,9 @@ export function initCalendar() {
 			"Ноябрь",
 			"Декабрь",
 		];
-		monthYear.textContent = `${monthNames[dayViewDate.getMonth()]} ${dayViewDate.getDate()}, ${dayViewDate.getFullYear()}`;
+		monthYear.textContent = `${
+			monthNames[dayViewDate.getMonth()]
+		} ${dayViewDate.getDate()}, ${dayViewDate.getFullYear()}`;
 
 		const dayContainer = document.getElementById("day-grid");
 		if (!dayContainer) return;
@@ -430,12 +550,31 @@ export function initCalendar() {
 			timeSlot.classList.add("flex", "border-b", "border-gray-100");
 
 			const timeLabel = document.createElement("div");
-			timeLabel.classList.add("w-20", "text-xs", "text-gray-400", "py-2", "pr-2", "text-right");
-			timeLabel.textContent = hour >= 12 ? `${hour === 12 ? 12 : hour - 12}pm` : `${hour}am`;
+			timeLabel.classList.add(
+				"w-20",
+				"text-xs",
+				"text-gray-400",
+				"py-2",
+				"pr-2",
+				"text-right"
+			);
+			timeLabel.textContent =
+				hour >= 12 ? `${hour === 12 ? 12 : hour - 12}pm` : `${hour}am`;
 
 			const cell = document.createElement("div");
-			cell.classList.add("flex-1", "border-l", "border-gray-100", "min-h-12", "hover:bg-gray-50", "cursor-pointer");
+			cell.classList.add(
+				"flex-1",
+				"border-l",
+				"border-gray-100",
+				"min-h-12",
+				"hover:bg-gray-50",
+				"cursor-pointer"
+			);
 
+
+			cell.addEventListener("click", () => {
+				openEventModal(dayViewDate, null, false);
+			});
 			timeSlot.appendChild(timeLabel);
 			timeSlot.appendChild(cell);
 			dayContainer.appendChild(timeSlot);
