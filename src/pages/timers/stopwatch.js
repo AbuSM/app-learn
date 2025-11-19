@@ -46,7 +46,7 @@ setStopWatchArea();
 function onStart() {
 	if (!isRunning) {
 		isRunning = true;
-		stop.textContent = "Pause";
+		stop.textContent = "Пауза";
 		clearIntervalId = setInterval(() => {
 			millisecond += TIMER_RANGE;
 			setStopWatchArea();
@@ -59,12 +59,11 @@ function onStop() {
 		clearInterval(clearIntervalId);
 		clearIntervalId = null;
 		isRunning = false;
-		stop.textContent = "Stop";
-	} else if (stop.textContent === "Stop") {
-		// Second click on stop resets to paused state
+		stop.textContent = "Стоп";
+	} else if (stop.textContent === "Стоп") {
 		millisecond = 0;
 		setStopWatchArea();
-		stop.textContent = "Pause";
+		stop.textContent = "Пауза";
 	}
 }
 
@@ -74,7 +73,7 @@ function onReset() {
 	isRunning = false;
 	millisecond = 0;
 	setStopWatchArea();
-	stop.textContent = "Pause";
+	stop.textContent = "Пауза";
 	document.getElementById("log").textContent = "";
 	arr.length = 0;
 	localStorage.removeItem("stopwatch-time");

@@ -39,11 +39,10 @@ initialNumber.addEventListener("input", function (event) {
 });
 
 start.addEventListener("click", () => {
-	// Only start if not already running and timer is set
 	if (!isTimerRunning && millisecondsTimer > 0) {
 		isTimerRunning = true;
 		start.disabled = true;
-		stop.textContent = "Pause";
+		stop.textContent = "Пауза";
 		stop.disabled = false;
 		initialNumber.disabled = true;
 		plusFive.disabled = true;
@@ -60,7 +59,7 @@ start.addEventListener("click", () => {
 				setTimerArea(millisecondsTimer);
 				audio.play();
 				start.disabled = false;
-				stop.textContent = "Stop";
+				stop.textContent = "Стоп";
 				stop.disabled = false;
 				initialNumber.disabled = false;
 				plusFive.disabled = false;
@@ -74,18 +73,16 @@ start.addEventListener("click", () => {
 
 stop.addEventListener("click", () => {
 	if (isTimerRunning) {
-		// Pause the timer
 		clearInterval(timerClearIntervalId);
 		timerClearIntervalId = null;
 		isTimerRunning = false;
 		start.disabled = false;
-		start.textContent = "Resume";
-		stop.textContent = "Stop";
-	} else if (stop.textContent === "Stop") {
-		// Stop and reset timer
+		start.textContent = "Возобновить";
+		stop.textContent = "Стоп";
+	} else if (stop.textContent === "Стоп") {
 		millisecondsTimer = 0;
 		setTimerArea(millisecondsTimer);
-		start.textContent = "Start";
+		start.textContent = "Старт";
 		start.disabled = false;
 		stop.disabled = true;
 		initialNumber.disabled = false;
