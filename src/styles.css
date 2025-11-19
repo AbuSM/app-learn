@@ -40,6 +40,13 @@ app-shell {
 app-sidebar {
 	flex-shrink: 0;
 	width: 280px;
+	transition: transform 0.3s ease-in-out, width 0.3s ease-in-out;
+	transform: translateX(0);
+}
+
+app-sidebar.sidebar-hidden {
+	transform: translateX(-280px);
+	width: 0;
 }
 
 .main {
