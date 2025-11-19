@@ -23,10 +23,8 @@ export function initCalendar() {
 	let dayViewDate = new Date();
 	let currentView = "month";
 
-	// Event management
 	let events = JSON.parse(localStorage.getItem("calendarEvents")) || {};
 
-	// Create and append modal
 	const modal = document.createElement("ui-modal");
 	modal.setAttribute("title", "Add / Edit Event");
 	modal.setAttribute("ok-text", "Update changes");
@@ -162,7 +160,6 @@ export function initCalendar() {
 					return;
 				}
 
-				// If no date pickers, use the selected date
 				const startDate = startDateInput
 					? startDateInput.value
 					: date
@@ -183,14 +180,12 @@ export function initCalendar() {
 					endDate: endDate,
 				};
 
-				// Save event to localStorage
 				const dateKey = eventData.startDate;
 				if (!events[dateKey]) {
 					events[dateKey] = [];
 				}
 
 				if (isEditing) {
-					// Update existing event
 					const index = events[dateKey].findIndex(
 						(e) => e.id === event.id
 					);
@@ -198,18 +193,15 @@ export function initCalendar() {
 						events[dateKey][index] = eventData;
 					}
 				} else {
-					// Add new event
 					events[dateKey].push(eventData);
 				}
 
 				localStorage.setItem("calendarEvents", JSON.stringify(events));
 				window.showToast("Успешно!", 3);
 
-				// Re-render calendar
 				showView(currentView);
 			})
 			.catch(() => {
-				// Modal cancelled
 			});
 	}
 
@@ -383,7 +375,6 @@ export function initCalendar() {
 				});
 			}
 
-			// Open modal on day click (without datepickers)
 			dayDiv.addEventListener("click", () => {
 				openEventModal(new Date(year, month, day), null, false);
 			});
