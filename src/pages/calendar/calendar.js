@@ -47,47 +47,47 @@ export function initCalendar() {
 
 		const formHTML = `
 			<div class="event-form-container">
-				<p class="event-form-subtitle">Plan your next big moment: schedule or edit an event to stay on track</p>
+				<p class="event-form-subtitle">Спланируйте свой следующий большой момент: расписание или редактирование события</p>
 
 				<div class="form-group">
-					<label for="event-title">Event Title</label>
+					<label for="event-title">Название события</label>
 					<input
 						type="text"
 						id="event-title"
-						placeholder="Seminar #6"
+						placeholder="Семинар #6"
 						value="${eventData.title}"
 						class="form-input"
 					/>
 				</div>
 
 				<div class="form-group">
-					<label>Event Color</label>
+					<label>Цвет события</label>
 					<div class="color-selector">
 						<label class="color-option">
 							<input type="radio" name="color" value="danger" ${eventData.color === "danger" ? "checked" : ""} />
 							<span class="color-dot danger"></span>
-							<span>Danger</span>
+							<span>Красный</span>
 						</label>
 						<label class="color-option">
 							<input type="radio" name="color" value="success" ${eventData.color === "success" ? "checked" : ""} />
 							<span class="color-dot success"></span>
-							<span>Success</span>
+							<span>Зелёный</span>
 						</label>
 						<label class="color-option">
 							<input type="radio" name="color" value="primary" ${eventData.color === "primary" ? "checked" : ""} />
 							<span class="color-dot primary"></span>
-							<span>Primary</span>
+							<span>Синий</span>
 						</label>
 						<label class="color-option">
 							<input type="radio" name="color" value="warning" ${eventData.color === "warning" ? "checked" : ""} />
 							<span class="color-dot warning"></span>
-							<span>Warning</span>
+							<span>Жёлтый</span>
 						</label>
 					</div>
 				</div>
 
 				<div class="form-group">
-					<label for="event-start-date">Enter Start Date</label>
+					<label for="event-start-date">Дата начала</label>
 					<input
 						type="date"
 						id="event-start-date"
@@ -97,7 +97,7 @@ export function initCalendar() {
 				</div>
 
 				<div class="form-group">
-					<label for="event-end-date">Enter End Date</label>
+					<label for="event-end-date">Дата окончания</label>
 					<input
 						type="date"
 						id="event-end-date"
@@ -113,8 +113,8 @@ export function initCalendar() {
 
 	function openEventModal(date = null, event = null) {
 		const isEditing = event !== null;
-		modal.setTitle(isEditing ? "Edit Event" : "Add / Edit Event");
-		modal.setButtonText(isEditing ? "Update changes" : "Update changes", "Close");
+		modal.setTitle(isEditing ? "Редактировать событие" : "Добавить / Редактировать событие");
+		modal.setButtonText("Обновить", "Закрыть");
 
 		const body = modal.getBody();
 		body.innerHTML = createEventForm(date, event);
@@ -130,7 +130,7 @@ export function initCalendar() {
 				const eventTitle = titleInput.value.trim();
 
 				if (!eventTitle) {
-					window.showToast("Please enter an event title", 3);
+					window.showToast("Пожалуйста, введите название события", 3);
 					return;
 				}
 
@@ -160,7 +160,7 @@ export function initCalendar() {
 				}
 
 				localStorage.setItem("calendarEvents", JSON.stringify(events));
-				window.showToast("Success!", 3);
+				window.showToast("Успешно!", 3);
 
 				// Re-render calendar
 				showView(currentView);
@@ -235,18 +235,18 @@ export function initCalendar() {
 		const prevMonthLastDay = new Date(year, month, 0).getDate();
 
 		const monthNames = [
-			"January",
-			"February",
-			"March",
-			"April",
-			"May",
-			"June",
-			"July",
-			"August",
-			"September",
-			"October",
-			"November",
-			"December",
+			"Январь",
+			"Февраль",
+			"Март",
+			"Апрель",
+			"Май",
+			"Июнь",
+			"Июль",
+			"Август",
+			"Сентябрь",
+			"Октябрь",
+			"Ноябрь",
+			"Декабрь",
 		];
 
 		monthYear.textContent = `${monthNames[month]} ${year}`;
@@ -339,7 +339,7 @@ export function initCalendar() {
 		const weekDates = getWeekDates();
 		const weekHeader = document.getElementById("week-header");
 
-		const days = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"];
+		const days = ["ПН", "ВТ", "СР", "ЧТ", "ПТ", "СБ", "ВС"];
 		weekHeader.innerHTML = "<div class=\"py-3\"></div>";
 
 		weekDates.forEach((date, index) => {
@@ -352,18 +352,18 @@ export function initCalendar() {
 		const startDate = weekDates[0];
 		const endDate = weekDates[6];
 		const monthNames = [
-			"Jan",
-			"Feb",
-			"Mar",
-			"Apr",
-			"May",
-			"Jun",
-			"Jul",
-			"Aug",
-			"Sep",
-			"Oct",
-			"Nov",
-			"Dec",
+			"Янв",
+			"Фев",
+			"Мар",
+			"Апр",
+			"Май",
+			"Июн",
+			"Июл",
+			"Авг",
+			"Сен",
+			"Окт",
+			"Ноя",
+			"Дек",
 		];
 		monthYear.textContent = `${monthNames[startDate.getMonth()]} ${startDate.getDate()} – ${endDate.getDate()}, ${startDate.getFullYear()}`;
 
@@ -396,25 +396,25 @@ export function initCalendar() {
 	}
 
 	function renderDayView() {
-		const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+		const days = ["Воскресенье", "Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота"];
 		const dayName = days[dayViewDate.getDay()].toUpperCase();
 
 		const dayHeader = document.getElementById("day-header");
 		dayHeader.textContent = dayName;
 
 		const monthNames = [
-			"January",
-			"February",
-			"March",
-			"April",
-			"May",
-			"June",
-			"July",
-			"August",
-			"September",
-			"October",
-			"November",
-			"December",
+			"Январь",
+			"Февраль",
+			"Март",
+			"Апрель",
+			"Май",
+			"Июнь",
+			"Июль",
+			"Август",
+			"Сентябрь",
+			"Октябрь",
+			"Ноябрь",
+			"Декабрь",
 		];
 		monthYear.textContent = `${monthNames[dayViewDate.getMonth()]} ${dayViewDate.getDate()}, ${dayViewDate.getFullYear()}`;
 
