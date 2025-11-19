@@ -54,7 +54,7 @@
 	border: 2px solid #3c50e0;
 	border-radius: 12px;
 	padding: 2rem 2.5rem;
-	min-width: 320px;
+	width: 380px;
 	font-family: 'Monaco', 'Courier New', monospace;
 	font-weight: 700;
 }
@@ -65,7 +65,8 @@
 	color: #3c50e0;
 	font-size: 3rem;
 	line-height: 1;
-	min-width: fit-content;
+	width: 3.75rem;
+	text-align: center;
 }
 
 .area .time-separator {
