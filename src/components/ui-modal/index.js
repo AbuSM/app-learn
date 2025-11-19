@@ -365,7 +365,7 @@ class UiModal extends HTMLElement {
 			get innerHTML() {
 				return this.element.innerHTML;
 			},
-			querySelector: (selector) => {
+			querySelector(selector) {
 				if (!this.element) return null;
 				let el = this.element.firstElementChild;
 				while (el) {
