@@ -1,7 +1,7 @@
 import { API_URL } from "../../constants";
 
 export const pushToServer = (tasks) => {
-    fetch(`${API_URL}/todo`, {
+    fetch(`${API_URL}/board/`, {
         method: "PATCH",
         headers: {
             Accept: "application/json",
@@ -10,6 +10,7 @@ export const pushToServer = (tasks) => {
         },
         body: JSON.stringify({
             data: tasks,
+            id: window.boardID,
         }),
     }).then((resp) => resp.json());
 };

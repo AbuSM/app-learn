@@ -7,7 +7,7 @@ import {
 } from "../../../constants";
 import changeModal from "../change_modal";
 import { pushToServer } from "../pushServer";
-import { renderTasks } from "../render/renderTasks";
+import { addEventToHistory, renderTasks } from "../render/renderTasks";
 import { controller, dragData, taskData, tasks } from "../script";
 import { toggleRedBorder } from "../toggleRedBorder";
 
@@ -178,10 +178,13 @@ export function onCompleteCheckboxClick(event) {
 
     tasks[listIndex].tasks[taskIndex].completed = checkState;
 
-    liElement.querySelector(".title").style["text-decoration-line"] = checkState
-        ? "line-through"
-        : "none";
-    pushToServer(tasks);
+    renderTasks(tasks);
+    addEventToHistory(
+        `Вы пометили как "${checkState ? "" : "не "}сделано" задачу: ${
+            tasks[listIndex].tasks[taskIndex].title
+        }`,
+        `history-${checkState ? "complete" : "x"}-icon`
+    );
 }
 
 export async function onTaskClick(event) {
@@ -190,11 +193,25 @@ export async function onTaskClick(event) {
         const listIndex = parent.dataset.listIndex;
         const taskIndex = parent.dataset.taskIndex;
 
-        const task = await changeModal(tasks[listIndex].tasks[taskIndex]);
+        const task = await changeModal(
+            tasks[listIndex].tasks[taskIndex],
+            listIndex,
+            taskIndex
+        );
 
         if (task.isDelete) {
+            addEventToHistory(
+                `Вы удалили задачу: "${tasks[listIndex].tasks[taskIndex].title}"`,
+                "history-delete-icon"
+            );
             tasks[listIndex].tasks.splice(taskIndex, 1);
         } else {
+            if (tasks[listIndex].tasks[taskIndex].title != task.title) {
+                addEventToHistory(
+                    `Вы изменили заголовок задачи: "${tasks[listIndex].tasks[taskIndex].title}" на "${task.title}"`,
+                    "history-edit-icon"
+                );
+            }
             tasks[listIndex].tasks[taskIndex] = task;
         }
 
@@ -234,6 +251,12 @@ export function onTitleInputKeydown(event) {
     if (event.key == "Enter") {
         const titleInput = event.target;
         if (!!titleInput.value.length) {
+            addEventToHistory(
+                `Вы изменили название списка "${
+                    tasks[window.currentListIndex].title
+                }" на "${titleInput.value}"`,
+                "history-edit-icon"
+            );
             tasks[window.currentListIndex].title = titleInput.value;
             renderTasks(tasks);
         } else {
@@ -278,6 +301,10 @@ export function onEditListClick(event) {
 export function onRemoveListClick(event) {
     const listElement = event.target.closest(".list");
     const listIndex = listElement.dataset.listIndex;
+    addEventToHistory(
+        `Вы удалили список "${tasks[listIndex].title}"`,
+        "history-delete-icon"
+    );
     tasks.splice(listIndex, 1);
     renderTasks(tasks);
 }
@@ -293,7 +320,7 @@ export function onAddTaskClick(event) {
 
     const addTasks = document.querySelectorAll(`.addTask`);
     addTasks.forEach((element) => {
-        element.style.display = "initial";
+        element.style.display = "flex";
     });
 
     if (!parent) {
@@ -303,7 +330,7 @@ export function onAddTaskClick(event) {
     parent.innerHTML += /*html*/ `
                     <div class="titleInputBox w-fill flex flex-col gap-2 border-[var(--border-gray)] border-2 rounded-xl p-3 shadow bg-neutral-100 hover:cursor-auto transition-all">
                         <input class="titleInput w-full px-3 border-[var(--border-gray)] py-1 rounded border-2 focus:ring-0 focus:border-[var(--primary)]" type="text" oninput="window.onTaskInputChange(event)" onkeydown="window.onTaskInputKeydown(event)">
-                        <button class="addButton bg-[#465fff] hover:brightness-95 hover:cursor-pointer active:brightness-90 px-3 py-1 text-white rounded" onclick="window.onAddTaskButtonClick(event)">Add</button>
+                        <button class="addButton bg-[#465fff] hover:brightness-95 hover:cursor-pointer active:brightness-90 px-3 py-1 text-white rounded" onclick="window.onAddTaskButtonClick(event)">Добавить</button>
                     </div>
                 `;
 
@@ -332,15 +359,26 @@ export function onAddTaskButtonClick(event) {
     const listIndex = window.currentTaskListIndex;
 
     if (!!inputTitle.value.length) {
+        const title = inputTitle.value;
         const task = {
-            title: inputTitle.value,
+            title,
             description: "",
             date: "",
             completed: false,
+            comments: [
+                {
+                    username: "Kayumov Muhammad",
+                    message: `Создана задача ${title}`,
+                },
+            ],
         };
 
         tasks[listIndex].tasks.push(task);
         taskData.lastAdded = { listIndex };
+        addEventToHistory(
+            `Вы добавили задачу "${task.title}"`,
+            "history-add-icon"
+        );
         renderTasks(tasks);
         scrollToDown(listIndex);
     } else {
@@ -364,7 +402,7 @@ export function onAddListClick(event) {
     parent.innerHTML += `
                 <div class="addListBox flex flex-col gap-2 w-[var(--card-width)] border-[var(--border-gray)] border-2 rounded-xl p-3 shadow bg-neutral-100 hover:cursor-auto transition-all">
                     <input class="titleInput w-full px-3 border-[var(--border-gray)] py-1 rounded border-2 focus:ring-0 focus:border-[var(--primary)]" type="text" oninput="window.onListInputChange(event)" onkeydown="window.onListInputKeydown(event)">
-                    <button class="addButton bg-[#465fff] hover:brightness-95 hover:cursor-pointer active:brightness-90 px-3 py-1 text-white rounded" onclick="window.onAddListButtonClick(event)">Add</button>
+                    <button class="addButton bg-[#465fff] hover:brightness-95 hover:cursor-pointer active:brightness-90 px-3 py-1 text-white rounded" onclick="window.onAddListButtonClick(event)">Добавить</button>
                 </div>
             `;
 
@@ -379,17 +417,7 @@ export function onListInputChange(event) {
 
 export function onListInputKeydown(event) {
     if (event.key === "Enter") {
-        const titleInput = event.target;
-
-        if (!!titleInput.value.length) {
-            tasks.push({
-                title: titleInput.value,
-                tasks: [],
-            });
-            renderTasks(tasks);
-        } else {
-            toggleRedBorder(titleInput, true);
-        }
+        onAddListButtonClick(event);
     }
 }
 
@@ -401,6 +429,10 @@ export function onAddListButtonClick(event) {
             title: titleInput.value,
             tasks: [],
         });
+        addEventToHistory(
+            `Вы добавили список "${titleInput.value}"`,
+            "history-add-icon"
+        );
         renderTasks(tasks);
     } else {
         toggleRedBorder(titleInput, true);
@@ -416,7 +448,7 @@ export function onBodyClick(event) {
 
         const addTasks = document.querySelectorAll(`.addTask`);
         addTasks.forEach((element) => {
-            element.style.display = "initial";
+            element.style.display = "flex";
         });
     }
 
@@ -450,7 +482,7 @@ export function onBodyKeydown(event) {
 
         const addTasks = document.querySelectorAll(`.addTask`);
         addTasks.forEach((element) => {
-            element.style.display = "initial";
+            element.style.display = "flex";
         });
 
         const listInputs = document.querySelectorAll(".addListBox");
@@ -460,8 +492,14 @@ export function onBodyKeydown(event) {
 
         const listButtons = document.querySelectorAll(".add-list-button");
         listButtons.forEach((element) => {
-            element.style.display = "initial";
+            element.style.display = "flex";
         });
+
+        if (document.activeElement.closest(".addMembersContainer")) {
+            if (window.removeMemberMenu) window.removeMemberMenu();
+        } else {
+            if (!!window.onCancel) window.onCancel();
+        }
     }
 
     if (event.key == "Enter") {
