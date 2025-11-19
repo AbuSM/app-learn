@@ -1,6 +1,7 @@
 class UiModal extends HTMLElement {
 	constructor() {
 		super();
+		this.attachShadow({ mode: 'open' });
 		this.isOpen = false;
 		this.resolvePromise = null;
 		this.rejectPromise = null;
@@ -13,7 +14,7 @@ class UiModal extends HTMLElement {
 
 	attributeChangedCallback(name, oldValue, newValue) {
 		if (name === 'title' && this.isConnected) {
-			const titleElement = this.querySelector('.modal-title');
+			const titleElement = this.shadowRoot.querySelector('.modal-title');
 			if (titleElement) {
 				titleElement.textContent = newValue || '';
 			}
@@ -31,40 +32,7 @@ class UiModal extends HTMLElement {
 		const showFooter = this.getAttribute('show-footer') !== 'false';
 		const showCloseButton = this.getAttribute('show-close-button') !== 'false';
 
-		this.innerHTML = /*html*/ `
-			<div class="modal-backdrop" role="presentation">
-				<div class="modal-container" role="dialog" aria-modal="true" aria-labelledby="modal-title">
-					<!-- Modal header -->
-					<div class="modal-header">
-						<h3 class="modal-title" id="modal-title">${title}</h3>
-						${
-							showCloseButton
-								? `<button type="button" class="modal-close-btn" aria-label="Close modal">
-									<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-									</svg>
-								</button>`
-								: ''
-						}
-					</div>
-
-					<!-- Modal body -->
-					<div class="modal-body">
-						<slot></slot>
-					</div>
-
-					<!-- Modal footer -->
-					${
-						showFooter
-							? `<div class="modal-footer">
-								<button type="button" class="modal-btn modal-btn-ok">${okText}</button>
-								<button type="button" class="modal-btn modal-btn-cancel">${cancelText}</button>
-							</div>`
-							: ''
-					}
-				</div>
-			</div>
-
+		this.shadowRoot.innerHTML = /*html*/ `
 			<style>
 				:host {
 					--modal-bg: #252e3b;
@@ -107,6 +75,8 @@ class UiModal extends HTMLElement {
 					transition: transform 0.2s ease-in-out;
 					color: var(--modal-text);
 					border: 1px solid var(--modal-border);
+					display: flex;
+					flex-direction: column;
 				}
 
 				:host(.modal-open) .modal-container {
@@ -233,14 +203,47 @@ class UiModal extends HTMLElement {
 					background: #5a6577;
 				}
 			</style>
+
+			<div class="modal-backdrop" role="presentation">
+				<div class="modal-container" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+					<!-- Modal header -->
+					<div class="modal-header">
+						<h3 class="modal-title" id="modal-title">${title}</h3>
+						${
+							showCloseButton
+								? `<button type="button" class="modal-close-btn" aria-label="Close modal">
+									<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+									</svg>
+								</button>`
+								: ''
+						}
+					</div>
+
+					<!-- Modal body -->
+					<div class="modal-body">
+						<slot></slot>
+					</div>
+
+					<!-- Modal footer -->
+					${
+						showFooter
+							? `<div class="modal-footer">
+								<button type="button" class="modal-btn modal-btn-ok">${okText}</button>
+								<button type="button" class="modal-btn modal-btn-cancel">${cancelText}</button>
+							</div>`
+							: ''
+					}
+				</div>
+			</div>
 		`;
 	}
 
 	setupEventListeners() {
-		const closeBtn = this.querySelector('.modal-close-btn');
-		const okBtn = this.querySelector('.modal-btn-ok');
-		const cancelBtn = this.querySelector('.modal-btn-cancel');
-		const backdrop = this.querySelector('.modal-backdrop');
+		const closeBtn = this.shadowRoot.querySelector('.modal-close-btn');
+		const okBtn = this.shadowRoot.querySelector('.modal-btn-ok');
+		const cancelBtn = this.shadowRoot.querySelector('.modal-btn-cancel');
+		const backdrop = this.shadowRoot.querySelector('.modal-backdrop');
 
 		if (closeBtn) {
 			closeBtn.addEventListener('click', () => this.close(null, 'close'));
@@ -288,7 +291,7 @@ class UiModal extends HTMLElement {
 			// Focus first interactive element
 			setTimeout(() => {
 				const focusElement =
-					this.querySelector('.modal-btn-ok') ||
+					this.shadowRoot.querySelector('.modal-btn-ok') ||
 					this.querySelector('input') ||
 					this.querySelector('button');
 				if (focusElement) {
@@ -348,11 +351,34 @@ class UiModal extends HTMLElement {
 	}
 
 	/**
-	 * Get the modal body element
+	 * Get the modal body element for adding content
 	 * @returns {HTMLElement}
 	 */
 	getBody() {
-		return this.querySelector('.modal-body');
+		// Return a wrapper that allows setting innerHTML on the slot content
+		return {
+			innerHTML: '',
+			set innerHTML(content) {
+				// Clear existing slotted content
+				while (this.element.firstChild) {
+					this.element.removeChild(this.element.firstChild);
+				}
+				// Create a temporary container and parse the content
+				const temp = document.createElement('div');
+				temp.innerHTML = content;
+				// Move all children to the modal element (which feeds into the slot)
+				while (temp.firstChild) {
+					this.element.appendChild(temp.firstChild);
+				}
+			},
+			get innerHTML() {
+				return this.element.innerHTML;
+			},
+			querySelector: (selector) => {
+				return this.element.querySelector(selector);
+			},
+			element: this
+		};
 	}
 
 	/**
@@ -360,7 +386,7 @@ class UiModal extends HTMLElement {
 	 * @param {boolean} disabled
 	 */
 	setOkButtonDisabled(disabled) {
-		const okBtn = this.querySelector('.modal-btn-ok');
+		const okBtn = this.shadowRoot.querySelector('.modal-btn-ok');
 		if (okBtn) {
 			okBtn.disabled = disabled;
 		}
@@ -371,7 +397,7 @@ class UiModal extends HTMLElement {
 	 * @param {boolean} disabled
 	 */
 	setCancelButtonDisabled(disabled) {
-		const cancelBtn = this.querySelector('.modal-btn-cancel');
+		const cancelBtn = this.shadowRoot.querySelector('.modal-btn-cancel');
 		if (cancelBtn) {
 			cancelBtn.disabled = disabled;
 		}
@@ -383,8 +409,8 @@ class UiModal extends HTMLElement {
 	 * @param {string} cancelText - Cancel button text
 	 */
 	setButtonText(okText, cancelText) {
-		const okBtn = this.querySelector('.modal-btn-ok');
-		const cancelBtn = this.querySelector('.modal-btn-cancel');
+		const okBtn = this.shadowRoot.querySelector('.modal-btn-ok');
+		const cancelBtn = this.shadowRoot.querySelector('.modal-btn-cancel');
 
 		if (okBtn) okBtn.textContent = okText;
 		if (cancelBtn) cancelBtn.textContent = cancelText;
