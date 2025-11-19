@@ -355,18 +355,14 @@ class UiModal extends HTMLElement {
 	 * @returns {HTMLElement}
 	 */
 	getBody() {
-		// Return a wrapper that allows setting innerHTML on the slot content
 		return {
 			innerHTML: '',
 			set innerHTML(content) {
-				// Clear existing slotted content
 				while (this.element.firstChild) {
 					this.element.removeChild(this.element.firstChild);
 				}
-				// Create a temporary container and parse the content
 				const temp = document.createElement('div');
 				temp.innerHTML = content;
-				// Move all children to the modal element (which feeds into the slot)
 				while (temp.firstChild) {
 					this.element.appendChild(temp.firstChild);
 				}
@@ -375,7 +371,15 @@ class UiModal extends HTMLElement {
 				return this.element.innerHTML;
 			},
 			querySelector: (selector) => {
-				return this.element.querySelector(selector);
+				for (let i = 0; i < this.element.childNodes.length; i++) {
+					const node = this.element.childNodes[i];
+					if (node.nodeType === 1) {
+						const result = node.querySelector(selector);
+						if (result) return result;
+						if (node.matches && node.matches(selector)) return node;
+					}
+				}
+				return null;
 			},
 			element: this
 		};
