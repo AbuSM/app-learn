@@ -265,7 +265,6 @@ class UiModal extends HTMLElement {
 			});
 		}
 
-		// ESC key to close
 		this.escapeKeyHandler = (e) => {
 			if (e.key === 'Escape' && this.isOpen && this.getAttribute('backdrop') !== 'static') {
 				this.close(null, 'escape');
@@ -285,10 +284,8 @@ class UiModal extends HTMLElement {
 			this.classList.add('modal-open');
 			document.addEventListener('keydown', this.escapeKeyHandler);
 
-			// Dispatch custom open event
 			this.dispatchEvent(new CustomEvent('modal-open', { bubbles: true }));
 
-			// Focus first interactive element
 			setTimeout(() => {
 				const focusElement =
 					this.shadowRoot.querySelector('.modal-btn-ok') ||
@@ -311,7 +308,6 @@ class UiModal extends HTMLElement {
 		this.classList.remove('modal-open');
 		document.removeEventListener('keydown', this.escapeKeyHandler);
 
-		// Dispatch custom close event
 		this.dispatchEvent(
 			new CustomEvent('modal-close', {
 				detail: { value, reason },
@@ -319,7 +315,6 @@ class UiModal extends HTMLElement {
 			})
 		);
 
-		// Resolve/reject promise
 		if (reason === 'ok' || value === true) {
 			if (this.resolvePromise) {
 				this.resolvePromise(value);
@@ -371,13 +366,13 @@ class UiModal extends HTMLElement {
 				return this.element.innerHTML;
 			},
 			querySelector: (selector) => {
-				for (let i = 0; i < this.element.childNodes.length; i++) {
-					const node = this.element.childNodes[i];
-					if (node.nodeType === 1) {
-						const result = node.querySelector(selector);
-						if (result) return result;
-						if (node.matches && node.matches(selector)) return node;
-					}
+				if (!this.element) return null;
+				let el = this.element.firstElementChild;
+				while (el) {
+					if (el.matches(selector)) return el;
+					const found = el.querySelector(selector);
+					if (found) return found;
+					el = el.nextElementSibling;
 				}
 				return null;
 			},

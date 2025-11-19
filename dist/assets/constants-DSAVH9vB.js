@@ -1,0 +1,1 @@
+const a=50,s="https://api.openweathermap.org/data/2.5/weather",t="9e94fbadf177fbc50231250f9afb0124",o="https://todo-back-fastapi.onrender.com",c=50,A=5,E=20;export{o as A,a as T,s as W,t as a,c as b,A as c,E as d};
