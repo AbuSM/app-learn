@@ -102,7 +102,7 @@ export function initCalendar() {
         year === realToday.getFullYear()
       ) {
 
-        dayDiv.classList.add("bg-blue-500", "border-blue-600");
+        dayDiv.classList.add("bg-gray-200", "border-gray-300" , "rounded-[5px]" , "m-[10px]");
         dayDiv.classList.remove("border-gray-100");
         dayNumber.classList.add("text-white", "font-bold");
       } else {
