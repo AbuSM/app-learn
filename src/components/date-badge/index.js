@@ -32,7 +32,7 @@ const getFormattedDate = (date) => {
     };
 
     const month = date.split("-")[1];
-    const day = date.split("-")[2];
+    const day = Number(date.split("-")[2]).toString();
     const year = date.split("-")[0];
 
     return `${day} ${months[month]}. ${year}`;
@@ -41,6 +41,7 @@ const getFormattedDate = (date) => {
 class DateBadge extends HTMLElement {
     connectedCallback() {
         const date = this.getAttribute("date");
+        const completed = this.getAttribute("completed");
         const today = getToday();
 
         const dayDiff = getDaysDifferent(date, today);
@@ -49,10 +50,14 @@ class DateBadge extends HTMLElement {
 
         this.innerHTML = "";
         if (!!date) {
-            if (dayDiff >= 3) {
+            if (completed == "true") {
+                this.innerHTML = `<span class="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full">${formattedDate}</span>`;
+            } else if (dayDiff <= 0) {
+                this.innerHTML = `<span class="bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full">${formattedDate}</span>`;
+            } else if (dayDiff >= 3) {
                 this.innerHTML = `<span class="bg-blue-100 text-blue-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full">${formattedDate}</span>`;
             } else {
-                this.innerHTML = `<span class="bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full">${formattedDate}</span>`;
+                this.innerHTML = `<span class="bg-yellow-100 text-yellow-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full">${formattedDate}</span>`;
             }
         }
     }

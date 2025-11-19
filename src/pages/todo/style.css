@@ -1,43 +1,11 @@
 @import "tailwindcss";
 @import "flowbite/src/themes/default";
 
-.loader {
-    width: 48px;
-    height: 48px;
-    border: 5px solid white;
-    border-bottom-color: transparent;
-    border-radius: 50%;
-    display: inline-block;
-    box-sizing: border-box;
-    animation: rotation 1s linear infinite;
-}
-
 body:has(.loader_backdrop) {
     overflow-y: hidden;
 }
 
-.loader_backdrop {
-    animation: appear 0.2s ease-in-out 1;
-    background-color: rgba(0, 0, 0, 0.5);
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000000;
-}
 
-@keyframes rotation {
-    0% {
-        transform: rotate(0deg);
-    }
-    100% {
-        transform: rotate(360deg);
-    }
-}
 @keyframes appear {
     0% {
         opacity: 0;
@@ -50,7 +18,7 @@ body:has(.loader_backdrop) {
     --primary: #3c50e0;
     --border-gray: #e4e7ec;
     --gray: #667085;
-    --card-width: 300px;
+    --card-width: 250px;
 }
 
 .task *,
@@ -75,18 +43,29 @@ h3 {
     overflow: hidden;
     max-height: 100vh;
 }
+main {
+    padding: 0;
+}
 
-app-outlet,
-page-todo {
-    height: 100%;
-}
-page-todo {
-    display: flex;
-    flex-direction: column;
-}
 .scrollbar-none {
     scrollbar-width: none;
 }
 .scrollbar-none::-webkit-scrollbar {
     width: 8px;
+}
+
+.inline-icon svg {
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    margin-right: 0.2em;
+}
+
+input:not(input[type="checkbox"]),
+textarea,
+.input_style {
+    @apply min-w-0 w-full px-3 border-[var(--border-gray)] py-1 rounded border-1 focus:ring-0 focus:border-[var(--primary)];
+}
+.border-gray {
+    @apply border-[var(--border-gray)] py-1 rounded border-1;
 }

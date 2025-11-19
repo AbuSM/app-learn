@@ -4,7 +4,17 @@ import {
     initGlobalHandlers,
     initDocumentListeners,
 } from "../listeners/listeners.js";
-import { controller, taskData } from "../script.js";
+import { controller } from "../script.js";
+import renderHistory from "./renderHistory.js";
+
+export function addEventToHistory(title, icon = "history-edit-icon") {
+    window.taskHistory.push({ title, icon });
+    if (window.taskHistory.length > 100) {
+        window.taskHistory.splice(0, 1);
+    }
+    localStorage.setItem("taskHistory", JSON.stringify(window.taskHistory));
+    renderHistory();
+}
 
 export const renderTasks = (tasks, isInitial = false) => {
     let htmlDataLists = "";
@@ -14,13 +24,13 @@ export const renderTasks = (tasks, isInitial = false) => {
         let htmlDataTasks = "";
 
         element.tasks.forEach((task, taskIndex) => {
-            const dateBadge = `<date-badge date="${task.date}"></date-badge>`;
+            const dateBadge = `<date-badge date="${task.date}" completed="${task.completed}"></date-badge>`;
             htmlDataTasks += /*html*/ `
         <li 
           draggable="true" 
           data-list-index="${listIndex}" 
           data-task-index="${taskIndex}" 
-          class="hover:cursor-pointer transition-all [&.draggable]:opacity-50 [&.droppable]:border-[var(--primary)] task border-2 flex items-center justify-between border-[var(--border-gray)] p-3 shadow rounded-xl" 
+          class="hover:cursor-pointer gap-2 transition-all [&.draggable]:opacity-50 [&.droppable]:border-[var(--primary)] task border-2 flex items-center justify-between border-[var(--border-gray)] p-3 shadow rounded-xl" 
           ondragstart="window.onDragStart(event)" 
           ondragend="window.onDragEnd(event)" 
           ondragenter="window.onTaskDragEnter(event)" 
@@ -36,7 +46,7 @@ export const renderTasks = (tasks, isInitial = false) => {
             ${task.date ? dateBadge : ""}
           </div>
           <div>
-            <input 
+            <input
               ${task.completed ? "checked" : ""} 
               class="hover:cursor-pointer completeCheckbox focus:ring-0" 
               type="checkbox" 
@@ -75,10 +85,10 @@ export const renderTasks = (tasks, isInitial = false) => {
             <li>    
               <button 
                 data-list-index="${listIndex}" 
-                class="addTask w-full border-2 border-[var(--border-gray)] rounded-xl px-3 py-1 shadow bg-neutral-100 hover:cursor-pointer hover:bg-neutral-200 transition-all" 
+                class="addTask flex gap-1.5 items-center w-full border-2 border-[var(--border-gray)] rounded-xl px-3 py-1 shadow bg-neutral-100 hover:cursor-pointer hover:bg-neutral-200 transition-all" 
                 onclick="window.onAddTaskClick(event)"
               >
-                + Add New
+                 <add-task-icon></add-task-icon>Добавить задачу
               </button>
             </li>
         </ul>
@@ -89,10 +99,10 @@ export const renderTasks = (tasks, isInitial = false) => {
     htmlDataLists += /*html*/ `
     <div class="add_list">
       <button 
-        class="add-list-button border-[var(--border-gray)] w-[var(--card-width)] border-2 rounded-xl px-3 py-1 shadow bg-neutral-100 hover:cursor-pointer hover:bg-neutral-200 transition-all" 
+        class="add-list-button flex gap-1.5 items-center border-[var(--border-gray)] w-[var(--card-width)] border-2 rounded-xl px-3 py-1 shadow bg-neutral-100 hover:cursor-pointer hover:bg-neutral-200 transition-all" 
         onclick="window.onAddListClick(event)"
       >
-        + Add another list
+         <add-task-icon></add-task-icon>Добавить список
       </button>
     </div>
   `;

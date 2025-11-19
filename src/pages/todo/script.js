@@ -1,22 +1,33 @@
-import { API_URL } from "./../../constants.js";
 import { renderTasks } from "./render/renderTasks.js";
 import "./style.css";
-import { startLoading } from "./loader.js";
 import "../../assets/index.js";
+import renderHistory from "./render/renderHistory.js";
+import loadInitialTasks from "./loadInitialTasks.js";
+import renderLayout from "./render/renderLayout.js";
 
+console.log(window.todo);
+console.log(window.todoID);
+
+// export let tasks = window.todo[window.todoID];
 export let tasks = [];
 export let dragData = { current: {} };
 export let taskData = { lastAdded: undefined };
 export let controller = { controller: new AbortController() };
+window.taskHistory = JSON.parse(
+    !!localStorage.getItem("taskHistory")
+        ? localStorage.getItem("taskHistory")
+        : "[]"
+);
 
-export const loadInitialData = () => {
-    startLoading();
-    fetch(`${API_URL}/todo`)
-        .then((resp) => resp.json())
-        .then((data) => {
-            tasks = data;
-            renderTasks(tasks, true);
-        });
-};
+(async () => {
+    console.log("tasks: ", tasks);
 
-loadInitialData();
+    await renderLayout();
+    tasks = window.tasks;
+    renderHistory();
+    renderTasks(tasks);
+})();
+
+// (async () => {
+//     await changeModal({ title: "njdkjas", description: "das", date: "" });
+// })();
