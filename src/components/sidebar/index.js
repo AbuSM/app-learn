@@ -1,13 +1,14 @@
 import "../ui-icon/index.js";
 
 class AppSidebar extends HTMLElement {
-    connectedCallback() {
-        this.innerHTML = /*html*/ `
+	connectedCallback() {
+		this.innerHTML = /*html*/ `
         <aside class="fixed left-0 top-0 z-50 flex h-screen w-[280px] flex-col overflow-y-hidden bg-[#1c2434] duration-300 ease-linear">
             <!-- SIDEBAR HEADER -->
-            <div class="flex flex-col items-center justify-center gap-2 p-2 border-b border-gray-700">
-                <a href="/">
-                    <img src="/assets/logo.svg" />
+            <div class="flex flex-col items-center justify-center gap-1 p-4 border-b border-gray-700">
+                <a href="/" class="text-center">
+                    <h1 class="text-2xl font-bold text-white">Smart Dashboard</h1>
+                    <p class="text-xs text-gray-400 mt-1">Learn Smart, Grow Fast</p>
                 </a>
             </div>
         
@@ -29,12 +30,7 @@ class AppSidebar extends HTMLElement {
                             <a href="/todo" class="nav-link">
                                 <ui-icon name="clipboard-list"></ui-icon> Задачи
                             </a>
-                        </li> <!-- Задачи (Tasks) -->
-                        <li>
-                            <a href="/about" class="nav-link">
-                                <ui-icon name="information-circle"></ui-icon> О проекте
-                            </a>
-                        </li> <!-- Курсы (Courses) with Dropdown -->
+                        </li> <!-- Задачи (Tasks) --><!-- Курсы (Courses) with Dropdown -->
                         <li>
                             <a href="#" class="nav-link" onclick="event.preventDefault(); this.nextElementSibling.classList.toggle('hidden'); this.querySelector('.arrow-icon').classList.toggle('rotate-x-180')">
                                 <ui-icon name="book-open"></ui-icon> Курсы <ui-icon name="chevron-up" class="arrow-icon absolute right-4 top-1/2 -translate-y-1/2 transition-transform duration-300"></ui-icon>
@@ -52,7 +48,7 @@ class AppSidebar extends HTMLElement {
             </div>
         </aside>
         `;
-    }
+	}
 }
 
 customElements.define("app-sidebar", AppSidebar);
