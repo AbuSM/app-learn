@@ -35,12 +35,12 @@ class UiModal extends HTMLElement {
 		this.shadowRoot.innerHTML = /*html*/ `
 			<style>
 				:host {
-					--modal-bg: #252e3b;
-					--modal-border: #374151;
-					--modal-text: #ffffff;
-					--modal-text-secondary: #9ca3af;
+					--modal-bg: #ffffff;
+					--modal-border: #e5e7eb;
+					--modal-text: #1f2937;
+					--modal-text-secondary: #6b7280;
 					--modal-accent: #3c50e0;
-					--modal-hover: #495569;
+					--modal-hover: #f3f4f6;
 				}
 
 				.modal-backdrop {
@@ -53,7 +53,7 @@ class UiModal extends HTMLElement {
 					display: flex;
 					align-items: center;
 					justify-content: center;
-					z-index: 50;
+					z-index: 9999;
 					opacity: 0;
 					pointer-events: none;
 					transition: opacity 0.2s ease-in-out;
@@ -157,8 +157,8 @@ class UiModal extends HTMLElement {
 				}
 
 				.modal-btn-ok:hover {
-					background-color: #3245d4;
-					filter: brightness(1.1);
+					background-color: #2e3ec0;
+					filter: brightness(1.05);
 				}
 
 				.modal-btn-ok:active {
