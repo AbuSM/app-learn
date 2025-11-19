@@ -30,7 +30,7 @@ export const renderTasks = (tasks, isInitial = false) => {
           draggable="true" 
           data-list-index="${listIndex}" 
           data-task-index="${taskIndex}" 
-          class="hover:cursor-pointer transition-all [&.draggable]:opacity-50 [&.droppable]:border-[var(--primary)] task border-2 flex items-center justify-between border-[var(--border-gray)] p-3 shadow rounded-xl" 
+          class="hover:cursor-pointer gap-2 transition-all [&.draggable]:opacity-50 [&.droppable]:border-[var(--primary)] task border-2 flex items-center justify-between border-[var(--border-gray)] p-3 shadow rounded-xl" 
           ondragstart="window.onDragStart(event)" 
           ondragend="window.onDragEnd(event)" 
           ondragenter="window.onTaskDragEnter(event)" 
@@ -99,10 +99,10 @@ export const renderTasks = (tasks, isInitial = false) => {
     htmlDataLists += /*html*/ `
     <div class="add_list">
       <button 
-        class="add-list-button border-[var(--border-gray)] w-[var(--card-width)] border-2 rounded-xl px-3 py-1 shadow bg-neutral-100 hover:cursor-pointer hover:bg-neutral-200 transition-all" 
+        class="add-list-button flex gap-1.5 items-center border-[var(--border-gray)] w-[var(--card-width)] border-2 rounded-xl px-3 py-1 shadow bg-neutral-100 hover:cursor-pointer hover:bg-neutral-200 transition-all" 
         onclick="window.onAddListClick(event)"
       >
-        + Add another list
+         <add-task-icon></add-task-icon>Добавить список
       </button>
     </div>
   `;

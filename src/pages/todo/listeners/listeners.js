@@ -330,7 +330,7 @@ export function onAddTaskClick(event) {
     parent.innerHTML += /*html*/ `
                     <div class="titleInputBox w-fill flex flex-col gap-2 border-[var(--border-gray)] border-2 rounded-xl p-3 shadow bg-neutral-100 hover:cursor-auto transition-all">
                         <input class="titleInput w-full px-3 border-[var(--border-gray)] py-1 rounded border-2 focus:ring-0 focus:border-[var(--primary)]" type="text" oninput="window.onTaskInputChange(event)" onkeydown="window.onTaskInputKeydown(event)">
-                        <button class="addButton bg-[#465fff] hover:brightness-95 hover:cursor-pointer active:brightness-90 px-3 py-1 text-white rounded" onclick="window.onAddTaskButtonClick(event)">Add</button>
+                        <button class="addButton bg-[#465fff] hover:brightness-95 hover:cursor-pointer active:brightness-90 px-3 py-1 text-white rounded" onclick="window.onAddTaskButtonClick(event)">Добавить</button>
                     </div>
                 `;
 
@@ -402,7 +402,7 @@ export function onAddListClick(event) {
     parent.innerHTML += `
                 <div class="addListBox flex flex-col gap-2 w-[var(--card-width)] border-[var(--border-gray)] border-2 rounded-xl p-3 shadow bg-neutral-100 hover:cursor-auto transition-all">
                     <input class="titleInput w-full px-3 border-[var(--border-gray)] py-1 rounded border-2 focus:ring-0 focus:border-[var(--primary)]" type="text" oninput="window.onListInputChange(event)" onkeydown="window.onListInputKeydown(event)">
-                    <button class="addButton bg-[#465fff] hover:brightness-95 hover:cursor-pointer active:brightness-90 px-3 py-1 text-white rounded" onclick="window.onAddListButtonClick(event)">Add</button>
+                    <button class="addButton bg-[#465fff] hover:brightness-95 hover:cursor-pointer active:brightness-90 px-3 py-1 text-white rounded" onclick="window.onAddListButtonClick(event)">Добавить</button>
                 </div>
             `;
 
