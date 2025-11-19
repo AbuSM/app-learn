@@ -113,17 +113,19 @@ export function initCalendar() {
 
 	function openEventModal(date = null, event = null) {
 		const isEditing = event !== null;
-		modal.setAttribute("title", isEditing ? "Edit Event" : "Add / Edit Event");
-		modal.setAttribute("ok-text", isEditing ? "Update changes" : "Update changes");
+		modal.setTitle(isEditing ? "Edit Event" : "Add / Edit Event");
+		modal.setButtonText(isEditing ? "Update changes" : "Update changes", "Close");
 
-		modal.innerHTML = createEventForm(date, event);
+		const body = modal.getBody();
+		body.innerHTML = createEventForm(date, event);
 
 		modal.show()
 			.then(() => {
-				const titleInput = modal.querySelector("#event-title");
-				const colorInput = modal.querySelector('input[name="color"]:checked');
-				const startDateInput = modal.querySelector("#event-start-date");
-				const endDateInput = modal.querySelector("#event-end-date");
+				const body = modal.getBody();
+				const titleInput = body.querySelector("#event-title");
+				const colorInput = body.querySelector('input[name="color"]:checked');
+				const startDateInput = body.querySelector("#event-start-date");
+				const endDateInput = body.querySelector("#event-end-date");
 
 				const eventTitle = titleInput.value.trim();
 
