@@ -48,18 +48,7 @@ export function initCalendar() {
   weekBtn.addEventListener('click', () => showView('week'));
   dayBtn.addEventListener('click', () => showView('day'));
 
-  const events = {};
 
-  function getEventColor(color) {
-    const colors = {
-      green: { bg: 'bg-green-50', text: 'text-green-700', border: 'border-green-500' },
-      pink: { bg: 'bg-pink-50', text: 'text-pink-700', border: 'border-pink-500' },
-      blue: { bg: 'bg-blue-50', text: 'text-blue-700', border: 'border-blue-500' },
-      orange: { bg: 'bg-orange-50', text: 'text-orange-700', border: 'border-orange-500' },
-      purple: { bg: 'bg-purple-50', text: 'text-purple-700', border: 'border-purple-500' }
-    };
-    return colors[color] || colors.green;
-  }
 
   function renderCalendar() {
     const year = viewDate.getFullYear();
