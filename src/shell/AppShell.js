@@ -1,4 +1,5 @@
 import "../api/weather-api.js";
+import "../components/sticky-notes/index.js";
 
 class AppShell extends HTMLElement {
 	connectedCallback() {
@@ -12,6 +13,7 @@ class AppShell extends HTMLElement {
             <app-footer></app-footer>
             <ui-toast id="global-toast"></ui-toast>
         </div>
+        <sticky-notes></sticky-notes>
         `;
 	}
 }
