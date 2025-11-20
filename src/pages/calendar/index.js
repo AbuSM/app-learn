@@ -1,13 +1,9 @@
-import {
-    initCalendar
-} from './calendar';
+import { initCalendar } from "./calendar";
 
 class PageCalendar extends HTMLElement {
-    connectedCallback() {
-        this.innerHTML = /*html*/ `
-        <ui-modal id="event-modal"></ui-modal>
-        
-        <h1 class="text-gray-700 ml-12 mt-6 text-3xl font-semibold">Calendar</h1>
+	connectedCallback() {
+		this.innerHTML = /*html*/ `
+        <h1 class="text-gray-700 ml-12 mt-6 text-3xl font-semibold">Календарь</h1>
         <div class="calendar bg-white border border-gray-200 rounded-lg m-8 shadow-sm">
             <div class="head flex justify-between p-6 border-b border-gray-100">
                 <div class="flex gap-2 items-center">
@@ -21,7 +17,7 @@ class PageCalendar extends HTMLElement {
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                         </svg>
                     </button>
-                    <button data-modal-target="event-modal" data-modal-toggle="event-modal" class="h-10 rounded-md bg-blue-600 hover:bg-blue-700 px-4 text-white cursor-pointer font-medium transition-colors text-sm">Add Event +</button>
+                    <button id="add-event-btn" class="h-10 rounded-md bg-blue-600 hover:bg-blue-700 px-4 text-white cursor-pointer font-medium transition-colors text-sm">Добавить событие +</button>
                 </div>
         
                 <div class="flex items-center text-2xl font-semibold text-gray-800">
@@ -30,21 +26,21 @@ class PageCalendar extends HTMLElement {
         
                 <div class="relative bg-gray-100 rounded-lg p-1 flex gap-1 items-center w-fit">
                     <div id="slider" class="absolute top-1 left-1 w-[calc(33.333%-4px)] h-[34px] bg-white rounded-md transition-all duration-300 shadow-sm"></div>
-                    <div id="month-btn" class="relative z-10 text-center px-4 cursor-pointer font-medium text-sm text-gray-600 hover:text-gray-900 transition-colors py-2">month</div>
-                    <div id="week-btn" class="relative z-10 text-center px-4 cursor-pointer font-medium text-sm text-gray-600 hover:text-gray-900 transition-colors py-2">week</div>
-                    <div id="day-btn" class="relative z-10 text-center px-4 cursor-pointer font-medium text-sm text-gray-600 hover:text-gray-900 transition-colors py-2">day</div>
+                    <div id="month-btn" class="relative z-10 text-center px-4 cursor-pointer font-medium text-sm text-gray-600 hover:text-gray-900 transition-colors py-2">месяц</div>
+                    <div id="week-btn" class="relative z-10 text-center px-4 cursor-pointer font-medium text-sm text-gray-600 hover:text-gray-900 transition-colors py-2">неделя</div>
+                    <div id="day-btn" class="relative z-10 text-center px-4 cursor-pointer font-medium text-sm text-gray-600 hover:text-gray-900 transition-colors py-2">день</div>
                 </div>
             </div>
         
             <div id="month-view">
                 <div class="grid grid-cols-7 bg-gray-50 text-center font-medium text-gray-400 text-xs uppercase tracking-wide">
-                    <div class="py-3 border-b border-r border-gray-100">Mon</div>
-                    <div class="py-3 border-b border-r border-gray-100">Tue</div>
-                    <div class="py-3 border-b border-r border-gray-100">Wed</div>
-                    <div class="py-3 border-b border-r border-gray-100">Thu</div>
-                    <div class="py-3 border-b border-r border-gray-100">Fri</div>
-                    <div class="py-3 border-b border-r border-gray-100">Sat</div>
-                    <div class="py-3 border-b border-gray-100">Sun</div>
+                    <div class="py-3 border-b border-r border-gray-100">Пн</div>
+                    <div class="py-3 border-b border-r border-gray-100">Вт</div>
+                    <div class="py-3 border-b border-r border-gray-100">Ср</div>
+                    <div class="py-3 border-b border-r border-gray-100">Чт</div>
+                    <div class="py-3 border-b border-r border-gray-100">Пт</div>
+                    <div class="py-3 border-b border-r border-gray-100">Сб</div>
+                    <div class="py-3 border-b border-gray-100">Вс</div>
                 </div>
                 <div id="days" class="grid grid-cols-7"></div>
             </div>
@@ -82,12 +78,8 @@ class PageCalendar extends HTMLElement {
         </div>
         `;
 
-        initCalendar();
-
-        if (typeof initFlowbite !== 'undefined') {
-            initFlowbite();
-        }
-    }
+		initCalendar();
+	}
 }
 
-customElements.define('page-calendar', PageCalendar);
+customElements.define("page-calendar", PageCalendar);

@@ -2,27 +2,27 @@
 @import "flowbite/src/themes/default";
 
 body:has(.loader_backdrop) {
-    overflow-y: hidden;
+	overflow-y: hidden;
 }
 
 @keyframes appear {
-    0% {
-        opacity: 0;
-    }
-    100% {
-        opacity: 1;
-    }
+	0% {
+		opacity: 0;
+	}
+	100% {
+		opacity: 1;
+	}
 }
 :root {
-    --primary: #3c50e0;
-    --border-gray: #e4e7ec;
-    --gray: #667085;
-    --card-width: 280px;
+	--primary: #3c50e0;
+	--border-gray: #e4e7ec;
+	--gray: #667085;
+	--card-width: 250px;
 }
 
 .task *,
 .listHeading * {
-    pointer-events: none;
+	pointer-events: none;
 }
 .task,
 .listHeading,
@@ -33,38 +33,38 @@ body:has(.loader_backdrop) {
 .listMenu,
 .listMenu *,
 h3 {
-    pointer-events: auto !important;
+	pointer-events: auto !important;
 }
 .animate-appear {
-    animation: appear 0.2s ease-in-out 1;
+	animation: appear 0.2s ease-in-out 1;
 }
 .main {
-    overflow: hidden;
-    max-height: 100vh;
+	/* overflow: hidden; */
+	max-height: 100vh;
 }
 main {
-    padding: 0;
+	padding: 0;
 }
 
 .scrollbar-none {
-    scrollbar-width: none;
+	scrollbar-width: none;
 }
 .scrollbar-none::-webkit-scrollbar {
-    width: 8px;
+	width: 8px;
 }
 
 .inline-icon svg {
-    display: inline-block;
-    width: 1em;
-    height: 1em;
-    margin-right: 0.2em;
+	display: inline-block;
+	width: 1em;
+	height: 1em;
+	margin-right: 0.2em;
 }
 
 input:not(input[type="checkbox"]),
 textarea,
 .input_style {
-    @apply min-w-0 w-full px-3 border-[var(--border-gray)] py-1 rounded border-1 focus:ring-0 focus:border-[var(--primary)];
+	@apply min-w-0 w-full px-3 border-[var(--border-gray)] py-1 rounded border-1 focus:ring-0 focus:border-[var(--primary)];
 }
 .border-gray {
-    @apply border-[var(--border-gray)] py-1 rounded border-1;
+	@apply border-[var(--border-gray)] py-1 rounded border-1;
 }

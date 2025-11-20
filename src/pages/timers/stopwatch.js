@@ -10,52 +10,81 @@ const track = document.getElementById("track");
 const dialog = document.getElementById("dialog");
 
 let arr = [];
-let millisecond = +(localStorage.getItem("timer") || 0);
-let clearIntervalId;
+let millisecond = +(localStorage.getItem("stopwatch-time") || 0);
+let clearIntervalId = null;
+let isRunning = false;
+
+/**
+ * Format time as MM:SS.mm
+ */
+function formatTime(ms) {
+	const totalSeconds = Math.floor(ms / 1000);
+	const minutes = Math.floor(totalSeconds / 60);
+	const seconds = totalSeconds % 60;
+	const millis = getMilliseconds(ms);
+
+	return {
+		minutes: String(minutes).padStart(2, "0"),
+		seconds: String(seconds).padStart(2, "0"),
+		millis: millis,
+	};
+}
 
 const setStopWatchArea = () => {
+	const { minutes, seconds, millis } = formatTime(millisecond);
 	stopwatchArea.innerHTML = `
-        <div class="seconds">${Math.floor(millisecond / 1000)}</div>
+        <div class="minutes">${minutes}</div>
+        <span class="time-separator">:</span>
+        <div class="seconds">${seconds}</div>
         <span class="milliseconds">.</span>
-        <div class="milliseconds">${getMilliseconds(millisecond)}</div>
+        <div class="milliseconds">${millis}</div>
     `;
 };
 
-setStopWatchArea(millisecond);
+setStopWatchArea();
 
 function onStart() {
-	if (!clearIntervalId) {
-		stop.textContent = "Pause";
-		millisecond += TIMER_RANGE;
+	if (!isRunning) {
+		isRunning = true;
+		stop.textContent = "Пауза";
 		clearIntervalId = setInterval(() => {
-			setStopWatchArea();
 			millisecond += TIMER_RANGE;
+			setStopWatchArea();
 		}, TIMER_RANGE);
 	}
 }
 
 function onStop() {
-	clearInterval(clearIntervalId);
-	clearIntervalId = undefined;
-	if (stop.textContent === "Stop") {
+	if (isRunning) {
+		clearInterval(clearIntervalId);
+		clearIntervalId = null;
+		isRunning = false;
+		stop.textContent = "Стоп";
+	} else if (stop.textContent === "Стоп") {
 		millisecond = 0;
 		setStopWatchArea();
-		stop.textContent = "Pause";
-	} else {
-		stop.textContent = "Stop";
+		stop.textContent = "Пауза";
 	}
 }
 
 function onReset() {
+	clearInterval(clearIntervalId);
+	clearIntervalId = null;
+	isRunning = false;
 	millisecond = 0;
 	setStopWatchArea();
-	log.textContent = "";
+	stop.textContent = "Пауза";
+	document.getElementById("log").textContent = "";
 	arr.length = 0;
-	localStorage.removeItem("timer");
+	localStorage.removeItem("stopwatch-time");
 }
 
 function onSave() {
-	localStorage.setItem("timer", millisecond - TIMER_RANGE);
+	localStorage.setItem("stopwatch-time", millisecond);
+	showSaveDialog();
+}
+
+function showSaveDialog() {
 	dialog.setAttribute("open", true);
 	setTimeout(() => {
 		dialog.removeAttribute("open");
@@ -63,30 +92,27 @@ function onSave() {
 }
 
 function onTrack() {
-	const seconds = stopwatchArea.textContent.split("\n")[1].trim();
-	const milliseconds = stopwatchArea.textContent.split("\n")[3].trim();
-	const time = Date().split(" ");
+	const { minutes, seconds, millis } = formatTime(millisecond);
+	const timeString = `${minutes}:${seconds}.${millis}`;
+	const currentTime = new Date().toLocaleString();
 
-	arr.push(
+	arr.unshift(
 		`<div class='log_data'>
-            <span class="main-element">${
-				seconds + "." + milliseconds
-			} секунд</span>
-            <div class="date-element">
-                <svg width="20px" height="20px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M12 7V12L14.5 10.5M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-                ${time[1] + " " + time[2] + " " + time[3] + " " + time[4]}
-            </div>
-        </div>`
+			<span class="main-element">${timeString}</span>
+			<div class="date-element">
+				<svg width="20px" height="20px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+					<path d="M12 7V12L14.5 10.5M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+				</svg>
+				<span>${currentTime}</span>
+			</div>
+		</div>`
 	);
-	const arr2 = arr.toReversed();
 
 	let str = "";
-	arr2.forEach((el) => {
+	arr.forEach((el) => {
 		str += el;
 	});
-	log.innerHTML = str;
+	document.getElementById("log").innerHTML = str;
 }
 
 start.addEventListener("click", () => {
