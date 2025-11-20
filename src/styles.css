@@ -67,20 +67,23 @@ app-sidebar.sidebar-hidden h3 {
 app-sidebar.sidebar-hidden .nav-link,
 app-sidebar.sidebar-hidden .submenu-link {
 	justify-content: center;
-	padding: 0.75rem;
+	padding: 0.5rem 0;
+	width: 100%;
+	overflow: hidden;
+	white-space: nowrap;
 }
 
 app-sidebar.sidebar-hidden ul.flex.flex-col {
 	gap: 0.5rem;
 }
 
-app-sidebar.sidebar-hidden .nav-link ui-icon:not(:first-child),
-app-sidebar.sidebar-hidden .submenu-link ui-icon:not(:first-child) {
-	display: none;
+app-sidebar.sidebar-hidden .nav-link::after,
+app-sidebar.sidebar-hidden .submenu-link::after {
+	content: '';
 }
 
 app-sidebar.sidebar-hidden nav {
-	padding: 0.5rem;
+	padding: 0.5rem 0;
 }
 
 app-sidebar.sidebar-hidden .submenu-link span {
@@ -92,6 +95,21 @@ app-sidebar.sidebar-hidden .arrow-icon {
 }
 
 app-sidebar.sidebar-hidden ul ul {
+	display: none;
+}
+
+app-sidebar.sidebar-hidden .nav-link,
+app-sidebar.sidebar-hidden .submenu-link {
+	font-size: 0;
+}
+
+app-sidebar.sidebar-hidden .nav-link ui-icon,
+app-sidebar.sidebar-hidden .submenu-link ui-icon {
+	font-size: 1rem;
+}
+
+app-sidebar.sidebar-hidden .nav-link span,
+app-sidebar.sidebar-hidden .submenu-link span {
 	display: none;
 }
 
