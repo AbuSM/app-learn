@@ -5,7 +5,6 @@ body:has(.loader_backdrop) {
     overflow-y: hidden;
 }
 
-
 @keyframes appear {
     0% {
         opacity: 0;
@@ -18,7 +17,7 @@ body:has(.loader_backdrop) {
     --primary: #3c50e0;
     --border-gray: #e4e7ec;
     --gray: #667085;
-    --card-width: 250px;
+    --card-width: 280px;
 }
 
 .task *,
