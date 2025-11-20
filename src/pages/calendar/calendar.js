@@ -49,7 +49,7 @@ export function initCalendar() {
   dayBtn.addEventListener('click', () => showView('day'));
 
   const events = {};
-  
+
   function renderCalendar() {
     const year = viewDate.getFullYear();
     const month = viewDate.getMonth();
@@ -62,8 +62,8 @@ export function initCalendar() {
     const prevMonthLastDay = new Date(year, month, 0).getDate();
 
     const monthNames = [
-      "January", "February", "March", "April", "May", "June",
-      "July", "August", "September", "October", "November", "December"
+      "Январь", "Февраль", "Март", "Апрель", "Май", "Июнь",
+      "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"
     ];
 
     monthYear.textContent = `${monthNames[month]} ${year}`;
@@ -152,7 +152,7 @@ export function initCalendar() {
     const weekDates = getWeekDates();
     const weekHeader = document.getElementById('week-header');
 
-    const days = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
+    const days = ['ПН', 'ВТ', 'СР', 'ЧТ', 'ПТ', 'СБ', 'ВС'];
     weekHeader.innerHTML = '<div class="py-3"></div>';
     
     weekDates.forEach((date, index) => {
@@ -164,7 +164,8 @@ export function initCalendar() {
 
     const startDate = weekDates[0];
     const endDate = weekDates[6];
-    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    const monthNames = ["Янв", "Февр", "Март", "Апр", "Май", "Июнь",
+      "Июль", "Авг", "Сент", "Окт", "Нояб", "Дек"];
     monthYear.textContent = `${monthNames[startDate.getMonth()]} ${startDate.getDate()} – ${endDate.getDate()}, ${startDate.getFullYear()}`;
 
     const weekContainer = document.getElementById('week-grid');
@@ -180,7 +181,7 @@ export function initCalendar() {
 
       const timeLabel = document.createElement('div');
       timeLabel.classList.add('w-20', 'text-xs', 'text-gray-400', 'py-2', 'pr-2', 'text-right');
-      timeLabel.textContent = hour >= 12 ? `${hour === 12 ? 12 : hour - 12}pm` : `${hour}am`;
+      timeLabel.textContent = hour >= 12 ? `${hour === 12 ? 12 : hour - 12}` : `${hour}`;
 
       timeSlot.appendChild(timeLabel);
 
@@ -199,14 +200,14 @@ export function initCalendar() {
   }
 
   function renderDayView() {
-    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    const days = ['Воскресенье', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота'];
     const dayName = days[dayViewDate.getDay()].toUpperCase();
     
     const dayHeader = document.getElementById('day-header');
     dayHeader.textContent = dayName;
 
-    const monthNames = ["January", "February", "March", "April", "May", "June",
-      "July", "August", "September", "October", "November", "December"];
+    const monthNames = ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь",
+      "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"];
     monthYear.textContent = `${monthNames[dayViewDate.getMonth()]} ${dayViewDate.getDate()}, ${dayViewDate.getFullYear()}`;
 
     const dayContainer = document.getElementById('day-grid');
@@ -222,7 +223,7 @@ export function initCalendar() {
 
       const timeLabel = document.createElement('div');
       timeLabel.classList.add('w-20', 'text-xs', 'text-gray-400', 'py-2', 'pr-2', 'text-right');
-      timeLabel.textContent = hour >= 12 ? `${hour === 12 ? 12 : hour - 12}pm` : `${hour}am`;
+      timeLabel.textContent = hour >= 12 ? `${hour === 12 ? 12 : hour - 12}` : `${hour}`;
 
       const cell = document.createElement('div');
       cell.classList.add('flex-1', 'border-l', 'border-gray-100', 'min-h-12', 'hover:bg-gray-50', 'cursor-pointer');
