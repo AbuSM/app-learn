@@ -40,13 +40,59 @@ app-shell {
 app-sidebar {
 	flex-shrink: 0;
 	width: 280px;
-	transition: transform 0.3s ease-in-out, width 0.3s ease-in-out;
-	transform: translateX(0);
+	transition: width 0.3s ease-in-out;
 }
 
 app-sidebar.sidebar-hidden {
-	transform: translateX(-280px);
-	width: 0;
+	width: 80px;
+}
+
+app-sidebar.sidebar-hidden aside {
+	width: 80px;
+}
+
+app-sidebar.sidebar-hidden .sidebar-text {
+	display: none;
+}
+
+app-sidebar.sidebar-hidden h1,
+app-sidebar.sidebar-hidden p {
+	display: none;
+}
+
+app-sidebar.sidebar-hidden h3 {
+	display: none;
+}
+
+app-sidebar.sidebar-hidden .nav-link,
+app-sidebar.sidebar-hidden .submenu-link {
+	justify-content: center;
+	padding: 0.75rem;
+}
+
+app-sidebar.sidebar-hidden ul.flex.flex-col {
+	gap: 0.5rem;
+}
+
+app-sidebar.sidebar-hidden .nav-link ui-icon:not(:first-child),
+app-sidebar.sidebar-hidden .submenu-link ui-icon:not(:first-child) {
+	display: none;
+}
+
+app-sidebar.sidebar-hidden nav {
+	padding: 0.5rem;
+}
+
+app-sidebar.sidebar-hidden .submenu-link span {
+	display: none;
+}
+
+app-sidebar.sidebar-hidden .arrow-icon {
+	display: none;
+}
+
+app-sidebar.sidebar-hidden ul ul {
+	display: none;
 }
 
 .main {
