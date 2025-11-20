@@ -15,6 +15,8 @@ class StickyNotes extends HTMLElement {
 			"#FFECB3",
 			"#C5CAE9",
 		];
+		this.draggedNote = null;
+		this.dragOffset = { x: 0, y: 0 };
 	}
 
 	connectedCallback() {
@@ -32,12 +34,11 @@ class StickyNotes extends HTMLElement {
 
 				.sticky-notes-container {
 					position: fixed;
-					bottom: 20px;
-					right: 20px;
+					top: 0;
+					left: 0;
+					width: 100%;
+					height: 100%;
 					z-index: 1000;
-					display: flex;
-					flex-direction: column;
-					gap: 10px;
 					pointer-events: none;
 				}
 
@@ -52,16 +53,28 @@ class StickyNotes extends HTMLElement {
 					resize: none;
 					border: none;
 					outline: none;
-					position: relative;
+					position: fixed;
 					pointer-events: auto;
 					display: flex;
 					flex-direction: column;
-					transition: all 0.2s ease;
+					transition: box-shadow 0.2s ease;
 					transform: rotate(-1deg);
+					cursor: grab;
+					user-select: none;
+				}
+
+				.sticky-note.dragging {
+					transition: none;
+					z-index: 1001;
+					cursor: grabbing;
 				}
 
 				.sticky-note:hover {
 					box-shadow: var(--sticky-note-shadow-hover);
+					transform: rotate(0deg) scale(1.02);
+				}
+
+				.sticky-note.dragging:hover {
 					transform: rotate(0deg) scale(1.02);
 				}
 
@@ -146,6 +159,10 @@ class StickyNotes extends HTMLElement {
 			noteEl.className = "sticky-note";
 			noteEl.style.backgroundColor = note.color;
 
+			const pos = note.position || { x: 20 + index * 220, y: 80 + (index % 3) * 220 };
+			noteEl.style.left = pos.x + "px";
+			noteEl.style.top = pos.y + "px";
+
 			const textarea = document.createElement("textarea");
 			textarea.className = "sticky-note-content";
 			textarea.value = note.content;
@@ -176,7 +193,73 @@ class StickyNotes extends HTMLElement {
 
 			noteEl.appendChild(textarea);
 			noteEl.appendChild(footer);
+
+			this.setupDragListeners(noteEl, index);
 			container.appendChild(noteEl);
+		});
+	}
+
+	setupDragListeners(noteEl, index) {
+		let isDragging = false;
+		let startX = 0;
+		let startY = 0;
+		let startLeft = 0;
+		let startTop = 0;
+
+		noteEl.addEventListener("mousedown", (e) => {
+			if (e.target.tagName === "BUTTON" || e.target.tagName === "TEXTAREA") {
+				return;
+			}
+
+			isDragging = true;
+			startX = e.clientX;
+			startY = e.clientY;
+			startLeft = noteEl.offsetLeft;
+			startTop = noteEl.offsetTop;
+
+			noteEl.classList.add("dragging");
+		});
+
+		document.addEventListener("mousemove", (e) => {
+			if (!isDragging || this.draggedNote !== index) {
+				return;
+			}
+
+			const deltaX = e.clientX - startX;
+			const deltaY = e.clientY - startY;
+
+			let newX = startLeft + deltaX;
+			let newY = startTop + deltaY;
+
+			const maxX = window.innerWidth - noteEl.offsetWidth;
+			const maxY = window.innerHeight - noteEl.offsetHeight;
+
+			newX = Math.max(0, Math.min(newX, maxX));
+			newY = Math.max(0, Math.min(newY, maxY));
+
+			noteEl.style.left = newX + "px";
+			noteEl.style.top = newY + "px";
+		});
+
+		document.addEventListener("mouseup", () => {
+			if (isDragging) {
+				isDragging = false;
+				noteEl.classList.remove("dragging");
+
+				this.notes[index].position = {
+					x: parseInt(noteEl.style.left),
+					y: parseInt(noteEl.style.top),
+				};
+				this.saveNotes();
+			}
+		});
+
+		noteEl.addEventListener("mousedown", () => {
+			this.draggedNote = index;
+		});
+
+		document.addEventListener("mouseup", () => {
+			this.draggedNote = null;
 		});
 	}
 
