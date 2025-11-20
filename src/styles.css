@@ -79,7 +79,7 @@ app-sidebar.sidebar-hidden ul.flex.flex-col {
 
 app-sidebar.sidebar-hidden .nav-link::after,
 app-sidebar.sidebar-hidden .submenu-link::after {
-	content: '';
+	content: "";
 }
 
 app-sidebar.sidebar-hidden nav {
@@ -121,13 +121,13 @@ app-sidebar.sidebar-hidden .submenu-link span {
 }
 
 main {
-	@apply bg-gray-100 mt-[65px] flex-1;
+	@apply bg-gray-100 flex-1;
 }
 
 app-header {
 	height: 65px;
 	background-color: white;
-	position: fixed;
+	position: sticky;
 	width: 100%;
 	top: 0;
 	z-index: 100;

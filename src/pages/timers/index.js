@@ -13,7 +13,7 @@ class PageTimers extends HTMLElement {
                         <div class="minutes">00</div>
                         <span class="time-separator">:</span>
                         <div class="seconds">00</div>
-                        <span class="milliseconds">.</span>
+                        <span class="milliseconds" style="width: 15px">.</span>
                         <div class="milliseconds">00</div>
                     </div>
                     <div class="button-group">
@@ -34,7 +34,7 @@ class PageTimers extends HTMLElement {
                     <p id="log" class="log-list"></p>
                 </div>
             </div>
-
+        
             <div id="timer" class="timer-card">
                 <div class="container">
                     <h2 class="timer-title">Таймер</h2>
@@ -57,7 +57,7 @@ class PageTimers extends HTMLElement {
                     </div>
                 </div>
             </div>
-
+        
             <audio style="display: none;">
                 <source src="./media/egg_timer_alrm.mp3" type="audio/mpeg" />
             </audio>
