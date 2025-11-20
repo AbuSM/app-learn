@@ -1,4 +1,3 @@
-import changeModal from "../todo/change_modal";
 import "./styles.css";
 
 export function initCalendar() {
