@@ -1,3 +1,5 @@
+import "../api/weather-api.js";
+
 class AppShell extends HTMLElement {
 	connectedCallback() {
 		this.innerHTML = /*html*/ `
